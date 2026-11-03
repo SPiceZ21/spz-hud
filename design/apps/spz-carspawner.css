@@ -1,3 +1,32 @@
 /* spz-carspawner on the shared look. */
-.cat.on::before { display: none !important; }   /* no side stripe on the active category */
+
+/* Frame: the shared radius scale, no drop shadow */
+.app { border-radius: var(--ui-r-lg); border-color: var(--ui-line); box-shadow: none; background: var(--ui-surface-solid); }
+.side, .preview { background: var(--ui-surface-solid); }
+.brand-mark { border-radius: var(--ui-r-md); box-shadow: none; }
+
+/* Categories: active = raised row + accent text, no side stripe; counts are numbers */
+.cat { border-radius: var(--ui-r-md); }
+.cat.on::before { display: none !important; }
 .cat.on { color: var(--accent); background: var(--ui-raised); }
+.cat b, .cat.on b { background: transparent; color: var(--ui-tx-3); }
+.cat.on b { color: var(--accent); }
+
+/* Inputs and buttons */
+.input, .go, .search input { border-radius: var(--ui-r-md); }
+.x { border-radius: var(--ui-r-md); }
+.spawn, .pv-spawn { border-radius: var(--ui-r-md); }
+
+/* Car cards: one hairline frame, flat image well, no lift on hover */
+.card { border-radius: var(--ui-r-lg); background: transparent; box-shadow: none; }
+.card:hover { box-shadow: none; }
+.card.sel { box-shadow: none; }
+.pic, .pv-pic { background: rgba(255, 255, 255, 0.025); }
+
+/* Tags: outlined words, not pills */
+.cls, .badge, .pv-tags span, .pv-tags span.mod {
+  border-radius: var(--ui-r-sm);
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line-2);
+}
+.badge, .pv-tags span.mod { color: var(--accent); border-color: var(--accent); background: var(--ui-surface); }
