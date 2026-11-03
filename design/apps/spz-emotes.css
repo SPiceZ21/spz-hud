@@ -1,0 +1,32 @@
+/* spz-emotes on the shared look. */
+
+.panel { background: var(--ui-surface-solid); border-color: var(--ui-line); box-shadow: none; }
+header, #cats, footer { border-color: var(--ui-line) !important; }
+#q { background: transparent; border-color: var(--ui-line-2); }
+
+/* Categories: square outlined tabs, not pills. Body font: nine of them have
+   to fit two rows, and Panchang is too wide for that in this panel. */
+#cats button {
+  border-radius: var(--ui-r-md);
+  background: transparent;
+  border: 1px solid var(--ui-line);
+  font-family: var(--ui-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  padding: 5px 10px;
+  text-transform: none;
+  color: var(--ui-tx-2);
+}
+#cats button.on { background: var(--ui-raised); border-color: var(--accent); color: var(--accent); }
+
+/* Cards: one hairline frame, no second fill */
+.card { background: transparent; border-color: var(--ui-line); border-radius: var(--ui-r-lg); }
+.card:hover { border-color: var(--ui-line-2); }
+.thumb { background-color: rgba(255, 255, 255, 0.025); }
+.thumb .glyph { color: var(--ui-tx-4); }
+.tag, .star { border-radius: var(--ui-r-sm); background: var(--ui-surface); }
+
+#stop { background: transparent; border-color: var(--ui-line-2); }
+kbd { border-radius: var(--ui-r-sm); }
+#cats { gap: 5px !important; }
