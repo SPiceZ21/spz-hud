@@ -49,11 +49,11 @@ cd web && npm run dev         # http://localhost:5173
 
 The whole HUD runs in the browser with all 19 apps loaded. A control panel sits on the right; press `` ` `` to hide or show it.
 
-- **State:** switch between freeroam, race, minigame and spectate.
+- **State:** each button puts the HUD in a game state and sends that state's HUDs, filled with sample data and a live speedometer: Freeroam, Race · warmup, Race · live, Minigame, Spectate, plus *clear*. The data is in `web/src/dev/scenarios.ts`, built from the apps' own mocks and in the same message format their Lua sends. `?scenario=race` in the URL picks one, and `?panel=0` hides the panel (useful for screenshots).
 - **HUD:** open layout edit mode, and hide or show the HUD.
 - **Backdrop:** dark, city, checker or green screen, or a screenshot URL so you can judge the UI over the game.
 - **Apps:** click an app to select it. Click ○ to give it focus, which raises it and sends it the mouse and keyboard, the same as SetNuiFocus.
-- **Send:** a ready-made list of every message the selected resource's Lua sends, read from its `SendNUIMessage` calls by sync-apps and saved as `apps/presets.json`. Pick one, fill in the `null`s, and press Ctrl+Enter. Reload app restarts that layer.
+- **Send:** filled samples (★, from the scenarios), then a ready-made list of every message the selected resource's Lua sends, read from its `SendNUIMessage` calls by sync-apps and saved as `apps/presets.json`. Pick one, fill in the `null`s, and press Ctrl+Enter. Reload app restarts that layer.
 - **Log:** every message sent, and every NUI callback an app made, with its body.
 - **Callback answers:** choose what a callback returns (`{}` by default), for example `{ "ok": true, "list": [...] }` for a menu that waits for data. Answers are saved in the browser.
 
@@ -92,15 +92,9 @@ The widget also needs a component in `ui/src/widgets/index.ts`. Lua can register
 
 Event: `spz-hud:state` (client) fires with the new state.
 
-## Test widget
+## Moving app UIs (/hudedit)
 
-`speedo` is off by default, so it doesn't double up with spz-speedometer. To try the host, add this to server.cfg:
-
-```
-setr spz_hud_speedo 1
-```
-
-or set `enabled = true` in `config.lua`.
+A hosted app whose entry in `tools/sync-apps.mjs` has `move` can be placed like a widget. `move.sel` names the app's main element. The player's offset and scale are applied by a style rule injected into the app's page, so the app's code is untouched. If the element isn't on screen while placing it (on foot), `move.demo` shows it with sample data, then hides it again. **spz-speedometer** is set up this way; add `move` to more apps the same way, using an element that doesn't set its own `transform`.
 
 ## Layout and build
 

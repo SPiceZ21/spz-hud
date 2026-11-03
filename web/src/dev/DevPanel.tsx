@@ -5,12 +5,12 @@
 // page under it runs exactly the code paths it runs in game.
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { clearLog, getLog, getStubs, log, onLog, setStub, type LogEntry } from './devlog'
+import { BOOT, CLEAR, SCENARIOS, type Msg } from './scenarios'
 import './dev.css'
 
 interface AppEntry { res: string; z: number }
 interface Preset { label: string; msg: Record<string, unknown> }
 
-const STATES = ['freeroam', 'race', 'minigame', 'spectate'] as const
 const BACKDROPS: Record<string, string> = {
   dark:    'radial-gradient(ellipse at 30% 20%, #2a3340 0%, #0d1117 70%)',
   city:    'linear-gradient(180deg, #4a6d8c 0%, #c99a6b 55%, #3b3f45 56%, #22252a 100%)',
@@ -19,6 +19,28 @@ const BACKDROPS: Record<string, string> = {
 }
 
 const send = (m: unknown) => window.postMessage(m, '*')
+const sendApp = (m: Msg) => send({ type: 'app', app: m.app, msg: m.msg })
+
+// The running scenario's live loop (speedometer); one at a time.
+let tickTimer: ReturnType<typeof setInterval> | null = null
+function runScenario(id: string | null) {
+  if (tickTimer) { clearInterval(tickTimer); tickTimer = null }
+  BOOT.forEach(sendApp)
+  CLEAR.forEach(sendApp)
+  const sc = SCENARIOS.find(x => x.id === id)
+  if (!sc) { send({ type: 'state', state: 'freeroam' }); return }
+  send({ type: 'state', state: sc.state })
+  // After the CLEAR has landed, so a hide doesn't follow the show.
+  setTimeout(() => {
+    sc.msgs.forEach(sendApp)
+    if (sc.tick) {
+      let t = 0
+      const step = () => { t += 0.05; sc.tick!(t).forEach(sendApp) }
+      step()
+      tickTimer = setInterval(step, 50)
+    }
+  }, 30)
+}
 
 const store = {
   get: (k: string, d: string) => { try { return localStorage.getItem('spz-hud:dev:' + k) ?? d } catch { return d } },
@@ -34,7 +56,8 @@ function useLog() {
 const time = (t: number) => new Date(t).toLocaleTimeString([], { hour12: false })
 
 export function DevPanel() {
-  const [open, setOpen] = useState(store.get('open', '1') === '1')
+  const [open, setOpen] = useState(
+    new URLSearchParams(location.search).get('panel') !== '0' && store.get('open', '1') === '1')
   const [apps, setApps] = useState<AppEntry[]>([])
   const [presets, setPresets] = useState<Record<string, Preset[]>>({})
   const [app, setApp] = useState(store.get('app', 'spz-poll'))
@@ -42,6 +65,9 @@ export function DevPanel() {
   const [err, setErr] = useState('')
   const [focus, setFocus] = useState<string | null>(null)
   const [state, setState] = useState<string>('freeroam')
+  // ?scenario=race in the URL wins (links, screenshots), then the last one used.
+  const [scenario, setScenario] = useState<string | null>(
+    new URLSearchParams(location.search).get('scenario') ?? (store.get('scenario', 'freeroam') || null))
   const [editing, setEditing] = useState(false)
   const [backdrop, setBackdrop] = useState(store.get('backdrop', 'dark'))
   const [bgUrl, setBgUrl] = useState(store.get('bgUrl', ''))
@@ -85,7 +111,32 @@ export function DevPanel() {
 
   useEffect(() => { store.set('app', app) }, [app])
 
-  const appPresets = presets[app] ?? []
+  // Run the remembered scenario once the apps have had time to load.
+  useEffect(() => {
+    const t = setTimeout(() => runScenario(scenario), 900)
+    return () => clearTimeout(t)
+  }, [])
+  const pickScenario = (id: string | null) => {
+    setScenario(id)
+    store.set('scenario', id ?? '')
+    runScenario(id)
+  }
+
+  // Filled-in samples (from the scenarios) first, then every message the
+  // resource's Lua sends, with its runtime values left as null.
+  const appPresets: Preset[] = useMemo(() => {
+    const samples: Preset[] = []
+    const seen = new Set<string>()
+    for (const sc of SCENARIOS) for (const m of sc.msgs) {
+      if (m.app !== app) continue
+      const k = JSON.stringify(m.msg)
+      if (seen.has(k)) continue
+      seen.add(k)
+      const msg = m.msg as Record<string, unknown>
+      samples.push({ label: `★ ${String(msg.action ?? msg.type ?? msg.hud ?? '?')} — ${sc.label}`, msg })
+    }
+    return [...samples, ...(presets[app] ?? [])]
+  }, [app, presets])
 
   const pickPreset = (i: number) => {
     const p = appPresets[i]
@@ -130,9 +181,10 @@ export function DevPanel() {
       <section class="dev-row">
         <label>State</label>
         <div class="dev-seg">
-          {STATES.map(s => (
-            <button data-on={state === s} onClick={() => send({ type: 'state', state: s })}>{s}</button>
+          {SCENARIOS.map(sc => (
+            <button data-on={scenario === sc.id} title={`state: ${sc.state}`} onClick={() => pickScenario(sc.id)}>{sc.label}</button>
           ))}
+          <button data-on={scenario === null} onClick={() => pickScenario(null)}>clear</button>
         </div>
       </section>
 
@@ -178,7 +230,7 @@ export function DevPanel() {
       {tab === 'send' && (
         <section class="dev-send">
           <select class="dev-input" onChange={e => pickPreset(Number((e.target as HTMLSelectElement).value))} value="">
-            <option value="">{appPresets.length ? `${appPresets.length} messages from ${app}'s Lua…` : 'no presets — write one below'}</option>
+            <option value="">{appPresets.length ? `${appPresets.length} messages (★ = filled sample)…` : 'no presets — write one below'}</option>
             {appPresets.map((p, i) => <option value={i}>{p.label} {Object.keys(p.msg).length > 1 ? `(${Object.keys(p.msg).filter(k => k !== 'action' && k !== 'type').join(', ')})` : ''}</option>)}
           </select>
           <textarea class="dev-code" spellcheck={false} value={text}
@@ -189,7 +241,7 @@ export function DevPanel() {
             <button class="dev-primary" onClick={sendApp}>Send to {app.replace(/^spz-/, '')} (Ctrl+Enter)</button>
             <button onClick={() => send({ type: 'appReload', app })}>Reload app</button>
           </div>
-          <p class="dev-muted">null values are Lua expressions the preset could not read — fill them in.</p>
+          <p class="dev-muted">★ messages are filled with sample data. In the others, null values are Lua expressions the preset could not read — fill them in.</p>
         </section>
       )}
 

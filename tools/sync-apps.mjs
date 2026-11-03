@@ -29,9 +29,19 @@ const SHARED = join(PUBLIC, 'shared', 'fonts')
 
 // z: stacking order when nothing has focus (the focused app always goes on top).
 // HUD overlays sit low, menus high, the spawn screen above everything.
+// move: lets players place the app's main element in /hudedit (see
+// web/src/core/apps.tsx). `sel` must not have a transform of its own.
 export const APPS = [
   { res: 'spz-nametag',      z: 10 },
-  { res: 'spz-speedometer',  z: 20 },
+  { res: 'spz-speedometer',  z: 20, move: {
+      // Placed in /hudedit. Pinned by its bottom-right corner (its CSS anchors it there).
+      sel: '.hud-wrap', label: 'Speedometer', origin: 'bottom right',
+      demo: {
+        on: [{ type: 'show' }, { type: 'update', speed: 184, gear: 4, pct: 72, inRedline: false,
+               shifting: false, limiter: false, launch: false, tcsCut: false, boost: 0, status: {} }],
+        off: [{ type: 'hide' }],
+      },
+    } },
   { res: 'spz-speedcam',     z: 25 },
   { res: 'spz-raceUI',       z: 30 },
   { res: 'spz-spectate',     z: 30 },
@@ -78,6 +88,10 @@ const NAME_SHIM = res =>
   `<script>(function(){var n=${JSON.stringify(res)};` +
   `try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}` +
   `catch(e){window.GetParentResourceName=function(){return n}}` +
+  // FiveM gives invokeNative to the top page only. Apps that test it to tell
+  // game from browser (spz-spectate) would think they are in a browser here.
+  `try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)` +
+  `window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}` +
   // Browser preview only: the HUD page defines __spzDev to catch this app's
   // NUI callbacks before any of its scripts run. Undefined in game.
   `try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>`
@@ -193,7 +207,7 @@ for (const a of list) syncOne(a)
 
 dedupeFonts()
 
-writeFileSync(join(OUT, 'apps.json'), JSON.stringify(APPS.map(a => ({ res: a.res, z: a.z })), null, 2))
+writeFileSync(join(OUT, 'apps.json'), JSON.stringify(APPS.map(a => ({ res: a.res, z: a.z, move: a.move })), null, 2))
 console.log('wrote apps/apps.json')
 
 // ── Dev presets ──────────────────────────────────────────────────────────────

@@ -48,9 +48,19 @@ end
 local function cleanLayout(layout)
     local out = {}
     for id, p in pairs(type(layout) == 'table' and layout or {}) do
-        if widgets[id] and type(p) == 'table' then
+        if type(p) ~= 'table' then
+            -- skip
+        elseif widgets[id] then
             out[id] = {
                 x = clamp(p.x, 0, 100), y = clamp(p.y, 0, 100),
+                scale = clamp(p.scale or 1, 0.5, 2),
+                hidden = p.hidden == true or nil,
+            }
+        elseif type(id) == 'string' and id:match('^app:spz%-[%w_%-]+$') then
+            -- A hosted app's main element: x / y are an OFFSET from where the
+            -- app draws it, in % of the screen.
+            out[id] = {
+                x = clamp(p.x, -100, 100), y = clamp(p.y, -100, 100),
                 scale = clamp(p.scale or 1, 0.5, 2),
                 hidden = p.hidden == true or nil,
             }
@@ -86,8 +96,6 @@ end
 
 for id, def in pairs(Config.Widgets) do widgets[id] = def end
 
--- Convar switches for the built-in test widgets: setr spz_hud_speedo 1
-if GetConvarInt('spz_hud_speedo', 0) == 1 and widgets.speedo then widgets.speedo.enabled = true end
 
 -- ── Game state ──────────────────────────────────────────────────────────────
 -- One state at a time decides which widgets show. Race beats minigame beats

@@ -22,7 +22,6 @@ client_scripts {
     'client/focus.lua',
     'client/main.lua',
     'client/apps.lua',
-    'client/widgets/*.lua',
 }
 
 dependencies {

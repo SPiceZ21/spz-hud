@@ -3,7 +3,7 @@ import { publish, peek } from './core/bus'
 import { post, inGame } from './core/nui'
 import { ANCHOR_SHIFT, type GameState, type Layout, type Placement, type WidgetDef } from './core/types'
 import { WIDGETS } from './widgets'
-import { AppHost, toApp, reloadApp } from './core/apps'
+import { AppHost, AppMovers, APP_HOME, appKey, placeApp, toApp, reloadApp, type AppEntry } from './core/apps'
 import type { FunctionComponent } from 'preact'
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n))
@@ -154,16 +154,6 @@ export function App() {
     window.addEventListener('message', onMsg)
     post('ready')
 
-    // Outside the game: a fake registry and live-ish data to design against.
-    if (!inGame) {
-      setDefs([{ id: 'speedo', label: 'Speedometer', x: 97, y: 95, anchor: 'br', scale: 1, states: { freeroam: true } }])
-      let t = 0
-      const iv = setInterval(() => {
-        t += 0.05
-        publish('speedo', { kmh: Math.round(120 + 80 * Math.sin(t)), gear: 1 + Math.floor((Math.sin(t) + 1) * 2.4), rpm: Math.round(50 + 45 * Math.sin(t * 3)) })
-      }, 50)
-      return () => { clearInterval(iv); window.removeEventListener('message', onMsg) }
-    }
     return () => window.removeEventListener('message', onMsg)
   }, [])
 
@@ -176,14 +166,22 @@ export function App() {
 
   const move = (id: string, p: Placement) => setLayout(l => ({ ...l, [id]: p }))
 
+  // Movable apps follow the layout live (while dragging, and when a saved or
+  // reset layout arrives from Lua).
+  const [apps, setApps] = useState<AppEntry[]>([])
+  useEffect(() => {
+    for (const a of apps) if (a.move) placeApp(a.res, a.move, layout[appKey(a.res)] ?? APP_HOME)
+  }, [apps, layout])
+
   const visibleDefs = defs.filter(d => editing || (d.states[state] && !forcedOff[d.id]))
 
   return (
     <>
-    <AppHost focus={focus} />
+    <AppHost focus={focus} onApps={setApps} />
     {Dev && <Dev />}
     <div class="hud" data-hidden={hidden && !editing} data-edit={editing}>
       {editing && <div class="grid" />}
+      {editing && <AppMovers apps={apps} layout={layout} snap={snap} onMove={move} />}
       {visibleDefs.map(d => (
         <Frame key={d.id} def={d} place={placementOf(d, layout)} editing={editing} snap={snap} onMove={move} />
       ))}

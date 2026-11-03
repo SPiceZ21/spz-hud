@@ -19,13 +19,4 @@ Config.Snap = 0.5
 --   scale    default size multiplier (players can change it in edit mode)
 --   states   game states it shows in: freeroam, race, minigame, spectate
 --   enabled  false = not drawn at all (and not offered in edit mode)
-Config.Widgets = {
-    -- Test widget. Off while spz-speedometer still draws the real gauge;
-    -- turn it on (here, or `setr spz_hud_speedo 1`) to try the HUD host.
-    speedo = {
-        label   = 'Speedometer',
-        x = 97, y = 95, anchor = 'br', scale = 1.0,
-        states  = { freeroam = true, race = true, minigame = true },
-        enabled = false,
-    },
-}
+Config.Widgets = {}
