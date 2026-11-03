@@ -102,6 +102,9 @@ export function App() {
   const [editing, setEditing] = useState(false)
   const [snap, setSnap] = useState(0.5)
   const [focus, setFocus] = useState<string | null>(null)
+  // HUD settings: the switches in /hudedit, stored with the layout (client/main.lua).
+  const [settings, setSettings] = useState<Record<string, string>>({})
+  const digital = settings.speedo === 'digital'
   // Browser preview: the dev panel, loaded as its own chunk (never in game).
   const [Dev, setDev] = useState<FunctionComponent | null>(null)
   useEffect(() => { if (!inGame) import('./dev/DevPanel').then(m => setDev(() => m.DevPanel)) }, [])
@@ -133,9 +136,17 @@ export function App() {
         case 'registry':
           setDefs(m.widgets || [])
           setLayout(m.layout || {})
+          setSettings(m.settings || {})
           if (typeof m.snap === 'number') setSnap(m.snap)
           break
-        case 'app':       toApp(m.app, m.msg); break
+        case 'app':
+          toApp(m.app, m.msg)
+          // The digital speedometer reads the same feed as the analogue gauge.
+          if (m.app === 'spz-speedometer' && m.msg) {
+            if (m.msg.type === 'update') publish('speedo_digital', m.msg)
+            else if (m.msg.type === 'hide') publish('speedo_digital', false)
+          }
+          break
         case 'appReload': reloadApp(m.app, !inGame && m.mock === true); break
         case 'focus':     setFocus(m.owner ?? null); break
         case 'data':    publish(m.id, m.data); break
@@ -173,15 +184,21 @@ export function App() {
     for (const a of apps) if (a.moves) placeApp(a.res, a.moves, layout)
   }, [apps, layout])
 
-  const visibleDefs = defs.filter(d => editing || (d.states[state] && !forcedOff[d.id]))
+  // Exactly one speedometer: the analogue gauge (spz-speedometer's own page) or
+  // the digital widget, by the player's setting.
+  const visibleDefs = defs.filter(d =>
+    (d.id !== 'speedo_digital' || digital) &&
+    (editing || (d.states[state] && !forcedOff[d.id])))
+  const hiddenApps = { 'spz-speedometer': digital }
+  const movableApps = digital ? apps.filter(a => a.res !== 'spz-speedometer') : apps
 
   return (
     <>
-    <AppHost focus={focus} onApps={setApps} />
+    <AppHost focus={focus} onApps={setApps} hidden={hiddenApps} />
     {Dev && <Dev />}
     <div class="hud" data-hidden={hidden && !editing} data-edit={editing}>
       {editing && <div class="grid" />}
-      {editing && <AppMovers apps={apps} layout={layout} snap={snap} onMove={move} />}
+      {editing && <AppMovers apps={movableApps} layout={layout} snap={snap} onMove={move} />}
       {visibleDefs.map(d => (
         <Frame key={d.id} def={d} place={placementOf(d, layout)} editing={editing} snap={snap} onMove={move} />
       ))}
@@ -189,10 +206,17 @@ export function App() {
         <div class="toolbar">
           <div class="toolbar-title">HUD layout</div>
           <div class="toolbar-hint">Drag to move · scroll to resize · Esc to cancel</div>
+          <div class="toolbar-settings">
+            <span class="toolbar-label">Speedometer</span>
+            <div class="seg">
+              <button data-on={!digital} onClick={() => setSettings(x => ({ ...x, speedo: 'analogue' }))}>Analogue</button>
+              <button data-on={digital} onClick={() => setSettings(x => ({ ...x, speedo: 'digital' }))}>Digital</button>
+            </div>
+          </div>
           <div class="toolbar-btns">
             <button class="btn ghost" onClick={() => post('resetLayout')}>Reset</button>
             <button class="btn ghost" onClick={() => post('cancelEdit')}>Cancel</button>
-            <button class="btn primary" onClick={() => post('saveLayout', { layout })}>Save</button>
+            <button class="btn primary" onClick={() => post('saveLayout', { layout, settings })}>Save</button>
           </div>
         </div>
       )}

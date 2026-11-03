@@ -111,6 +111,18 @@ The widget also needs a component in `ui/src/widgets/index.ts`. Lua can register
 
 Event: `spz-hud:state` (client) fires with the new state.
 
+## HUD settings (/hudedit)
+
+The edit toolbar also holds the player's HUD settings. They are saved with the layout in client KVP, and cleaned against a list of allowed values in `client/main.lua` (`SETTINGS`).
+
+- **Speedometer: Analogue / Digital.**
+  - **Analogue** is spz-speedometer's own gauge.
+  - **Digital** is a spz-hud widget (`speedo_digital`, `web/src/widgets/SpeedoDigital.tsx`): speed, gear, a 16-segment rev bar with the last three segments as the redline, and limiter/launch/TCS tags when they're active.
+  - Both read the same `update` messages from spz-speedometer, which spz-hud relays, so no Lua changes are needed.
+  - Exactly one shows at a time, and each one is placed separately.
+
+Reset also returns the settings to their defaults.
+
 ## Moving app UIs (/hudedit)
 
 Every on-screen HUD element of the hosted apps can be moved, resized and hidden in `/hudedit`. That's 23 elements: speedometer; race standings, sectors, key hints, lap/timer, radar, warmup, finish countdown, lobby, wanted, freeroam profile, fastest lap, flourish; your nametag; minigame status, keys and board; spectate bar and race board; speed camera; Rocket League score; chat; radio now playing.

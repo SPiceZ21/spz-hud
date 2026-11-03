@@ -133,7 +133,12 @@ export function appRect(res: string, sel: string): DOMRect | null {
 // the message listener is added), so queued messages wait a moment longer.
 const SETTLE_MS = 150
 
-export function AppHost({ focus, onApps }: { focus: string | null; onApps?: (a: AppEntry[]) => void }) {
+export function AppHost({ focus, onApps, hidden = {} }: {
+  focus: string | null
+  onApps?: (a: AppEntry[]) => void
+  /** Layers switched off by a HUD setting (e.g. the analogue speedometer in digital mode). */
+  hidden?: Record<string, boolean>
+}) {
   const [apps, setApps] = useState<AppEntry[]>([])
   const [gen, setGen] = useState<Record<string, number>>({})
   const [mocked, setMocked] = useState<Record<string, boolean>>({})
@@ -182,7 +187,7 @@ export function AppHost({ focus, onApps }: { focus: string | null; onApps?: (a: 
           class="app"
           data-app={a.res}
           data-focus={focus === a.res}
-          style={{ zIndex: focus === a.res ? 1000 : a.z }}
+          style={{ zIndex: focus === a.res ? 1000 : a.z, display: hidden[a.res] ? 'none' : undefined }}
           src={`./apps/${a.res}/index.html${mocked[a.res] ? '?spzmock=1' : ''}`}
           ref={el => { slot(a.res).frame = el }}
           onLoad={() => onLoad(a.res)}

@@ -20,6 +20,14 @@ const BACKDROPS: Record<string, string> = {
 }
 
 const send = (m: unknown) => window.postMessage(m, '*')
+
+// What client/main.lua sends as the registry (Config.Widgets in config.lua).
+const DEV_WIDGETS = [
+  { id: 'speedo_digital', label: 'Speedometer (digital)', x: 98.4, y: 95.5, anchor: 'br', scale: 1,
+    states: { freeroam: true, race: true, minigame: true } },
+]
+const sendRegistry = (speedo: string) =>
+  send({ type: 'registry', widgets: DEV_WIDGETS, layout: {}, settings: { speedo }, snap: 0.5 })
 const sendMsg = (m: Msg) => send({ type: 'app', app: m.app, msg: m.msg })
 
 // The running scenario's live loop (speedometer); one at a time.
@@ -111,6 +119,10 @@ export function DevPanel() {
   }, [backdrop, bgUrl])
 
   useEffect(() => { store.set('app', app) }, [app])
+
+  // The HUD's own widgets and settings, as Lua would push them.
+  const [speedo, setSpeedo] = useState(store.get('speedo', 'analogue'))
+  useEffect(() => { sendRegistry(speedo); store.set('speedo', speedo) }, [speedo])
 
   // Run the remembered scenario once the apps have had time to load.
   useEffect(() => {
@@ -230,6 +242,8 @@ export function DevPanel() {
         <label>HUD</label>
         <div class="dev-seg">
           <button data-on={editing} onClick={() => send({ type: 'edit', on: !editing })}>layout edit</button>
+          <button data-on={speedo === 'analogue'} onClick={() => setSpeedo('analogue')}>analogue</button>
+          <button data-on={speedo === 'digital'} onClick={() => setSpeedo('digital')}>digital</button>
           <button onClick={() => send({ type: 'hidden', hidden: true })}>hide</button>
           <button onClick={() => send({ type: 'hidden', hidden: false })}>show</button>
         </div>

@@ -19,4 +19,12 @@ Config.Snap = 0.5
 --   scale    default size multiplier (players can change it in edit mode)
 --   states   game states it shows in: freeroam, race, minigame, spectate
 --   enabled  false = not drawn at all (and not offered in edit mode)
-Config.Widgets = {}
+Config.Widgets = {
+    -- Digital speedometer. Shown instead of spz-speedometer's analogue gauge
+    -- when the player picks "Digital" in /hudedit; fed by the same messages.
+    speedo_digital = {
+        label   = 'Speedometer (digital)',
+        x = 98.4, y = 95.5, anchor = 'br', scale = 1.0,
+        states  = { freeroam = true, race = true, minigame = true },
+    },
+}

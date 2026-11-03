@@ -26,16 +26,41 @@ HudSend = send            -- focus.lua / apps.lua
 
 -- ── Layout ──────────────────────────────────────────────────────────────────
 
-local function loadLayout()
+local function readStore()
     local raw = GetResourceKvpString(KVP_LAYOUT)
     if not raw or raw == '' then return {} end
     local ok, data = pcall(json.decode, raw)
     if not ok or type(data) ~= 'table' or data.v ~= Config.LayoutVersion then return {} end
-    return type(data.w) == 'table' and data.w or {}
+    return data
 end
 
-local function saveLayout(layout)
-    SetResourceKvp(KVP_LAYOUT, json.encode({ v = Config.LayoutVersion, w = layout }))
+local function loadLayout()
+    local w = readStore().w
+    return type(w) == 'table' and w or {}
+end
+
+--- HUD settings (the switches in /hudedit), stored with the layout.
+local function loadSettings()
+    local s = readStore().s
+    return type(s) == 'table' and s or {}
+end
+
+local function saveLayout(layout, settings)
+    SetResourceKvp(KVP_LAYOUT, json.encode({ v = Config.LayoutVersion, w = layout, s = settings }))
+end
+
+--- Known settings and their allowed values; anything else from the page is dropped.
+local SETTINGS = {
+    speedo = { analogue = true, digital = true },
+}
+
+local function cleanSettings(s)
+    local out = {}
+    for k, allowed in pairs(SETTINGS) do
+        local v = type(s) == 'table' and s[k] or nil
+        if type(v) == 'string' and allowed[v] then out[k] = v end
+    end
+    return out
 end
 
 local function clamp(n, lo, hi)
@@ -84,7 +109,7 @@ local function pushRegistry()
     for id, d in pairs(widgets) do
         if d.enabled ~= false then list[#list + 1] = publicDef(id, d) end
     end
-    send({ type = 'registry', widgets = list, layout = loadLayout(), snap = Config.Snap })
+    send({ type = 'registry', widgets = list, layout = loadLayout(), settings = loadSettings(), snap = Config.Snap })
 end
 
 local function register(id, def)
@@ -166,7 +191,7 @@ RegisterCommand(Config.EditCommand, function()
 end, false)
 
 RegisterNUICallback('saveLayout', function(data, cb)
-    saveLayout(cleanLayout(data and data.layout))
+    saveLayout(cleanLayout(data and data.layout), cleanSettings(data and data.settings))
     stopEdit()
     lib.notify({ description = 'HUD layout saved.', type = 'success' })
     cb(true)
