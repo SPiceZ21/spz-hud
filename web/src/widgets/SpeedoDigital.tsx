@@ -2,9 +2,6 @@
 // messages, relayed here by App), as a slim racing readout with no panel.
 //
 //    (2)  051  KM/H         gear ring · speed (leading zeros dim) · unit
-//              TCS          assists, lit only while active
-//              LCH
-//              LIM
 //    [=========>      ▒▒]   rev bar like the race HUD's checkpoint bar: a glowing
 //                            gradient fill; the tinted end is the redline
 //
@@ -38,9 +35,6 @@ export function SpeedoDigital({ id }: { id: string }) {
         <div class="dsp-speed"><span class="dsp-lead">{lead}</span>{speed}</div>
         <div class="dsp-side">
           <span class="dsp-unit">km/h</span>
-          <span data-on={d.tcsCut === true}>TCS</span>
-          <span data-on={d.launch === true}>LCH</span>
-          <span data-on={d.limiter === true}>LIM</span>
         </div>
       </div>
       <div class="dsp-bar" style={{ '--red-from': `${RED_FROM}%` } as any}>

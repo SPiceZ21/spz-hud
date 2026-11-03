@@ -83,8 +83,8 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
 
 /* ── Digital speedometer (widgets/SpeedoDigital.tsx) ──
    Slim racing readout, no panel: gear ring, light italic digits with the
-   leading zeros dimmed, assists stacked on the right, a fine tick rev bar
-   ending in the redline block. A tight shadow keeps it legible. */
+   leading zeros dimmed, the unit on the right, and a rev bar like the race
+   HUD's checkpoint bar. A tight shadow keeps it legible. */
 .dsp {
   display: flex;
   flex-direction: column;
@@ -99,11 +99,11 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
   place-items: center;
   width: 42px;
   height: 42px;
-  border: 2px solid #22c55e;
+  border: 2px solid var(--color-primary);
   border-radius: 50%;
   font-size: 20px;
   font-weight: 500;
-  color: #22c55e;
+  color: var(--color-primary);
 }
 .dsp-gear[data-r='true'] { border-color: #ff4d4d; color: #ff4d4d; }
 .dsp-speed {
@@ -127,8 +127,7 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.28);
 }
-.dsp-side span[data-on='true'] { color: #f5b942; }
-.dsp-unit { color: rgba(255, 255, 255, 0.7); text-transform: uppercase; margin-bottom: 4px; }
+.dsp-unit { color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
 .dsp-bar {
   position: relative;
   height: 9px;

@@ -2,8 +2,9 @@
    shift band, rewind arc) is the speedometer's identity and stays; what
    changes is that it glows nowhere and uses the shared colours and labels. */
 
-/* No glow: the rev / redline glow paths, and the halos on band, needle, arc */
-.rev-glow, .red-glow { display: none !important; }
+/* No glow on the band, needle or arcs. The exception is the gauge's own rev
+   glow: the gradient that fades in behind the needle as it sweeps
+   (.rev-glow / .red-glow), kept on purpose. */
 .band, .needle, .rw-fill,
 .rw-arc[data-low=true] .rw-fill,
 .rw-arc[data-mode=boost] .rw-fill { filter: none !important; }
