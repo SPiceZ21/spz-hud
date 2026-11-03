@@ -11,7 +11,8 @@
 .sm-eyebrow i { box-shadow: none; }
 
 /* Player: no glowing ring */
-.sm-avatar { box-shadow: 0 0 0 1px var(--ui-line-2); }
+.sm-avatar { box-shadow: 0 0 0 1px var(--ui-line-2); border-radius: var(--ui-r-md) !important; }
+.sm-avatar img, .avatar-ring { border-radius: var(--ui-r-md) !important; }   /* square, the shared radius */
 .sm-name { font-weight: 800; letter-spacing: 0.02em; }
 
 /* Chips: outlined words */

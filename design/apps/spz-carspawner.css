@@ -59,6 +59,8 @@
     "pv spawn" !important;
 }
 .side, .main, .top, .preview { display: contents !important; }
+/* The layout above forces display: grid; closed must still mean closed. */
+.app.hidden { display: none !important; }
 
 /* Header */
 .brand { grid-area: brand; padding: 16px 18px 12px; border-bottom: 1px solid var(--ui-line); }
