@@ -1,0 +1,21 @@
+/* spz-rocketleague on the shared look. Team colours stay (they are the
+   information), as flat fills and coloured text, not gradients or stripes. */
+.board {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+.team { border-radius: var(--ui-r-sm); }
+.team.blue   { background: rgba(var(--blue-rgb), 0.85); }
+.team.orange { background: rgba(var(--orange-rgb), 0.85); }
+.clock { background: transparent; }
+.roster div,
+.roster.blue div,
+.roster.orange div {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-md);
+}
+.roster.blue div   { color: var(--blue); }
+.roster.orange div { color: var(--orange); }

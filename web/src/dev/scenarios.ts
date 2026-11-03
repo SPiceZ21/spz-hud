@@ -117,7 +117,6 @@ export const SCENARIOS: Scenario[] = [
       } } },
       { app: 'spz-raceUI', msg: { action: 'sector', data: { sector: 1, time: 24310, colour: 'purple', delta: -0.212 } } },
       { app: 'spz-raceUI', msg: { action: 'sector', data: { sector: 2, time: 28094, colour: 'yellow', delta: 0.084 } } },
-      { app: 'spz-raceUI', msg: { action: 'cpWaypoint', data: { dist: 184, pill: { onScreen: true, x: 0.62, y: 0.44 } } } },
       { app: 'spz-raceUI', msg: KEYHINTS },
       speedoOn, ...nametags(true),
     ],

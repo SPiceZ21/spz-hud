@@ -1,0 +1,3 @@
+/* spz-carspawner on the shared look. */
+.cat.on::before { display: none !important; }   /* no side stripe on the active category */
+.cat.on { color: var(--accent); background: var(--ui-raised); }

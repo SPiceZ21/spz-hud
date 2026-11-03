@@ -40,6 +40,22 @@ cd web && npm run build             # writes ../ui
 - rewrites links into another resource's UI (`https://cfx-nui-spz-x/ui/...`) to that app's copy here;
 - fills in any `public/` asset missing from an old `dist`.
 
+## The shared look (design/)
+
+One design layer is linked as the last stylesheet of every hosted app, so all 19 UIs share one look without changing their own CSS:
+
+- `design/spz-ui.css` holds the tokens and global rules. The tokens are type (Panchang display, Inter body), surface, lines, text, status colours and radii (4/6/8). Every app's own variable names (`--font-disp`, `--r-md`, `--bg-card`, `--island`, …) point at these tokens. The global rules are no glass blur and quiet scrollbars.
+- `design/apps/<resource>.css` holds the per-app fixes for what tokens can't reach: accent stripes, gradient washes, glows, and boxes inside boxes.
+
+The rules:
+
+- **One surface.** A panel has a background; what sits inside it does not. Rows, chips and cells separate with a hairline or spacing.
+- **No accent bars, no gradient washes, no glow halos.** The accent colour marks text, numbers and the one control that matters.
+- **Small radii, hairlines, compact.**
+- **One accent:** the theme's primary colour, pushed from spz-core at runtime. Purple appears only for "fastest" (sector or lap), a racing convention.
+
+Edit `design/`, then run `node tools/sync-apps.mjs --design` and `npm run build` in web/.
+
 ## Browser preview and dev panel
 
 ```

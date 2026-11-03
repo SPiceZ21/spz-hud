@@ -1,0 +1,161 @@
+/* spz-raceUI on the shared look (design/spz-ui.css). */
+
+/* ── Standings: one panel, rows separated by hairlines ── */
+.standings-list {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  overflow: hidden;
+  gap: 0 !important;
+}
+.racer-row {
+  background: transparent;
+  border-left: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--ui-line);
+}
+.racer-row:last-child { border-bottom: 0; }
+.racer-row.is-me { background: var(--ui-raised); }
+.racer-row.is-me .racer-pos,
+.racer-row.is-me .racer-name { color: var(--color-primary); }
+.racer-num,
+.racer-gap-box {
+  background: transparent;
+  border: 0;
+  color: var(--ui-tx-3);
+  padding-left: 0;
+  padding-right: 0;
+}
+.racer-flag { box-shadow: none; }
+
+/* ── Sectors: one strip, the colour lives in the time ── */
+.sector-strip {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  overflow: hidden;
+  gap: 0 !important;
+}
+.sector-cell,
+.sector-cell.purple,
+.sector-cell.green,
+.sector-cell.yellow {
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--ui-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+.sector-cell:last-child { border-right: 0; }
+.sector-cell.purple .sector-time { color: var(--ui-best); }
+.sector-cell.green .sector-time  { color: var(--ui-ok); }
+.sector-cell.yellow .sector-time { color: var(--ui-warn); }
+.sector-cell .sector-label { color: var(--ui-tx-3) !important; }
+
+/* ── Lap · timer: text on the game, no boxes ── */
+.pos-chip {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.cp-track {
+  border-radius: var(--ui-r-sm);
+  box-shadow: none;
+  background: var(--ui-line);
+}
+
+/* ── Key hints: keycaps stay keycaps, quieter ── */
+.key-hint .keycap {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line-2);
+  border-bottom-width: 2px;
+  border-radius: var(--ui-r-sm);
+  box-shadow: none;
+}
+
+/* ── Small banners: no stripes, no tints ── */
+.split-delta {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-md);
+}
+.fastest-lap,
+.fastest-lap.mine {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-md);
+  box-shadow: none;
+}
+.fastest-lap .fl-tag,
+.fastest-lap .fl-time { color: var(--ui-best); }
+.fastest-lap.mine .fl-name { color: var(--color-primary); }
+
+.finish-window {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+
+/* ── Warmup: one panel, not a row of tiles ── */
+.warmup-panel {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  gap: 0 !important;
+  overflow: hidden;
+}
+.wu-tile,
+.wu-tile.wu-title {
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--ui-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+.wu-tile:last-child { border-right: 0; }
+
+/* ── Lobby pill / freeroam card: one surface, chips become text ── */
+.lobby-pill,
+.lobby-pill.join,
+.lobby-pill.warmup {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+.fr-hud {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+.fr-chip {
+  background: transparent;
+  border-left: 1px solid var(--ui-line);
+  border-radius: 0;
+  color: var(--ui-tx-2);
+}
+.fr-delta,
+.fr-delta.pos,
+.fr-delta.neg { background: transparent; }
+.fr-delta.pos { color: var(--ui-ok); }
+.fr-delta.neg { color: var(--ui-bad); }
+.fr-key { border-color: var(--ui-line-2); border-radius: var(--ui-r-sm); }
+.fr-class { border-radius: var(--ui-r-md); }
+
+/* Distance-to-checkpoint box: the panel surface like everything else. */
+.cp-chip {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+}
+.cp-track-fill { background: rgba(var(--color-primary-rgb), 0.55); border-right: 0; }
+
+/* Flat checkpoint pill: replaced by the in-world DUI pill (spz-races
+   client/cp_pill3d.lua). Never drawn flat, whatever the config says. */
+.cp-wp { display: none !important; }
+
+/* Finish countdown: urgency is the red number, not a pulsing halo. */
+.finish-window.urgent { animation: none; border-color: var(--ui-line); }
+.finish-window.urgent .fw-time { color: var(--ui-bad); }

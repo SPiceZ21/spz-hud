@@ -27,6 +27,8 @@ const ROOT = join(HUD, '..')
 const PUBLIC = join(HUD, 'web', 'public')
 const OUT = join(PUBLIC, 'apps')
 const SHARED = join(PUBLIC, 'shared', 'fonts')
+const DESIGN_SRC = join(HUD, 'design')
+const DESIGN_OUT = join(PUBLIC, 'shared', 'design')
 
 // z: stacking order when nothing has focus (the focused app always goes on top).
 // HUD overlays sit low, menus high, the spawn screen above everything.
@@ -119,6 +121,11 @@ function syncOne({ res }) {
     let next = text.replace(CROSS, (_, other) => { rewrites++; return `../${other}/` })
     if (p === join(out, 'index.html')) {
       next = next.replace(/<head[^>]*>/i, m => `${m}\n    ${NAME_SHIM(res)}`)
+      // The shared look goes LAST in <head>, after the app's own stylesheets,
+      // so it wins (design/spz-ui.css, then design/apps/<resource>.css).
+      const perApp = existsSync(join(DESIGN_SRC, 'apps', `${res}.css`))
+        ? `\n    <link rel="stylesheet" href="../../shared/design/apps/${res}.css">` : ''
+      next = next.replace(/<\/head>/i, `    <link rel="stylesheet" href="../../shared/design/spz-ui.css">${perApp}\n  </head>`)
     }
     if (next !== text) writeFileSync(p, next)
   })
@@ -191,6 +198,15 @@ function dedupeFonts() {
   console.log(`shared fonts: ${new Set(moved.values()).size} file(s), ${refs} reference(s) rewritten, ${(saved / 1e6).toFixed(1)} MB saved`)
 }
 
+// design/ → web/public/shared/design (the look every app links last).
+function copyDesign() {
+  rmSync(DESIGN_OUT, { recursive: true, force: true })
+  cpSync(DESIGN_SRC, DESIGN_OUT, { recursive: true })
+  console.log('copied design/ to shared/design')
+}
+
+if (process.argv.includes('--design')) { copyDesign(); process.exit(0) }
+
 const only = process.argv.slice(2)
 const list = only.length ? APPS.filter(a => only.includes(a.res)) : APPS
 mkdirSync(OUT, { recursive: true })
@@ -198,6 +214,7 @@ console.log(`syncing ${list.length} app(s) into apps/`)
 for (const a of list) syncOne(a)
 
 dedupeFonts()
+copyDesign()
 
 writeFileSync(join(OUT, 'apps.json'), JSON.stringify(APPS.map(a => ({ res: a.res, z: a.z, ...(LAYOUT[a.res] || {}) })), null, 2))
 console.log('wrote apps/apps.json')

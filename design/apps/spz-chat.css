@@ -1,0 +1,6 @@
+/* spz-chat on the shared look. */
+.line .tag { border-radius: var(--ui-r-sm); background: transparent; border: 1px solid var(--ui-line); }
+.chip { border-radius: var(--ui-r-md); }
+.chip.active { background: var(--ui-raised); }
+.dock.open .launcher { box-shadow: none; }
+.line .gif { border-radius: var(--ui-r-md); }

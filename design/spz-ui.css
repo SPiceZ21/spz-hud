@@ -1,0 +1,137 @@
+/* design/spz-ui.css: the one SPiceZ look, laid over every hosted app.
+ *
+ * sync-apps links this as the LAST stylesheet of each app (then
+ * design/apps/<resource>.css if there is one), so it wins without the
+ * apps' own CSS changing.
+ *
+ * Rules
+ *   - One surface. A panel has a background; what sits inside it does not.
+ *     Rows, chips and cells separate with a hairline or spacing, never with a
+ *     second box.
+ *   - No accent bars. No coloured stripe down a side or across a top to say
+ *     "this is important". The accent colour marks text, numbers and the
+ *     one control that matters, and nothing else.
+ *   - Flat. No gradients on panels, no glass blur, no glow halos.
+ *   - Small radii (4 / 6 / 8 px), hairline borders, compact spacing.
+ *   - Two typefaces: Panchang for display (titles, numbers, labels in caps),
+ *     Inter (falling back to the system UI font) for running text. A
+ *     monospace only where digits must line up.
+ *   - The accent is the theme's primary colour (spz-core pushes it at runtime
+ *     as inline style, which still wins over this file). There is no second
+ *     accent colour.
+ */
+
+/* ── Tokens ─────────────────────────────────────────────────────────────── */
+:root:root {
+  --ui-display: 'Panchang', 'Segoe UI', system-ui, sans-serif;
+  --ui-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --ui-mono: 'JetBrains Mono', Consolas, ui-monospace, monospace;
+
+  --ui-surface: rgba(9, 10, 12, 0.88);       /* the one panel background */
+  --ui-surface-solid: #0b0c0e;              /* full-screen menus */
+  --ui-raised: rgba(255, 255, 255, 0.04);    /* hover / selected row, not a box */
+  --ui-line: rgba(255, 255, 255, 0.08);
+  --ui-line-2: rgba(255, 255, 255, 0.14);
+
+  --ui-tx-1: #f4f4f5;
+  --ui-tx-2: #a1a1aa;
+  --ui-tx-3: #71717a;
+  --ui-tx-4: #52525b;
+
+  --ui-ok: #22c55e;
+  --ui-bad: #ff4d4d;
+  --ui-warn: #f5b942;
+  --ui-best: #b07cff;          /* the one exception: "fastest" (sector / lap purple), a racing convention */
+
+  --ui-r-sm: 4px;
+  --ui-r-md: 6px;
+  --ui-r-lg: 8px;
+
+  /* ── Every app's own names, pointed at the tokens ── */
+
+  /* type */
+  --font-display: var(--ui-display);
+  --font-disp: var(--ui-display);
+  --font-primary: var(--ui-display);
+  --font-branding: var(--ui-display);
+  --font: var(--ui-display);
+  --f1: var(--ui-display);
+  --font-main: var(--ui-body);
+  --font-secondary: var(--ui-body);
+  --font-2: var(--ui-body);
+  --f2: var(--ui-body);
+  --body: var(--ui-body);
+  --font-mono: var(--ui-mono);
+
+  /* radii */
+  --r-sm: var(--ui-r-sm);
+  --r-md: var(--ui-r-md);
+  --r-lg: var(--ui-r-lg);
+  --radius-sm: var(--ui-r-sm);
+  --radius-md: var(--ui-r-md);
+  --radius-lg: var(--ui-r-lg);
+  --radius-xl: var(--ui-r-lg);
+  --island-r: var(--ui-r-lg);
+
+  /* surfaces and lines */
+  --bg: var(--ui-surface-solid);
+  --bg-side: var(--ui-surface-solid);
+  --bg-card: rgba(255, 255, 255, 0.025);
+  --bg-card-2: rgba(255, 255, 255, 0.04);
+  --bg-2: rgba(255, 255, 255, 0.04);
+  --bg2: rgba(255, 255, 255, 0.025);
+  --bg3: rgba(255, 255, 255, 0.04);
+  --bg4: rgba(255, 255, 255, 0.06);
+  --glass-bg: var(--ui-surface);
+  --island: var(--ui-surface);
+  --island-soft: var(--ui-surface);
+  --island-edge: var(--ui-line);
+  --island-hi: transparent;
+  --island-shadow: none;
+  --mod-bg: var(--ui-surface);
+  --mod-border: var(--ui-line);
+  --tile: var(--ui-surface);
+  --line: var(--ui-line);
+  --line-2: var(--ui-line-2);
+  --shadow-lg: none;
+  --accent-glow: transparent;
+  --orange-glow: transparent;
+
+  /* text */
+  --tx-1: var(--ui-tx-1);
+  --tx-2: var(--ui-tx-2);
+  --tx-3: var(--ui-tx-3);
+  --tx-4: var(--ui-tx-4);
+
+  /* status */
+  --ok: var(--ui-ok);
+  --green: var(--ui-ok);
+  --color-success: var(--ui-ok);
+  --bad: var(--ui-bad);
+  --red: var(--ui-bad);
+  --danger: var(--ui-bad);
+  --color-danger: var(--ui-bad);
+  --warn: var(--ui-warn);
+  --gold: var(--ui-warn);
+  --color-warning: var(--ui-warn);
+
+  /* one accent: the old purple / second accents follow the primary */
+  --color-secondary: var(--color-primary, #ff6200);
+  --accent-2: var(--accent, #ff6200);
+}
+
+/* ── Global rules ───────────────────────────────────────────────────────── */
+
+/* Flat: no glass. (Blur also costs real frame time in the game's browser.) */
+*, *::before, *::after {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Thin, quiet scrollbars everywhere. */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ui-line-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.24); }
+
+::selection { background: rgba(var(--color-primary-rgb, 255, 98, 0), 0.35); }
