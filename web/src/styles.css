@@ -130,7 +130,7 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
 .dsp-unit { color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
 .dsp-bar {
   position: relative;
-  height: 9px;
+  height: 14px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.06);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
