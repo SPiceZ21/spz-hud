@@ -67,3 +67,19 @@
 .versus { background: transparent; border: 1px solid var(--ui-line); border-radius: var(--ui-r-lg); }
 .feed-row > i { display: none !important; }   /* no side stripe */
 .heat-cell.l4 { box-shadow: none; }
+
+/* ── Rank-up moment: the badge art stays, everything around it follows the
+   flourish (shared small-caps caption, bold value, no glows). ── */
+.rankup-stage video { filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.6)); }   /* no tier-coloured halo */
+.rankup-kicker {
+  font-family: var(--ui-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--ui-tx-2);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+.rk-from, .rk-to { font-family: var(--ui-display); letter-spacing: 0.02em; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55); }
+.rk-from { color: var(--ui-tx-3); }
+.rk-to img { filter: none; }
+.rk-arrow i { border-color: var(--ui-tx-3) !important; border-width: 2px 2px 0 0 !important; }
