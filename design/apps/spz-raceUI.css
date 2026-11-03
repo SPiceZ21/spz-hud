@@ -194,24 +194,65 @@
 .rt-levelup { color: var(--color-primary); display: flex; align-items: center; padding: 0 14px; }
 .rt-progress { border-radius: 0; }
 
-/* ── Countdown: the number and the lamps, nothing else ── */
-.cd-streaks { display: none !important; }
-.cd-vignette, .cd.is-go .cd-vignette { background: rgba(0, 0, 0, 0.35) !important; }
-.cd-num, .cd.is-go .cd-num { text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important; }
-.cd-track { text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7); }
-.cd-chip, .cd-chip.cd-class {
-  background: var(--ui-surface);
-  border: 1px solid var(--ui-line);
-  border-radius: var(--ui-r-sm);
-}
-.cd-chip.cd-class { color: var(--color-primary); }
-.cd-tree, .cd-grid {
+/* ── Countdown ──
+   Same parts as the warmup panel and results strip:
+     [ TRACK │ CLASS A │ 3 LAPS ]     one strip, hairline cells
+                3                    the number, alone
+          ▬ ▬ ▬ ▬ ▬                  one row of five lights (was two towers)
+            [ GRID  P4 / 12 ]        a matching strip                      */
+.cd-streaks, .cd-tree-r { display: none !important; }
+.cd-vignette, .cd.is-go .cd-vignette { background: rgba(0, 0, 0, 0.30) !important; }
+.cd-stage { gap: 14px; }
+
+/* Meta strip */
+.cd-meta {
+  gap: 0;
   background: var(--ui-surface);
   border: 1px solid var(--ui-line);
   border-radius: var(--ui-r-lg);
+  overflow: hidden;
 }
-.cd-lamp { box-shadow: none; }
-.cd-lamp.lit { box-shadow: none; }
+.cd-meta > * { padding: 9px 16px; }
+.cd-track { font-size: 15px; letter-spacing: 0.12em; text-shadow: none; }
+.cd-chip, .cd-chip.cd-class {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--ui-line);
+  border-radius: 0;
+  color: var(--ui-tx-2);
+}
+.cd-chip.cd-class { color: var(--color-primary); }
+
+/* Number above, lights below */
+.cd-main { flex-direction: column; gap: 16px; }
+.cd-numwrap { min-height: 0; }
+.cd-num, .cd.is-go .cd-num { font-size: 168px; text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important; }
+.cd-tree {
+  order: 2;
+  flex-direction: row;              /* lamps are listed last-first, so they fill from the left */
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.cd-lamp, .cd-lamp.lit {
+  width: 46px;
+  height: 6px;
+  border-radius: 2px;
+  box-shadow: none;
+  background: var(--ui-line-2);
+}
+.cd-lamp.lit { background: var(--color-primary); }
+
+/* Grid strip */
+.cd-grid {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  padding: 7px 16px;
+}
 
 /* ── Intro card ── */
 .rb-bar::after { display: none !important; }          /* glowing edge line */
