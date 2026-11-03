@@ -30,3 +30,115 @@
   border: 1px solid var(--ui-line-2);
 }
 .badge, .pv-tags span.mod { color: var(--accent); border-color: var(--accent); background: var(--ui-surface); }
+
+/* ════ Layout: a left-docked panel, built like the emote menu ════
+   The three columns (categories | grid | preview) are flattened with
+   display: contents, and their pieces re-stacked in one column:
+
+     GARAGE · 3 vehicles               ×
+     [ search ]
+     [All] [Mods] [Sports] [Super] …         category tabs
+     ┌ card ┐ ┌ card ┐                      two-column grid, scrolls
+     [ e.g. sultan        → ]              spawn by model
+     Truffade Adder · adder     [ Spawn ]  footer
+*/
+.app {
+  inset: 118px auto 118px 24px !important;      /* left side, emote panel's height */
+  margin: 0 !important;
+  width: 440px !important;
+  height: auto !important;
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  grid-template-rows: auto auto auto 1fr auto auto !important;
+  grid-template-areas:
+    "brand x"
+    "search search"
+    "cats cats"
+    "grid grid"
+    "model model"
+    "pv spawn" !important;
+}
+.side, .main, .top, .preview { display: contents !important; }
+
+/* Header */
+.brand { grid-area: brand; padding: 16px 18px 12px; border-bottom: 1px solid var(--ui-line); }
+.brand-t { font-size: 15px; }
+/* Close: a plain icon in the header row, like the emote menu's (no circle) */
+#x {
+  grid-area: x;
+  align-self: stretch;
+  width: auto; height: auto;
+  padding: 0 18px;
+  border: 0; border-bottom: 1px solid var(--ui-line);
+  border-radius: 0 var(--ui-r-lg) 0 0;
+  background: transparent;
+}
+#x:hover { background: var(--ui-raised); }
+.top > div:first-child { display: none !important; }    /* "All vehicles": the active tab says it */
+
+/* Search */
+.search { grid-area: search; padding: 12px 18px 0; width: auto; }
+.search input { width: 100%; background: transparent; }
+.search i { left: 31px; top: calc(50% + 6px); }
+
+/* Category tabs, as the emote menu's */
+#cats {
+  grid-area: cats;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 10px 18px 12px;
+  border-bottom: 1px solid var(--ui-line);
+  overflow: visible;
+}
+#cats .h, #cats .sep { display: none !important; }
+#cats .cat {
+  width: auto;
+  padding: 5px 10px;
+  gap: 6px;
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-md);
+  background: transparent;
+  font-family: var(--ui-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ui-tx-2);
+}
+#cats .cat i { display: none; }
+#cats .cat span { flex: none; }
+#cats .cat b { margin-left: 2px; padding: 0; min-width: 0; font-size: 11px; }
+#cats .cat.on { border-color: var(--accent); color: var(--accent); background: var(--ui-raised); }
+
+/* Cards: two columns, compact */
+.grid {
+  grid-area: grid;
+  min-height: 0;
+  padding: 12px 18px;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+.pic { height: 104px !important; }
+.pic img { max-height: 92px; }
+.info { padding: 8px 10px 9px; }
+.nm { font-size: 12.5px; font-family: var(--ui-body); font-weight: 600; }   /* as the emote cards */
+.md { font-size: 10.5px; }
+.cls, .badge { font-size: 9px; padding: 2px 6px; top: 6px; }
+
+/* Spawn by model */
+.by-model { grid-area: model; padding: 10px 18px; border-top: 1px solid var(--ui-line); }
+.by-model .h { display: none; }
+
+/* Footer: the picked car + Spawn */
+#pv-pic, .pv-tags, .pv-hint, .side-foot { display: none !important; }
+.pv-body { grid-area: pv; padding: 12px 0 12px 18px; border-top: 1px solid var(--ui-line); min-width: 0; }
+.pv-name { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pv-model { font-size: 11px; }
+.pv-spawn {
+  grid-area: spawn;
+  align-self: stretch;
+  margin: 0;
+  padding: 0 20px;
+  border-top: 1px solid var(--ui-line);
+  border-radius: 0 0 var(--ui-r-lg) 0 !important;
+}
