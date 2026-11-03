@@ -52,8 +52,10 @@ export function toApp(res: string, msg: unknown) {
   else s.queue.push(msg)
 }
 
-let reloadHook: (res: string) => void = () => {}
-export const reloadApp = (res: string) => reloadHook(res)
+let reloadHook: (res: string, mock?: boolean) => void = () => {}
+/** Reload an app's layer. mock = browser preview only: load it as a plain page
+ *  so it runs its own mock mode (see NAME_SHIM in tools/sync-apps.mjs). */
+export const reloadApp = (res: string, mock?: boolean) => reloadHook(res, mock)
 
 // ── Placement of movable apps ───────────────────────────────────────────────
 
@@ -134,6 +136,7 @@ const SETTLE_MS = 150
 export function AppHost({ focus, onApps }: { focus: string | null; onApps?: (a: AppEntry[]) => void }) {
   const [apps, setApps] = useState<AppEntry[]>([])
   const [gen, setGen] = useState<Record<string, number>>({})
+  const [mocked, setMocked] = useState<Record<string, boolean>>({})
   const focusRef = useRef(focus)
 
   useEffect(() => {
@@ -141,10 +144,11 @@ export function AppHost({ focus, onApps }: { focus: string | null; onApps?: (a: 
       .then(r => r.json())
       .then((list: AppEntry[]) => { setApps(list); onApps?.(list) })
       .catch(() => setApps([]))
-    reloadHook = res => {
+    reloadHook = (res, mock) => {
       const s = slot(res)
       s.ready = false
       s.queue = []
+      setMocked(m => ({ ...m, [res]: !!mock }))
       setGen(g => ({ ...g, [res]: (g[res] || 0) + 1 }))
     }
   }, [])
@@ -179,7 +183,7 @@ export function AppHost({ focus, onApps }: { focus: string | null; onApps?: (a: 
           data-app={a.res}
           data-focus={focus === a.res}
           style={{ zIndex: focus === a.res ? 1000 : a.z }}
-          src={`./apps/${a.res}/index.html`}
+          src={`./apps/${a.res}/index.html${mocked[a.res] ? '?spzmock=1' : ''}`}
           ref={el => { slot(a.res).frame = el }}
           onLoad={() => onLoad(a.res)}
           allow="autoplay"

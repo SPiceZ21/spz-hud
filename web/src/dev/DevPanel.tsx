@@ -6,6 +6,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { clearLog, getLog, getStubs, log, onLog, setStub, type LogEntry } from './devlog'
 import { BOOT, CLEAR, EVENTS, SCENARIOS, type Msg } from './scenarios'
+import { DEMOS } from './demos'
 import './dev.css'
 
 interface AppEntry { res: string; z: number }
@@ -160,6 +161,30 @@ export function DevPanel() {
 
   const toggleFocus = (res: string) => send({ type: 'focus', owner: focus === res ? null : res })
 
+  // Click an app: show it with sample data (its own mock mode, or its open
+  // messages), giving a menu the mouse and keyboard. Click again to close it.
+  const [shown, setShown] = useState<Record<string, boolean>>({})
+  const toggleDemo = (res: string) => {
+    setApp(res)
+    const d = DEMOS[res]
+    if (!d) return
+    const on = !shown[res]
+    setShown(x => ({ ...x, [res]: on }))
+    if (on) {
+      if (d.mock) {
+        send({ type: 'appReload', app: res, mock: true })
+        // Pages gated on the loading screen (raceUI, chat) start hidden again.
+        BOOT.filter(b => b.app === res).forEach(sendMsg)
+      }
+      else { BOOT.forEach(sendMsg); (d.open ?? []).forEach(msg => { send({ type: 'app', app: res, msg }); log('out', res, 'open', msg) }) }
+      if (d.focus) send({ type: 'focus', owner: res })
+    } else {
+      if (d.mock) send({ type: 'appReload', app: res, mock: false })
+      else (d.close ?? []).forEach(msg => send({ type: 'app', app: res, msg }))
+      if (focus === res) send({ type: 'focus', owner: null })
+    }
+  }
+
   const saveStub = () => {
     if (!stubKey.trim()) return
     if (!stubText.trim()) { setStub(stubKey.trim(), undefined); setStubText(''); return }
@@ -223,11 +248,11 @@ export function DevPanel() {
       )}
 
       <section class="dev-apps">
-        <label>Apps <span class="dev-muted">— click to select · ◉ gives it focus (mouse + keys)</span></label>
+        <label>Apps <span class="dev-muted">— click to show / hide with sample data · ○ focus (mouse + keys)</span></label>
         <div class="dev-applist">
           {apps.map(a => (
-            <div class="dev-app" data-sel={app === a.res} data-focus={focus === a.res}>
-              <button class="dev-app-name" onClick={() => setApp(a.res)}>{a.res.replace(/^spz-/, '')}</button>
+            <div class="dev-app" data-sel={app === a.res} data-focus={focus === a.res} data-shown={!!shown[a.res]}>
+              <button class="dev-app-name" title="Show / hide with sample data" onClick={() => toggleDemo(a.res)}>{a.res.replace(/^spz-/, '')}</button>
               <button class="dev-app-focus" title="Give focus" onClick={() => toggleFocus(a.res)}>{focus === a.res ? '◉' : '○'}</button>
             </div>
           ))}

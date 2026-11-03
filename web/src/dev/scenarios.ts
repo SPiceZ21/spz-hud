@@ -275,7 +275,7 @@ export const EVENTS: { label: string; msgs: Msg[] }[] = [
     { app: 'spz-chat', msg: { action: 'message', payload: { channel: 'global', from: 'DRIFT_KING', crewTag: 'APX', text: 'gg, see you on the next one' } } },
     { app: 'spz-chat', msg: { action: 'message', payload: { channel: 'crew', from: 'SHADOW_GRID', crewTag: 'NR', text: 'nice line through T3' } } },
   ] },
-  { label: 'Radio track', msgs: [{ app: 'spz-radio', msg: { action: 'nowPlaying', data: { title: 'Midnight Run', artist: 'Neon Drive', listeners: 14 } } }] },
+  { label: 'Radio track', msgs: [{ app: 'spz-radio', msg: { action: 'nowPlaying', data: { mix: { title: 'Midnight Run', artist: 'Neon Drive', listeners: 14 } } } }] },
   { label: 'Minigame 3·2·1', msgs: [{ app: 'spz-minigames', msg: { hud: 'flash', d: { text: '3', color: 'accent', ms: 900 } } }] },
   { label: 'Minigame result', msgs: [{ app: 'spz-minigames', msg: { hud: 'shard', d: { kicker: 'ROUND 2', title: 'YOU SURVIVED', sub: '+250 credits', color: 'ok', ms: 4000 } } }] },
 ]

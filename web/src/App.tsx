@@ -136,7 +136,7 @@ export function App() {
           if (typeof m.snap === 'number') setSnap(m.snap)
           break
         case 'app':       toApp(m.app, m.msg); break
-        case 'appReload': reloadApp(m.app); break
+        case 'appReload': reloadApp(m.app, !inGame && m.mock === true); break
         case 'focus':     setFocus(m.owner ?? null); break
         case 'data':    publish(m.id, m.data); break
         case 'state':   setState(m.state); break

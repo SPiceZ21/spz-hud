@@ -47,3 +47,5 @@
 
 .dev-ev { font-size: 11px; padding: 3px 7px !important; }
 .dev-ev:active { background: #ff6200 !important; color: #000; }
+.dev-app[data-shown='true'] .dev-app-name { color: #ff9a3c; font-weight: 700; }
+.dev-app[data-shown='true'] .dev-app-name::before { content: '● '; }

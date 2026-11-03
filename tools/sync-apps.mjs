@@ -80,12 +80,15 @@ function sourceOf(res) {
 
 const NAME_SHIM = res =>
   `<script>(function(){var n=${JSON.stringify(res)};` +
-  `try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}` +
+  // ?spzmock=1 (browser preview only, from the dev panel): leave the page
+  // looking like a plain browser so the app runs its OWN mock mode.
+  `var mock=/[?&]spzmock=1/.test(location.search);` +
+  `if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}` +
   `catch(e){window.GetParentResourceName=function(){return n}}` +
   // FiveM gives invokeNative to the top page only. Apps that test it to tell
   // game from browser (spz-spectate) would think they are in a browser here.
   `try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)` +
-  `window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}` +
+  `window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}` +
   // Browser preview only: the HUD page defines __spzDev to catch this app's
   // NUI callbacks before any of its scripts run. Undefined in game.
   `try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>`

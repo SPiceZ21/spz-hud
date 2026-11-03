@@ -69,7 +69,9 @@ The whole HUD runs in the browser with all 19 apps loaded. A control panel sits 
 - **Events:** fire one-off moments on top of the current state: fastest lap (mine or a rival's), split ahead or behind, overtake, lost place, new PB, victory, credits, finish countdown, wanted level, car alongside, countdown GO, rank-up animation, speed camera, chat messages, radio track, minigame 3-2-1 and round result.
 - **HUD:** open layout edit mode, and hide or show the HUD.
 - **Backdrop:** dark, city, checker or green screen, or a screenshot URL so you can judge the UI over the game.
-- **Apps:** click an app to select it. Click ○ to give it focus, which raises it and sends it the mouse and keyboard, the same as SetNuiFocus.
+- **Apps:** click an app's name to show it with sample data, and click again to hide it. A menu also gets the mouse and keyboard. Click ○ to toggle focus on its own.
+  - Twelve apps have a browser mock mode of their own. Their layer is reloaded as a plain page (`?spzmock=1`), so they run that mock mode.
+  - The rest (speedometer, chat, emotes, tuner, replay, tutorial, poll, spawn) get their open messages filled with sample data, from `web/src/dev/demos.ts`.
 - **Send:** filled samples (★, from the scenarios), then a ready-made list of every message the selected resource's Lua sends, read from its `SendNUIMessage` calls by sync-apps and saved as `apps/presets.json`. Pick one, fill in the `null`s, and press Ctrl+Enter. Reload app restarts that layer.
 - **Log:** every message sent, and every NUI callback an app made, with its body.
 - **Callback answers:** choose what a callback returns (`{}` by default), for example `{ "ok": true, "list": [...] }` for a menu that waits for data. Answers are saved in the browser.
