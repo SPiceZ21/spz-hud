@@ -85,7 +85,7 @@ export const LAYOUT = {
 
   'spz-minigames': {
     moves: [
-      { id: 'top',   sel: '#hud .hud-top',   label: 'Minigame status', origin: 'top center' },
+      { id: 'top',   sel: '#hud .hud-top',   label: 'Minigame status', origin: 'top left' },
       { id: 'bot',   sel: '#hud .hud-bot',   label: 'Minigame keys',   origin: 'bottom center' },
       { id: 'board', sel: '#hud .hud-board', label: 'Minigame board',  origin: 'center right' },
     ],
