@@ -232,9 +232,9 @@
 .rb-pip.is-on { box-shadow: none; }
 
 /* Results: the place reads as one mark (2ND), the track name is not cut. */
-.rt-pos { align-items: flex-start !important; justify-content: center; padding: 10px 16px !important; }
+.rt-pos { align-items: center !important; justify-content: center; padding: 0 16px !important; }
 .rt-pos-num { font-style: normal; font-size: 28px; }
-.rt-pos-suffix { font-size: 11px; margin: 2px 0 0 2px; color: #fff; letter-spacing: 0.04em; }
+.rt-pos-suffix { font-size: 11px; margin-left: 2px; position: relative; top: -8px; color: #fff; letter-spacing: 0.04em; }
 .rt-pos.podium-1 .rt-pos-suffix { color: #ffb700; }
 .rt-pos.podium-2 .rt-pos-suffix { color: #cfd6e0; }
 .rt-pos.podium-3 .rt-pos-suffix { color: #e08b4c; }
