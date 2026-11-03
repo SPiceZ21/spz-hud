@@ -23,7 +23,7 @@
   border-radius: 0;
   padding-left: 10px;
 }
-.hud-chip.hot { background: transparent; color: var(--c); }
+.hud-chip.hot { background: transparent; color: var(--c); border-color: var(--ui-line); }
 .hud-ico { border-radius: var(--ui-r-sm); }
 
 /* The alert is the one loud thing: colour in the text and border, no glow. */
@@ -42,3 +42,31 @@
 .hud-row:last-child { border-bottom: 0; }
 .hud-row.me { background: var(--ui-raised); }
 .hud-row.me .nm { color: var(--c); }
+
+/* ── Top stack: ONE panel ──
+   Title strip, status, alert and hint used to be separate boxes of three
+   different widths. Now they are sections of one column: as wide as its
+   widest part, one surface, hairlines between, corners only on the outside.
+   (Centred with margin, not transform: /hudedit places it with `translate`.) */
+.hud-top {
+  width: max-content;
+  min-width: 260px;
+  margin: 0 auto;
+  align-items: stretch;
+  gap: 0;
+}
+.hud-top > * {
+  background: var(--ui-surface) !important;
+  border: 1px solid var(--ui-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.hud-top > * + * { border-top: 0 !important; }
+.hud-top > :first-child { border-radius: var(--ui-r-lg) var(--ui-r-lg) 0 0 !important; }
+.hud-top > :last-child  { border-radius: 0 0 var(--ui-r-lg) var(--ui-r-lg) !important; }
+.hud-top > :only-child  { border-radius: var(--ui-r-lg) !important; }
+
+.hud-strip { justify-content: center; padding: 6px 10px; }
+.hud-status { min-width: 0; padding: 8px 16px 10px; }
+.hud-alert, .hud-hint { text-align: center; padding: 7px 14px; }
+.hud-alert { color: var(--ui-bad); }
