@@ -70,3 +70,6 @@
 .hud-status { min-width: 0; padding: 8px 16px 10px; }
 .hud-alert, .hud-hint { text-align: center; padding: 7px 14px; }
 .hud-alert { color: var(--ui-bad); }
+
+/* Hub header: no decorative icon tile beside the title. */
+.brand-mark { display: none !important; }

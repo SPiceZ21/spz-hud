@@ -3,7 +3,7 @@
 /* Frame: the shared radius scale, no drop shadow */
 .app { border-radius: var(--ui-r-lg); border-color: var(--ui-line); box-shadow: none; background: var(--ui-surface-solid); }
 .side, .preview { background: var(--ui-surface-solid); }
-.brand-mark { border-radius: var(--ui-r-md); box-shadow: none; }
+.brand-mark { display: none !important; }   /* decorative icon tile: the title says what this is */
 
 /* Categories: active = raised row + accent text, no side stripe; counts are numbers */
 .cat { border-radius: var(--ui-r-md); }
