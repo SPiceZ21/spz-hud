@@ -240,3 +240,27 @@
 .rt-pos.podium-3 .rt-pos-suffix { color: #e08b4c; }
 .rt-head { flex-shrink: 0; }
 .rt-track { max-width: 360px; }
+
+/* Flourish (centre moment: PB, overtake, win…): the HUD's type, not a thin
+   light font with wide tracking and an underline. */
+.fl-icon { color: var(--fl-c-accent, var(--color-primary)); filter: none; }
+.fl[style*="--fl-c: #ffffff"] .fl-icon { color: var(--color-primary); }
+.fl-title {
+  font-family: var(--ui-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--ui-tx-2);
+}
+.fl-value {
+  font-family: var(--ui-display);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  color: #fff;
+}
+.fl::after { display: none !important; }   /* the drawn-out underline */
+
+/* Fastest-lap banner tag: the shared label, not monospace. */
+.fl-tag { font-family: var(--ui-display); font-size: 9px; font-weight: 700; letter-spacing: 0.18em; }
