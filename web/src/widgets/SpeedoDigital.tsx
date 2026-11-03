@@ -1,12 +1,14 @@
 // Digital speedometer: the analogue gauge's data (spz-speedometer's `update`
-// messages, relayed here by App) on one panel in the shared look.
+// messages, relayed here by App), as a street-racing readout with no panel.
 //
-//   ┌──────────────────────┐
-//   │ 184           4      │   speed · gear
-//   │ KM/H          GEAR   │
-//   │ ▮▮▮▮▮▮▮▮▮▮▯▯▯▯▯▯     │   revs: 16 segments, the last 3 are the redline
-//   │ LIMITER  LAUNCH      │   only when one is active
-//   └──────────────────────┘
+//                        ▁▂▃▄▅▆▇█    revs: slanted steps that rise toward
+//                                   the redline (last 4 = red)
+//        184 ╱ 4                     speed · gear
+//        KM/H  GEAR
+//        LIMITER                     only while one is active
+//
+// No background: it sits on the game like the race timer, kept legible by a
+// tight shadow on the type.
 import { useWidgetData } from '../core/bus'
 
 export interface SpeedoData {
@@ -19,34 +21,34 @@ export interface SpeedoData {
   tcsCut?: boolean
 }
 
-const SEGMENTS = 16
-const RED_FROM = 13      // segments 14-16 are the redline
+const STEPS = 20
+const RED_FROM = 16      // the last 4 steps are the redline
 
 export function SpeedoDigital({ id }: { id: string }) {
   const d = useWidgetData<SpeedoData | false>(id)
   if (!d) return null
-  const lit = Math.round((Math.max(0, Math.min(100, d.pct || 0)) / 100) * SEGMENTS)
+  const lit = Math.round((Math.max(0, Math.min(100, d.pct || 0)) / 100) * STEPS)
   const flags = [d.limiter && 'Limiter', d.launch && 'Launch', d.tcsCut && 'TCS'].filter(Boolean) as string[]
   return (
-    <div class="dspd" data-red={d.inRedline === true}>
-      <div class="dspd-main">
-        <div class="dspd-cell">
-          <span class="dspd-speed">{Math.max(0, Math.round(d.speed || 0))}</span>
-          <span class="dspd-label">km/h</span>
-        </div>
-        <div class="dspd-cell dspd-gearcell">
-          <span class="dspd-gear">{d.gear === 0 ? 'R' : d.gear}</span>
-          <span class="dspd-label">Gear</span>
-        </div>
-      </div>
-      <div class="dspd-revs">
-        {Array.from({ length: SEGMENTS }, (_, i) => (
-          <i key={i} data-on={i < lit} data-red={i >= RED_FROM} />
+    <div class="nfs" data-red={d.inRedline === true}>
+      <div class="nfs-revs">
+        {Array.from({ length: STEPS }, (_, i) => (
+          <i key={i} data-on={i < lit} data-red={i >= RED_FROM}
+             style={{ height: `${6 + (i / (STEPS - 1)) * 16}px` }} />
         ))}
       </div>
-      {flags.length > 0 && (
-        <div class="dspd-flags">{flags.map(f => <span key={f}>{f}</span>)}</div>
-      )}
+      <div class="nfs-main">
+        <div class="nfs-speedcol">
+          <span class="nfs-speed">{Math.max(0, Math.round(d.speed || 0))}</span>
+          <span class="nfs-label">km/h</span>
+        </div>
+        <i class="nfs-slash" />
+        <div class="nfs-gearcol">
+          <span class="nfs-gear">{d.gear === 0 ? 'R' : d.gear}</span>
+          <span class="nfs-label">Gear</span>
+        </div>
+      </div>
+      {flags.length > 0 && <div class="nfs-flags">{flags.map(f => <span key={f}>{f}</span>)}</div>}
     </div>
   )
 }

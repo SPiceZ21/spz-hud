@@ -81,25 +81,65 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
 .seg button + button { border-left: 1px solid var(--edge); }
 .seg button[data-on='true'] { color: var(--color-primary); background: rgba(255, 255, 255, 0.04); }
 
-/* ── Digital speedometer (widgets/SpeedoDigital.tsx) ── */
-.dspd {
-  width: 212px;
-  background: rgba(9, 10, 12, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  overflow: hidden;
+/* ── Digital speedometer (widgets/SpeedoDigital.tsx) ──
+   Street-racing readout, no panel: slanted rising rev steps, big italic
+   numerals, a slash between speed and gear. A tight shadow keeps it legible. */
+.nfs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
   font-family: 'Panchang', var(--font);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.85));
 }
-.dspd-main { display: grid; grid-template-columns: 1fr auto; }
-.dspd-cell { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px 8px; }
-.dspd-gearcell { border-left: 1px solid rgba(255, 255, 255, 0.08); align-items: center; min-width: 64px; }
-.dspd-speed { font-size: 38px; font-weight: 800; line-height: 1; color: #f4f4f5; font-variant-numeric: tabular-nums; }
-.dspd-gear { font-size: 30px; font-weight: 800; line-height: 1.1; color: var(--color-primary); }
-.dspd-label { font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #71717a; }
-.dspd-revs { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; padding: 8px 14px 11px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-.dspd-revs i { height: 7px; border-radius: 1px; background: rgba(255, 255, 255, 0.10); }
-.dspd-revs i[data-on='true'] { background: var(--color-primary); }
-.dspd-revs i[data-on='true'][data-red='true'],
-.dspd[data-red='true'] .dspd-revs i[data-on='true'] { background: #ff4d4d; }
-.dspd-flags { display: flex; gap: 6px; padding: 0 14px 10px; }
-.dspd-flags span { font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #f5b942; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 4px; padding: 2px 6px; }
+.nfs-revs { display: flex; align-items: flex-end; gap: 3px; padding-right: 6px; }
+.nfs-revs i {
+  width: 9px;
+  transform: skewX(-20deg);
+  background: rgba(255, 255, 255, 0.16);
+}
+.nfs-revs i[data-on='true'] { background: #f4f4f5; }
+.nfs-revs i[data-on='true'][data-red='true'],
+.nfs[data-red='true'] .nfs-revs i[data-on='true'] { background: #ff4d4d; }
+
+.nfs-main { display: flex; align-items: flex-end; gap: 10px; }
+.nfs-speedcol, .nfs-gearcol { display: flex; flex-direction: column; align-items: flex-end; line-height: 1; }
+.nfs-gearcol { align-items: flex-start; }
+.nfs-speed {
+  font-size: 64px;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.nfs-gear {
+  font-size: 40px;
+  font-weight: 800;
+  font-style: italic;
+  color: var(--color-primary);
+}
+.nfs-slash {
+  align-self: stretch;
+  width: 2px;
+  margin: 8px 2px 4px;
+  background: rgba(255, 255, 255, 0.35);
+  transform: skewX(-20deg);
+}
+.nfs-label {
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+.nfs-flags { display: flex; gap: 8px; }
+.nfs-flags span {
+  font-size: 10px;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f5b942;
+}
