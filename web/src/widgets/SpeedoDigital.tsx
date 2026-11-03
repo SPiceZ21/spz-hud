@@ -5,7 +5,8 @@
 //              TCS          assists, lit only while active
 //              LCH
 //              LIM
-//    |||||||||||||||░░░░░▇▇   rev ticks; the red block at the end is the redline
+//    [=========>      ▒▒]   rev bar like the race HUD's checkpoint bar: a glowing
+//                            gradient fill; the tinted end is the redline
 //
 // No background: it sits on the game like the race timer, kept legible by a
 // tight shadow on the type.
@@ -21,15 +22,14 @@ export interface SpeedoData {
   tcsCut?: boolean
 }
 
-const TICKS = 44
-const RED_FROM = 38      // the last 6 ticks are the redline block
+const RED_FROM = 86      // % of the bar where the redline zone starts
 
 export function SpeedoDigital({ id }: { id: string }) {
   const d = useWidgetData<SpeedoData | false>(id)
   if (!d) return null
   const speed = String(Math.max(0, Math.min(999, Math.round(d.speed || 0))))
   const lead = '000'.slice(speed.length)          // the dimmed zeros in front
-  const lit = Math.round((Math.max(0, Math.min(100, d.pct || 0)) / 100) * TICKS)
+  const pct = Math.max(0, Math.min(100, d.pct || 0))
   const gear = d.gear === 0 ? 'R' : String(d.gear)
   return (
     <div class="dsp" data-red={d.inRedline === true}>
@@ -43,10 +43,9 @@ export function SpeedoDigital({ id }: { id: string }) {
           <span data-on={d.limiter === true}>LIM</span>
         </div>
       </div>
-      <div class="dsp-revs">
-        {Array.from({ length: TICKS }, (_, i) => (
-          <i key={i} data-on={i < lit} data-red={i >= RED_FROM} />
-        ))}
+      <div class="dsp-bar" style={{ '--red-from': `${RED_FROM}%` } as any}>
+        <i class="dsp-bar-zone" />
+        <i class="dsp-bar-fill" style={{ width: `${pct}%` }} />
       </div>
     </div>
   )

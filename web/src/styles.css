@@ -129,9 +129,34 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
 }
 .dsp-side span[data-on='true'] { color: #f5b942; }
 .dsp-unit { color: rgba(255, 255, 255, 0.7); text-transform: uppercase; margin-bottom: 4px; }
-.dsp-revs { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
-.dsp-revs i { flex: 1; height: 100%; background: rgba(255, 255, 255, 0.18); }
-.dsp-revs i[data-on='true'] { background: #f4f4f5; }
-.dsp-revs i[data-red='true'] { background: rgba(255, 77, 77, 0.45); margin-left: -2px; }
-.dsp-revs i[data-red='true'][data-on='true'],
-.dsp[data-red='true'] .dsp-revs i[data-on='true'] { background: #ff4d4d; }
+.dsp-bar {
+  position: relative;
+  height: 9px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+}
+/* The redline stretch of the track */
+.dsp-bar-zone {
+  position: absolute;
+  top: 0; bottom: 0; right: 0;
+  left: var(--red-from);
+  border-radius: 0 4px 4px 0;
+  background: rgba(255, 77, 77, 0.22);
+}
+/* The fill: brightens toward its leading edge and glows (like the race HUD's
+   checkpoint bar, with a soft gradient glow under it) */
+.dsp-bar-fill {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(var(--color-primary-rgb, 255, 98, 0), 0.25), var(--color-primary));
+  box-shadow:
+    0 0 10px rgba(var(--color-primary-rgb, 255, 98, 0), 0.55),
+    0 0 22px rgba(var(--color-primary-rgb, 255, 98, 0), 0.25);
+  transition: width 70ms linear, background 120ms linear, box-shadow 120ms linear;
+}
+.dsp[data-red='true'] .dsp-bar-fill {
+  background: linear-gradient(90deg, rgba(255, 77, 77, 0.3), #ff4d4d);
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.65), 0 0 22px rgba(255, 77, 77, 0.3);
+}
