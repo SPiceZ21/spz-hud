@@ -117,7 +117,7 @@ The edit toolbar also holds the player's HUD settings. They are saved with the l
 
 - **Speedometer: Analogue / Digital.**
   - **Analogue** is spz-speedometer's own gauge.
-  - **Digital** is a spz-hud widget (`speedo_digital`, `web/src/widgets/SpeedoDigital.tsx`), a street-racing readout with no panel: a staircase of slanted rev steps (the last four are the redline), big italic speed and gear, and limiter/launch/TCS tags when they are active.
+  - **Digital** is a spz-hud widget (`speedo_digital`, `web/src/widgets/SpeedoDigital.tsx`), a slim racing readout with no panel: the gear in a ring, light italic speed digits with the leading zeros dimmed, TCS/LCH/LIM labels that light while active, and a fine tick rev bar ending in the redline block.
   - Both read the same `update` messages from spz-speedometer, which spz-hud relays, so no Lua changes are needed.
   - Exactly one shows at a time, and each one is placed separately.
 

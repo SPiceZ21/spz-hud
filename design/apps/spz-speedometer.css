@@ -30,3 +30,9 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
+
+/* Slim numerals: the dial numbers and the readout in Panchang's light weights */
+.nums text { font-weight: 300 !important; }
+.readout .t-speed { font-weight: 200 !important; font-style: italic; }
+.readout .t-gear { font-weight: 400 !important; }
+.readout .t-rpm, .readout .t-rpmx, .readout .t-unit { font-weight: 500 !important; }
