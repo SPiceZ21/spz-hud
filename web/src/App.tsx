@@ -4,6 +4,7 @@ import { post, inGame } from './core/nui'
 import { ANCHOR_SHIFT, type GameState, type Layout, type Placement, type WidgetDef } from './core/types'
 import { WIDGETS } from './widgets'
 import { AppHost, toApp, reloadApp } from './core/apps'
+import type { FunctionComponent } from 'preact'
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n))
 
@@ -101,6 +102,9 @@ export function App() {
   const [editing, setEditing] = useState(false)
   const [snap, setSnap] = useState(0.5)
   const [focus, setFocus] = useState<string | null>(null)
+  // Browser preview: the dev panel, loaded as its own chunk (never in game).
+  const [Dev, setDev] = useState<FunctionComponent | null>(null)
+  useEffect(() => { if (!inGame) import('./dev/DevPanel').then(m => setDev(() => m.DevPanel)) }, [])
   const sampled = useRef<string[]>([])
   const defsRef = useRef(defs)
   defsRef.current = defs
@@ -177,6 +181,7 @@ export function App() {
   return (
     <>
     <AppHost focus={focus} />
+    {Dev && <Dev />}
     <div class="hud" data-hidden={hidden && !editing} data-edit={editing}>
       {editing && <div class="grid" />}
       {visibleDefs.map(d => (

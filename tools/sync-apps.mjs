@@ -77,7 +77,10 @@ function sourceOf(res) {
 const NAME_SHIM = res =>
   `<script>(function(){var n=${JSON.stringify(res)};` +
   `try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}` +
-  `catch(e){window.GetParentResourceName=function(){return n}}})();</script>`
+  `catch(e){window.GetParentResourceName=function(){return n}}` +
+  // Browser preview only: the HUD page defines __spzDev to catch this app's
+  // NUI callbacks before any of its scripts run. Undefined in game.
+  `try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>`
 
 // https://cfx-nui-spz-x/ui/dist/a  or  nui://spz-x/ui/a   →   ../spz-x/a
 const CROSS = /(?:https:\/\/cfx-nui-|nui:\/\/)(spz-[\w-]+)\/ui\/(?:dist\/)?/g
@@ -192,3 +195,49 @@ dedupeFonts()
 
 writeFileSync(join(OUT, 'apps.json'), JSON.stringify(APPS.map(a => ({ res: a.res, z: a.z })), null, 2))
 console.log('wrote apps/apps.json')
+
+// ── Dev presets ──────────────────────────────────────────────────────────────
+// For the browser preview's control panel: every message each resource sends
+// its UI, read from its Lua. The `action` / `type` and any plain values written
+// inline are kept (`{ action = "rankUp", isPromotion = true }`); values that are
+// Lua expressions become null, to be filled in by hand in the panel.
+const SCALAR = /^(?:"([^"]*)"|'([^']*)'|(true|false)|(-?\d+(?:\.\d+)?))$/
+
+function presetsFor(res) {
+  const out = new Map()
+  const client = join(ROOT, res, 'client')
+  if (!existsSync(client)) return []
+  walk(client, p => {
+    if (!p.endsWith('.lua')) return
+    const src = readFileSync(p, 'utf8')
+    for (const m of src.matchAll(/SendNUIMessage\(\s*\{/g)) {
+      // The table literal up to its matching brace (nested tables skipped).
+      let i = m.index + m[0].length, depth = 1, body = ''
+      while (i < src.length && depth > 0) {
+        const c = src[i++]
+        if (c === '{') depth++
+        else if (c === '}') depth--
+        if (depth === 1 && c !== '}') body += c
+        else if (depth === 2 && c === '{') body += '{}'
+      }
+      const msg = {}
+      for (const part of body.split(/,(?![^(]*\))/)) {
+        const kv = part.match(/^\s*([A-Za-z_]\w*)\s*=\s*([\s\S]*?)\s*$/)
+        if (!kv) continue
+        const v = kv[2].replace(/--.*$/gm, '').trim()
+        const s = v.match(SCALAR)
+        msg[kv[1]] = s ? (s[1] ?? s[2] ?? (s[3] ? s[3] === 'true' : Number(s[4]))) : (v === '{}' ? {} : null)
+      }
+      const name = msg.action ?? msg.type
+      if (typeof name !== 'string') continue
+      const key = JSON.stringify(msg)
+      if (!out.has(key)) out.set(key, { label: name, msg })
+    }
+  })
+  return [...out.values()].sort((a, b) => a.label.localeCompare(b.label))
+}
+
+const presets = {}
+for (const a of APPS) presets[a.res] = presetsFor(a.res)
+writeFileSync(join(OUT, 'presets.json'), JSON.stringify(presets, null, 2))
+console.log(`wrote apps/presets.json (${Object.values(presets).reduce((n, l) => n + l.length, 0)} messages)`)

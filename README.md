@@ -40,6 +40,25 @@ cd web && npm run build             # writes ../ui
 - rewrites links into another resource's UI (`https://cfx-nui-spz-x/ui/...`) to that app's copy here;
 - fills in any `public/` asset missing from an old `dist`.
 
+## Browser preview and dev panel
+
+```
+node tools/sync-apps.mjs      # once, and after changing a hosted UI
+cd web && npm run dev         # http://localhost:5173
+```
+
+The whole HUD runs in the browser with all 19 apps loaded. A control panel sits on the right; press `` ` `` to hide or show it.
+
+- **State:** switch between freeroam, race, minigame and spectate.
+- **HUD:** open layout edit mode, and hide or show the HUD.
+- **Backdrop:** dark, city, checker or green screen, or a screenshot URL so you can judge the UI over the game.
+- **Apps:** click an app to select it. Click ○ to give it focus, which raises it and sends it the mouse and keyboard, the same as SetNuiFocus.
+- **Send:** a ready-made list of every message the selected resource's Lua sends, read from its `SendNUIMessage` calls by sync-apps and saved as `apps/presets.json`. Pick one, fill in the `null`s, and press Ctrl+Enter. Reload app restarts that layer.
+- **Log:** every message sent, and every NUI callback an app made, with its body.
+- **Callback answers:** choose what a callback returns (`{}` by default), for example `{ "ok": true, "list": [...] }` for a menu that waits for data. Answers are saved in the browser.
+
+Every action goes through `window.postMessage` in exactly the shape the Lua side sends, so the preview runs the same code paths as the game. The panel is its own chunk and is never loaded in game.
+
 ## Using it from another resource
 
 ```lua
