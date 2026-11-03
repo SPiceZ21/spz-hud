@@ -212,7 +212,7 @@ SCENARIOS.push(
     msgs: [{ app: 'spz-raceUI', msg: { action: 'postRaceStats', data: {
       trackName: 'DOWNTOWN GRAND PRIX', finishTime: '03:42.50', position: 2, bestLap: '01:12.45',
       xpGained: 350, xpNewProgress: 0.78, classPointsGained: 25, cpNewProgress: 0.65,
-      iRatingDelta: 45, safetyRatingDelta: 0.12, level: 24, levelUp: true,
+      iRatingDelta: 45, safetyRatingDelta: 0.12, level: 24, levelUp: true, cleanRace: true, incidents: 0,
     } } }],
   },
   {
