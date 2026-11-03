@@ -44,3 +44,6 @@
 .dev-log-row[data-dir='in'] .dev-dir { color: #5fd3a2; }
 .dev-log-row[data-dir='out'] .dev-dir { color: #ff9a3c; }
 .dev-log-row pre { margin: 2px 0 6px 12px; padding: 6px; background: #05070a; border-radius: 4px; overflow: auto; max-height: 220px; }
+
+.dev-ev { font-size: 11px; padding: 3px 7px !important; }
+.dev-ev:active { background: #ff6200 !important; color: #000; }

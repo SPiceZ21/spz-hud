@@ -56,9 +56,9 @@ local function cleanLayout(layout)
                 scale = clamp(p.scale or 1, 0.5, 2),
                 hidden = p.hidden == true or nil,
             }
-        elseif type(id) == 'string' and id:match('^app:spz%-[%w_%-]+$') then
-            -- A hosted app's main element: x / y are an OFFSET from where the
-            -- app draws it, in % of the screen.
+        elseif type(id) == 'string' and id:match('^app:spz%-[%w_%-]+:[%w_%-]+$') then
+            -- A hosted app's element (app:<resource>:<id>): x / y are an
+            -- OFFSET from where the app draws it, in % of the screen.
             out[id] = {
                 x = clamp(p.x, -100, 100), y = clamp(p.y, -100, 100),
                 scale = clamp(p.scale or 1, 0.5, 2),

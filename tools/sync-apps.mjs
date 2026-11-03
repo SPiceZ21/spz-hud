@@ -19,6 +19,7 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { basename, dirname, extname, join, relative, resolve, sep } from 'node:path'
 import { createHash } from 'node:crypto'
+import { LAYOUT } from './hud-layout.mjs'
 import { fileURLToPath } from 'node:url'
 
 const HUD = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -29,19 +30,10 @@ const SHARED = join(PUBLIC, 'shared', 'fonts')
 
 // z: stacking order when nothing has focus (the focused app always goes on top).
 // HUD overlays sit low, menus high, the spawn screen above everything.
-// move: lets players place the app's main element in /hudedit (see
-// web/src/core/apps.tsx). `sel` must not have a transform of its own.
+// What players can move in /hudedit, per app, is in tools/hud-layout.mjs.
 export const APPS = [
   { res: 'spz-nametag',      z: 10 },
-  { res: 'spz-speedometer',  z: 20, move: {
-      // Placed in /hudedit. Pinned by its bottom-right corner (its CSS anchors it there).
-      sel: '.hud-wrap', label: 'Speedometer', origin: 'bottom right',
-      demo: {
-        on: [{ type: 'show' }, { type: 'update', speed: 184, gear: 4, pct: 72, inRedline: false,
-               shifting: false, limiter: false, launch: false, tcsCut: false, boost: 0, status: {} }],
-        off: [{ type: 'hide' }],
-      },
-    } },
+  { res: 'spz-speedometer',  z: 20 },
   { res: 'spz-speedcam',     z: 25 },
   { res: 'spz-raceUI',       z: 30 },
   { res: 'spz-spectate',     z: 30 },
@@ -207,7 +199,7 @@ for (const a of list) syncOne(a)
 
 dedupeFonts()
 
-writeFileSync(join(OUT, 'apps.json'), JSON.stringify(APPS.map(a => ({ res: a.res, z: a.z, move: a.move })), null, 2))
+writeFileSync(join(OUT, 'apps.json'), JSON.stringify(APPS.map(a => ({ res: a.res, z: a.z, ...(LAYOUT[a.res] || {}) })), null, 2))
 console.log('wrote apps/apps.json')
 
 // ── Dev presets ──────────────────────────────────────────────────────────────

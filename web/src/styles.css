@@ -70,3 +70,4 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
 .hud { z-index: 2000; }
 /* Drag handle over a movable app's element (sized to it, so no transform). */
 .mover { position: fixed; }
+.frame-tag[data-below='true'] { bottom: auto; top: calc(100% + 10px); }

@@ -49,7 +49,8 @@ cd web && npm run dev         # http://localhost:5173
 
 The whole HUD runs in the browser with all 19 apps loaded. A control panel sits on the right; press `` ` `` to hide or show it.
 
-- **State:** each button puts the HUD in a game state and sends that state's HUDs, filled with sample data and a live speedometer: Freeroam, Race · warmup, Race · live, Minigame, Spectate, plus *clear*. The data is in `web/src/dev/scenarios.ts`, built from the apps' own mocks and in the same message format their Lua sends. `?scenario=race` in the URL picks one, and `?panel=0` hides the panel (useful for screenshots).
+- **State:** each button puts the HUD in a game state and sends that state's HUDs, filled with sample data and a live speedometer: Freeroam, Race · warmup, Race · live, Minigame, Spectate, Lobby · queued, Race · intro card, Race · countdown, Race · last lap, Race · results, Time trial and Wanted (cops), plus *clear*. The data is in `web/src/dev/scenarios.ts`, built from the apps' own mocks and in the same message format their Lua sends. `?scenario=race` in the URL picks one, and `?panel=0` hides the panel (useful for screenshots), and `?edit=1` opens layout edit mode.
+- **Events:** fire one-off moments on top of the current state: fastest lap (mine or a rival's), split ahead or behind, overtake, lost place, new PB, victory, credits, finish countdown, wanted level, car alongside, countdown GO, rank-up animation, speed camera, chat messages, radio track, minigame 3-2-1 and round result.
 - **HUD:** open layout edit mode, and hide or show the HUD.
 - **Backdrop:** dark, city, checker or green screen, or a screenshot URL so you can judge the UI over the game.
 - **Apps:** click an app to select it. Click ○ to give it focus, which raises it and sends it the mouse and keyboard, the same as SetNuiFocus.
@@ -94,7 +95,13 @@ Event: `spz-hud:state` (client) fires with the new state.
 
 ## Moving app UIs (/hudedit)
 
-A hosted app whose entry in `tools/sync-apps.mjs` has `move` can be placed like a widget. `move.sel` names the app's main element. The player's offset and scale are applied by a style rule injected into the app's page, so the app's code is untouched. If the element isn't on screen while placing it (on foot), `move.demo` shows it with sample data, then hides it again. **spz-speedometer** is set up this way; add `move` to more apps the same way, using an element that doesn't set its own `transform`.
+Every on-screen HUD element of the hosted apps can be moved, resized and hidden in `/hudedit`. That's 23 elements: speedometer; race standings, sectors, key hints, lap/timer, radar, warmup, finish countdown, lobby, wanted, freeroam profile, fastest lap, flourish; your nametag; minigame status, keys and board; spectate bar and race board; speed camera; Rocket League score; chat; radio now playing.
+
+- The list is in `tools/hud-layout.mjs`: per app, each element's selector, label and scale origin.
+- Each element is saved as `app:<resource>:<id>`, with an offset and scale per player.
+- Placement is applied with the CSS `translate` / `scale` properties, injected into the app's page. These add to an element's own `transform`, so its animations keep working, and the app's code is untouched.
+- If some of an app's elements aren't on screen while you place them (on foot, not in a race), its `demo` messages show them with sample data, and its `off` messages take them down afterwards.
+- Left out on purpose: things that follow the world (checkpoint marker, other players' nametags) and full-screen moments (countdown, intro, results).
 
 ## Layout and build
 

@@ -5,7 +5,7 @@
 // page under it runs exactly the code paths it runs in game.
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { clearLog, getLog, getStubs, log, onLog, setStub, type LogEntry } from './devlog'
-import { BOOT, CLEAR, SCENARIOS, type Msg } from './scenarios'
+import { BOOT, CLEAR, EVENTS, SCENARIOS, type Msg } from './scenarios'
 import './dev.css'
 
 interface AppEntry { res: string; z: number }
@@ -19,23 +19,23 @@ const BACKDROPS: Record<string, string> = {
 }
 
 const send = (m: unknown) => window.postMessage(m, '*')
-const sendApp = (m: Msg) => send({ type: 'app', app: m.app, msg: m.msg })
+const sendMsg = (m: Msg) => send({ type: 'app', app: m.app, msg: m.msg })
 
 // The running scenario's live loop (speedometer); one at a time.
 let tickTimer: ReturnType<typeof setInterval> | null = null
 function runScenario(id: string | null) {
   if (tickTimer) { clearInterval(tickTimer); tickTimer = null }
-  BOOT.forEach(sendApp)
-  CLEAR.forEach(sendApp)
+  BOOT.forEach(sendMsg)
+  CLEAR.forEach(sendMsg)
   const sc = SCENARIOS.find(x => x.id === id)
   if (!sc) { send({ type: 'state', state: 'freeroam' }); return }
   send({ type: 'state', state: sc.state })
   // After the CLEAR has landed, so a hide doesn't follow the show.
   setTimeout(() => {
-    sc.msgs.forEach(sendApp)
+    sc.msgs.forEach(sendMsg)
     if (sc.tick) {
       let t = 0
-      const step = () => { t += 0.05; sc.tick!(t).forEach(sendApp) }
+      const step = () => { t += 0.05; sc.tick!(t).forEach(sendMsg) }
       step()
       tickTimer = setInterval(step, 50)
     }
@@ -113,7 +113,11 @@ export function DevPanel() {
 
   // Run the remembered scenario once the apps have had time to load.
   useEffect(() => {
-    const t = setTimeout(() => runScenario(scenario), 900)
+    const t = setTimeout(() => {
+      runScenario(scenario)
+      // ?edit=1: open layout edit mode on top (handles over every movable element).
+      if (new URLSearchParams(location.search).get('edit') === '1') setTimeout(() => send({ type: 'edit', on: true }), 600)
+    }, 900)
     return () => clearTimeout(t)
   }, [])
   const pickScenario = (id: string | null) => {
@@ -185,6 +189,15 @@ export function DevPanel() {
             <button data-on={scenario === sc.id} title={`state: ${sc.state}`} onClick={() => pickScenario(sc.id)}>{sc.label}</button>
           ))}
           <button data-on={scenario === null} onClick={() => pickScenario(null)}>clear</button>
+        </div>
+      </section>
+
+      <section class="dev-row">
+        <label>Events</label>
+        <div class="dev-seg">
+          {EVENTS.map(ev => (
+            <button class="dev-ev" onClick={() => { BOOT.forEach(sendMsg); ev.msgs.forEach(m => { sendMsg(m); log('out', m.app, String((m.msg as any).action ?? (m.msg as any).type ?? (m.msg as any).hud), m.msg) }) }}>{ev.label}</button>
+          ))}
         </div>
       </section>
 

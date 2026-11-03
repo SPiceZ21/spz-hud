@@ -3,7 +3,7 @@ import { publish, peek } from './core/bus'
 import { post, inGame } from './core/nui'
 import { ANCHOR_SHIFT, type GameState, type Layout, type Placement, type WidgetDef } from './core/types'
 import { WIDGETS } from './widgets'
-import { AppHost, AppMovers, APP_HOME, appKey, placeApp, toApp, reloadApp, type AppEntry } from './core/apps'
+import { AppHost, AppMovers, placeApp, toApp, reloadApp, type AppEntry } from './core/apps'
 import type { FunctionComponent } from 'preact'
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n))
@@ -170,7 +170,7 @@ export function App() {
   // reset layout arrives from Lua).
   const [apps, setApps] = useState<AppEntry[]>([])
   useEffect(() => {
-    for (const a of apps) if (a.move) placeApp(a.res, a.move, layout[appKey(a.res)] ?? APP_HOME)
+    for (const a of apps) if (a.moves) placeApp(a.res, a.moves, layout)
   }, [apps, layout])
 
   const visibleDefs = defs.filter(d => editing || (d.states[state] && !forcedOff[d.id]))

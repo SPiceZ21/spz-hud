@@ -159,3 +159,124 @@ export const SCENARIOS: Scenario[] = [
     ],
   },
 ]
+
+// ── More moments of a race ──────────────────────────────────────────────────
+
+const RACE_OVERLAY: Msg = { app: 'spz-raceUI', msg: { action: 'raceOverlay', data: {
+  visible: true, mySource: 1, lapNum: 2, totalLaps: 3, checkpoint: 12, totalCheckpoints: 24,
+  bestLapTime: 72450, allTimeBest: 71200, delta: -0.45, raceType: 'circuit', positions: POSITIONS,
+} } }
+
+SCENARIOS.push(
+  {
+    id: 'lobby', label: 'Lobby · queued', state: 'freeroam',
+    msgs: [
+      freeroamCard(true),
+      { app: 'spz-raceUI', msg: { action: 'lobby', data: { mode: 'queued', queueCount: 6, queuePos: 2, seconds: 25, track: 'DOWNTOWN GRAND PRIX' } } },
+      speedoOn, ...nametags(false),
+    ],
+    tick: speedo(60, 30),
+  },
+  {
+    id: 'intro', label: 'Race · intro card', state: 'race',
+    msgs: [{ app: 'spz-raceUI', msg: { action: 'raceIntro', data: {
+      phase: 'reveal', holdMs: 600000, track: 'Vinewood Hills Sprint', type: 'sprint', laps: 3, length: '6.8 km',
+      vehicle: 'Annis Elegy Retro Custom', class: 'A', topSpeed: 197, accel: 82, handling: 76, cops: false, traffic: 'light',
+    } } }],
+  },
+  {
+    id: 'countdown', label: 'Race · countdown', state: 'race',
+    msgs: [{ app: 'spz-raceUI', msg: { action: 'countdown', data: {
+      number: 3, totalSeconds: 5, isGo: false, track: 'DOWNTOWN GRAND PRIX', class: 'A', laps: 3, gridPos: 4, total: 12,
+    } } }],
+  },
+  {
+    id: 'finale', label: 'Race · last lap', state: 'race',
+    msgs: [
+      freeroamCard(false),
+      { app: 'spz-raceUI', msg: { action: 'raceOverlay', data: { ...(RACE_OVERLAY.msg as any).data, lapNum: 3, checkpoint: 22 } } },
+      { app: 'spz-raceUI', msg: { action: 'sector', data: { sector: 1, time: 24120, colour: 'green', delta: -0.19 } } },
+      { app: 'spz-raceUI', msg: { action: 'sector', data: { sector: 2, time: 27880, colour: 'purple', delta: -0.21 } } },
+      { app: 'spz-raceUI', msg: { action: 'sector', data: { sector: 3, time: 20410, colour: 'yellow', delta: 0.05 } } },
+      { app: 'spz-raceUI', msg: { action: 'finishWindow', data: { seconds: 30 } } },
+      { app: 'spz-raceUI', msg: { action: 'radar', data: { w: 2, l: 4.5, cars: [
+        { x: -2.4, y: 2.8, h: 0.05, w: 2, l: 4.6 }, { x: 0.3, y: -7.5, h: -0.02, w: 2, l: 4.4 },
+      ] } } },
+      { app: 'spz-raceUI', msg: { action: 'fastestLap', data: { name: 'DRIFT_KING', ms: 71204, mine: false } } },
+      { app: 'spz-raceUI', msg: KEYHINTS },
+      speedoOn, ...nametags(true),
+    ],
+    tick: speedo(190, 30),
+  },
+  {
+    id: 'results', label: 'Race · results', state: 'race',
+    msgs: [{ app: 'spz-raceUI', msg: { action: 'postRaceStats', data: {
+      trackName: 'DOWNTOWN GRAND PRIX', finishTime: '03:42.50', position: 2, bestLap: '01:12.45',
+      xpGained: 350, xpNewProgress: 0.78, classPointsGained: 25, cpNewProgress: 0.65,
+      iRatingDelta: 45, safetyRatingDelta: 0.12, level: 24, levelUp: true,
+    } } }],
+  },
+  {
+    id: 'timetrial', label: 'Time trial', state: 'race',
+    msgs: [
+      freeroamCard(false),
+      { app: 'spz-raceUI', msg: { action: 'tt_hud_show', data: { cpIndex: 7, cpTotal: 24, bestLap: 71200 } } },
+      { app: 'spz-raceUI', msg: { action: 'tt_timer', data: { formatted: '00:42.180' } } },
+      { app: 'spz-raceUI', msg: { action: 'keyhints', data: { results: 'F6', respawn: 'F4', flip: 'K', rewind: 'B', restart: 'BKSP' } } },
+      speedoOn,
+    ],
+    tick: speedo(150, 40),
+  },
+  {
+    id: 'pursuit', label: 'Wanted (cops)', state: 'race',
+    msgs: [
+      RACE_OVERLAY,
+      { app: 'spz-raceUI', msg: { action: 'wanted', data: { stars: 3, max: 5, escape: 0.4 } } },
+      speedoOn,
+    ],
+    tick: speedo(180, 40),
+  },
+)
+
+CLEAR.push(
+  { app: 'spz-raceUI', msg: { action: 'lobby', data: { mode: 'hidden' } } },
+  { app: 'spz-raceUI', msg: { action: 'raceIntro', data: { phase: 'end' } } },
+  { app: 'spz-raceUI', msg: { action: 'finishWindowEnd' } },
+  { app: 'spz-raceUI', msg: { action: 'wanted', data: { stars: 0, max: 5 } } },
+  { app: 'spz-raceUI', msg: { action: 'radar', data: { w: 2, l: 4.5, cars: [] } } },
+  { app: 'spz-raceUI', msg: { action: 'dismissStats' } },
+  { app: 'spz-raceUI', msg: { action: 'tt_hide' } },
+)
+
+// ── One-off events: fire on top of whatever scenario is showing ─────────────
+
+const raceEvent = (label: string, action: string, data: unknown) => ({ label, msgs: [{ app: 'spz-raceUI', msg: { action, data } }] })
+
+export const EVENTS: { label: string; msgs: Msg[] }[] = [
+  raceEvent('Fastest lap · mine', 'fastestLap', { name: 'SPICEZ', ms: 71088, mine: true }),
+  raceEvent('Fastest lap · rival', 'fastestLap', { name: 'DRIFT_KING', ms: 71204, mine: false }),
+  raceEvent('Split · ahead', 'splitDelta', { delta: -0.312, split: 38240, cp: 12, total: 24 }),
+  raceEvent('Split · behind', 'splitDelta', { delta: 0.481, split: 38240, cp: 12, total: 24 }),
+  raceEvent('Overtake', 'flourish', { title: 'OVERTAKE', value: 'P2', icon: 'overtake' }),
+  raceEvent('Lost place', 'flourish', { title: 'POSITION LOST', value: 'P3', icon: 'down' }),
+  raceEvent('New PB', 'flourish', { title: 'PERSONAL BEST', value: '1:11.08', icon: 'timer' }),
+  raceEvent('Win', 'flourish', { title: 'VICTORY', value: '+350 RP', icon: 'crown' }),
+  raceEvent('Credits', 'flourish', { title: 'CREDITS', value: '+2,500', icon: 'coins' }),
+  raceEvent('Finish 30s', 'finishWindow', { seconds: 30 }),
+  raceEvent('Wanted 3★', 'wanted', { stars: 3, max: 5 }),
+  raceEvent('Car alongside', 'radar', { w: 2, l: 4.5, cars: [{ x: -2.3, y: 0.6, h: 0, w: 2, l: 4.6 }] }),
+  raceEvent('Countdown GO', 'countdown', { number: 0, totalSeconds: 5, isGo: true, track: 'DOWNTOWN GRAND PRIX', class: 'A', laps: 3, gridPos: 4, total: 12 }),
+  { label: 'Rank up', msgs: [{ app: 'spz-leaderboard', msg: { action: 'rankUp', oldRank: 'B-1', newRank: 'A-5', isPromotion: true } }] },
+  { label: 'Speed camera', msgs: [{ app: 'spz-speedcam', msg: {
+    type: 'capture', cameraName: 'Vespucci Blvd', speed: 168, unit: 'KM/H', plate: '46EEK572', plateIndex: 0,
+    personalBest: true, globalRecord: false, prevBest: 152, duration: 6000,
+  } }] },
+  { label: 'Chat message', msgs: [
+    { app: 'spz-chat', msg: { action: 'visible', visible: true } },
+    { app: 'spz-chat', msg: { action: 'message', payload: { channel: 'global', from: 'DRIFT_KING', crewTag: 'APX', text: 'gg, see you on the next one' } } },
+    { app: 'spz-chat', msg: { action: 'message', payload: { channel: 'crew', from: 'SHADOW_GRID', crewTag: 'NR', text: 'nice line through T3' } } },
+  ] },
+  { label: 'Radio track', msgs: [{ app: 'spz-radio', msg: { action: 'nowPlaying', data: { title: 'Midnight Run', artist: 'Neon Drive', listeners: 14 } } }] },
+  { label: 'Minigame 3·2·1', msgs: [{ app: 'spz-minigames', msg: { hud: 'flash', d: { text: '3', color: 'accent', ms: 900 } } }] },
+  { label: 'Minigame result', msgs: [{ app: 'spz-minigames', msg: { hud: 'shard', d: { kicker: 'ROUND 2', title: 'YOU SURVIVED', sub: '+250 credits', color: 'ok', ms: 4000 } } }] },
+]
