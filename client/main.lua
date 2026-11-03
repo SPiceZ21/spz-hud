@@ -22,6 +22,7 @@ local editing = false
 local function send(msg)
     if ready then SendNUIMessage(msg) else queue[#queue + 1] = msg end
 end
+HudSend = send            -- focus.lua / apps.lua
 
 -- ── Layout ──────────────────────────────────────────────────────────────────
 

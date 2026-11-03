@@ -3,6 +3,7 @@ import { publish, peek } from './core/bus'
 import { post, inGame } from './core/nui'
 import { ANCHOR_SHIFT, type GameState, type Layout, type Placement, type WidgetDef } from './core/types'
 import { WIDGETS } from './widgets'
+import { AppHost, toApp, reloadApp } from './core/apps'
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n))
 
@@ -99,6 +100,7 @@ export function App() {
   const [hidden, setHidden] = useState(false)
   const [editing, setEditing] = useState(false)
   const [snap, setSnap] = useState(0.5)
+  const [focus, setFocus] = useState<string | null>(null)
   const sampled = useRef<string[]>([])
   const defsRef = useRef(defs)
   defsRef.current = defs
@@ -129,6 +131,9 @@ export function App() {
           setLayout(m.layout || {})
           if (typeof m.snap === 'number') setSnap(m.snap)
           break
+        case 'app':       toApp(m.app, m.msg); break
+        case 'appReload': reloadApp(m.app); break
+        case 'focus':     setFocus(m.owner ?? null); break
         case 'data':    publish(m.id, m.data); break
         case 'state':   setState(m.state); break
         case 'hidden':  setHidden(!!m.hidden); break
@@ -170,6 +175,8 @@ export function App() {
   const visibleDefs = defs.filter(d => editing || (d.states[state] && !forcedOff[d.id]))
 
   return (
+    <>
+    <AppHost focus={focus} />
     <div class="hud" data-hidden={hidden && !editing} data-edit={editing}>
       {editing && <div class="grid" />}
       {visibleDefs.map(d => (
@@ -187,5 +194,6 @@ export function App() {
         </div>
       )}
     </div>
+    </>
   )
 }

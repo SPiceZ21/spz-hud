@@ -6,10 +6,11 @@ description 'SPiceZ HUD host: one overlay page, player-placed widgets, shared fo
 author 'SPiceZ'
 version '0.1.0'
 
-ui_page 'ui/dist/index.html'
+ui_page 'ui/index.html'
 
 files {
-    'ui/dist/**/*',
+    'ui/**/*',
+    'shim.lua',
 }
 
 shared_scripts {
@@ -20,6 +21,7 @@ shared_scripts {
 client_scripts {
     'client/focus.lua',
     'client/main.lua',
+    'client/apps.lua',
     'client/widgets/*.lua',
 }
 

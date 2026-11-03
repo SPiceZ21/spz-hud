@@ -1,1 +1,6 @@
-ui/node_modules/
+web/node_modules/
+# build output (npm run build in web/)
+ui/
+# copied from the other resources (node tools/sync-apps.mjs)
+web/public/apps/
+web/public/shared/

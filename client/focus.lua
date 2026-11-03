@@ -8,21 +8,27 @@
 --   exports['spz-hud']:RequestFocus('leaderboard', { cursor = true, keyboard = true })
 --   exports['spz-hud']:ReleaseFocus('leaderboard')
 --
--- Opt-in: resources that still call SetNuiFocus themselves keep working.
+-- Apps hosted in spz-hud (apps/<name>) get here through shim.lua, which turns
+-- their SetNuiFocus calls into Request / Release under their resource name.
 
 Focus = {}
 
-local stack = {}          -- { { owner, cursor, keyboard, invoker } ... } top = last
+local stack = {}          -- { { owner, cursor, keyboard, keepInput, invoker } ... } top = last
+
+-- The native natives: shim.lua replaces these only inside OTHER resources.
+local nativeFocus, nativeKeep = SetNuiFocus, SetNuiFocusKeepInput
 
 local function apply()
     local top = stack[#stack]
     if top then
-        SetNuiFocus(top.keyboard, top.cursor)
-        SetNuiFocusKeepInput(top.keepInput == true)
+        nativeFocus(top.keyboard, top.cursor)
+        nativeKeep(top.keepInput == true)
     else
-        SetNuiFocus(false, false)
-        SetNuiFocusKeepInput(false)
+        nativeFocus(false, false)
+        nativeKeep(false)
     end
+    -- The page raises the focused app's layer and hands it the keyboard.
+    if HudSend then HudSend({ type = 'focus', owner = top and top.owner or nil }) end
 end
 
 local function indexOf(owner)
@@ -55,6 +61,14 @@ function Focus.Release(owner)
     return true
 end
 
+function Focus.SetKeepInput(owner, on)
+    local i = indexOf(owner)
+    if not i then return false end
+    stack[i].keepInput = on
+    if i == #stack then apply() end
+    return true
+end
+
 function Focus.Top()
     local top = stack[#stack]
     return top and top.owner or nil
@@ -68,7 +82,7 @@ exports('FocusOwner', function() return Focus.Top() end)
 AddEventHandler('onResourceStop', function(res)
     local changed = false
     for i = #stack, 1, -1 do
-        if stack[i].invoker == res then table.remove(stack, i); changed = true end
+        if stack[i].invoker == res or stack[i].owner == res then table.remove(stack, i); changed = true end
     end
     if changed then apply() end
 end)

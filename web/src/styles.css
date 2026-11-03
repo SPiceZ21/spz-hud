@@ -71,3 +71,13 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
 .speedo-rpm { height: 4px; margin-top: 8px; border-radius: 2px; background: rgba(255,255,255,.1); overflow: hidden; }
 .speedo-rpm-fill { height: 100%; background: var(--color-primary); transition: width .05s linear; }
 .speedo-rpm-fill[data-red='true'] { background: #ff2a2a; }
+
+/* ── Hosted apps (apps/<resource>) ── */
+.app {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  border: 0; background: transparent; color-scheme: normal;
+  pointer-events: none;
+}
+.app[data-focus='true'] { pointer-events: auto; }
+/* The widget layer sits above every app; in edit mode it takes the input. */
+.hud { z-index: 2000; }
