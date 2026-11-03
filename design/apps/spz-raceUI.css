@@ -159,3 +159,74 @@
 /* Finish countdown: urgency is the red number, not a pulsing halo. */
 .finish-window.urgent { animation: none; border-color: var(--ui-line); }
 .finish-window.urgent .fw-time { color: var(--ui-bad); }
+
+/* ════ Race moments: intro · countdown · results ════
+   The same system as the rest of the race HUD: one surface, hairlines, the
+   one small-caps label style, no streaks, glows or corner ornaments. */
+
+/* One label style everywhere (as WARM-UP / TRACK / S1 / FUSE). */
+.rt-label, .rt-eyebrow, .cd-grid-l, .rb-kicker, .rb-stat-label, .rb-flag-label {
+  font-family: var(--ui-display) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase;
+  color: var(--ui-tx-3) !important;
+}
+.rt-eyebrow { color: var(--color-primary) !important; }
+
+/* ── Results: one strip, cells divided by hairlines ── */
+.results-toast {
+  gap: 0;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  overflow: hidden;
+}
+.rt-box, .rt-pos, .rt-pos.podium-1, .rt-pos.podium-2, .rt-pos.podium-3, .rt-levelup {
+  background: transparent !important;
+  border: 0 !important;
+  border-right: 1px solid var(--ui-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.results-toast > :last-child { border-right: 0 !important; }
+.rt-levelup { color: var(--color-primary); display: flex; align-items: center; padding: 0 14px; }
+.rt-progress { border-radius: 0; }
+
+/* ── Countdown: the number and the lamps, nothing else ── */
+.cd-streaks { display: none !important; }
+.cd-vignette, .cd.is-go .cd-vignette { background: rgba(0, 0, 0, 0.35) !important; }
+.cd-num, .cd.is-go .cd-num { text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important; }
+.cd-track { text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7); }
+.cd-chip, .cd-chip.cd-class {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-sm);
+}
+.cd-chip.cd-class { color: var(--color-primary); }
+.cd-tree, .cd-grid {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+}
+.cd-lamp { box-shadow: none; }
+.cd-lamp.lit { box-shadow: none; }
+
+/* ── Intro card ── */
+.rb-bar::after { display: none !important; }          /* glowing edge line */
+.rb-kicker::before, .rb-kicker::after { background: var(--ui-line-2); }
+.rb-kicker-pip { box-shadow: none; }
+.rb-kicker-num { color: var(--color-primary); }
+.rb-rule { background: var(--ui-line-2) !important; }
+.rb-stat + .rb-stat::before { background: var(--ui-line-2) !important; }
+.rb-title, .rb-stat-value { text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6); }
+.rb-flag, .rb-flag.is-hot {
+  background: transparent;
+  border: 1px solid var(--ui-line-2);
+  border-radius: var(--ui-r-md);
+}
+.rb-flag::before, .rb-flag::after { display: none !important; }   /* corner ornaments */
+.rb-flag.is-hot .rb-flag-value { color: var(--color-primary); text-shadow: none; }
+.rb-flag, .rb-flag.is-hot { box-shadow: none !important; }
+.rb-pip.is-on { box-shadow: none; }
