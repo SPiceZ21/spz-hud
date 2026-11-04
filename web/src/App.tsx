@@ -5,6 +5,7 @@ import { ANCHOR_SHIFT, type GameState, type Layout, type Placement, type WidgetD
 import { WIDGETS } from './widgets'
 import { AppHost, AppMovers, placeApp, toApp, reloadApp, type AppEntry } from './core/apps'
 import type { FunctionComponent } from 'preact'
+import { Hub, type HubProfile } from './hub/Hub'
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n))
 
@@ -102,6 +103,8 @@ export function App() {
   const [editing, setEditing] = useState(false)
   const [snap, setSnap] = useState(0.5)
   const [focus, setFocus] = useState<string | null>(null)
+  // The SPiceZ hub (TAB): client/hub.lua opens and closes it.
+  const [hub, setHub] = useState<{ open: boolean; profile: HubProfile }>({ open: false, profile: {} })
   // HUD settings: the switches in /hudedit, stored with the layout (client/main.lua).
   const [settings, setSettings] = useState<Record<string, string>>({})
   const digital = settings.speedo === 'digital'
@@ -149,6 +152,7 @@ export function App() {
           break
         case 'appReload': reloadApp(m.app, !inGame && m.mock === true); break
         case 'focus':     setFocus(m.owner ?? null); break
+        case 'hub':       setHub(h => ({ open: !!m.on, profile: m.profile || h.profile })); break
         case 'data':    publish(m.id, m.data); break
         case 'state':   setState(m.state); break
         case 'hidden':  setHidden(!!m.hidden); break
@@ -196,7 +200,8 @@ export function App() {
     <>
     <AppHost focus={focus} onApps={setApps} hidden={hiddenApps} />
     {Dev && <Dev />}
-    <div class="hud" data-hidden={hidden && !editing} data-edit={editing}>
+    <Hub open={hub.open} profile={hub.profile} />
+    <div class="hud" data-hidden={(hidden || hub.open) && !editing} data-edit={editing}>
       {editing && <div class="grid" />}
       {editing && <AppMovers apps={movableApps} layout={layout} snap={snap} onMove={move} />}
       {visibleDefs.map(d => (

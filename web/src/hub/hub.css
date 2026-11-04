@@ -1,0 +1,154 @@
+/* ── The SPiceZ hub (Hub.tsx) ──────────────────────────────────────────────
+   Full screen, in the shared look: solid dark backdrop, one header bar, a
+   section rail on the left, the section in the content area, a key strip.
+   The content area (also used by the hosted apps' hub-mode rules in
+   design/apps/*.css) is:  top 104px · right 36px · bottom 64px · left 300px. */
+
+.hub-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(6, 7, 9, 0.96);
+  animation: hub-in 220ms ease-out both;
+}
+.hub-chrome {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  pointer-events: none;
+  font-family: 'Panchang', 'Segoe UI', sans-serif;
+  color: #f4f4f5;
+  animation: hub-in 220ms ease-out both;
+}
+.hub-chrome > * { pointer-events: auto; }
+@keyframes hub-in { from { opacity: 0; } }
+
+/* Header */
+.hub-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.hub-logo { height: 40px; width: auto; }
+.hub-me { display: flex; align-items: center; gap: 22px; }
+.hub-avatar { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; }
+.hub-me-text { display: flex; flex-direction: column; gap: 3px; }
+.hub-name { font-size: 15px; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; }
+.hub-sub { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #71717a; }
+.hub-stat {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+  padding-left: 22px; border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+.hub-stat b { font-size: 17px; font-weight: 800; }
+.hub-stat span { font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; }
+
+/* Section rail */
+.hub-rail {
+  position: absolute;
+  top: 104px; left: 36px; bottom: 64px;
+  width: 244px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hub-item {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #71717a;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 120ms, background 120ms;
+}
+.hub-item:hover { color: #f4f4f5; background: rgba(255, 255, 255, 0.03); }
+.hub-item[data-on='true'] { color: #f4f4f5; background: rgba(255, 255, 255, 0.05); }
+.hub-num { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #52525b; }
+.hub-item[data-on='true'] .hub-num { color: var(--color-primary); }
+.hub-label { font-size: 13px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Sub-tabs, above the content area */
+.hub-subtabs {
+  position: absolute;
+  top: 88px; left: 300px;
+  display: flex;
+  gap: 4px;
+  transform: translateY(-50%);
+}
+.hub-subtabs button {
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: transparent;
+  color: #a1a1aa;
+  font: 700 10px 'Panchang', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.hub-subtabs button[data-on='true'] { color: var(--color-primary); border-color: rgba(255, 98, 0, 0.45); }
+
+/* Content area (native sections; apps place themselves into the same box) */
+.hub-content {
+  position: absolute;
+  top: 104px; right: 36px; bottom: 64px; left: 300px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: #0b0c0e;
+}
+
+/* Key strip */
+.hub-keys {
+  position: absolute;
+  left: 36px; right: 36px; bottom: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 26px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #a1a1aa;
+}
+.hub-keys span { display: flex; align-items: center; gap: 6px; }
+.hub-keys kbd {
+  display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14); border-bottom-width: 2px; border-radius: 4px;
+  font: 800 9px 'Panchang', sans-serif; letter-spacing: 0.04em; color: #f4f4f5;
+}
+
+/* ── Achievements ── */
+.ach { padding: 26px 30px 34px; }
+.ach-empty { padding: 30px; color: #71717a; }
+.ach-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px; }
+.ach-head h2 { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
+.ach-head p { margin: 0; font-family: 'Inter', 'Segoe UI', sans-serif; font-size: 13px; color: #71717a; }
+.ach-count { display: flex; align-items: baseline; gap: 6px; }
+.ach-count b { font-size: 28px; font-weight: 800; color: var(--color-primary); }
+.ach-count span { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #71717a; }
+.ach-group { margin-top: 22px; }
+.ach-group h3 { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin: 0 0 10px; }
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.ach-card { padding: 14px 16px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; }
+.ach-card[data-done='true'] { border-color: rgba(255, 98, 0, 0.45); }
+.ach-title { font-size: 13px; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; }
+.ach-card[data-done='false'] .ach-title { color: #a1a1aa; }
+.ach-desc { margin-top: 4px; font-family: 'Inter', 'Segoe UI', sans-serif; font-size: 12px; color: #71717a; }
+.ach-bar { margin-top: 12px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
+.ach-bar i { display: block; height: 100%; background: var(--color-primary); }
+.ach-card[data-done='false'] .ach-bar i { background: #a1a1aa; }
+.ach-prog { margin-top: 7px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #a1a1aa; }
+.ach-card[data-done='true'] .ach-prog { color: var(--color-primary); }

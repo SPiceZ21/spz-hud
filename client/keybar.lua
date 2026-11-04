@@ -37,7 +37,10 @@ local function hints()
     if st.spectating or st.inMinigame or st.inPursuit then return out end
 
     -- The radial menu (ox_lib keybind, default Z) is there in every state.
-    local function radial() add(key('+ox_lib-radial', 'Z'), 'Menu') end
+    local function radial()
+        add(key('spzhub', 'TAB'), 'Hub')
+        add(key('+ox_lib-radial', 'Z'), 'Menu')
+    end
 
     if st.inRace or st.inTimeTrial then
         add(key('standingstoggle', 'N', 'LDOWN_INDEX'), 'Standings')

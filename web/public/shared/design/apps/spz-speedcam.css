@@ -28,3 +28,16 @@
   box-shadow: none;
   color: var(--orange);
 }
+
+/* ── Hub mode (TAB hub): the records panel fills the hub content area ── */
+html[data-hub] #records-panel {
+  top: 104px; right: 36px; bottom: 64px; left: 300px;
+  width: auto; max-height: none;
+  transform: none !important;
+  border-radius: var(--ui-r-lg);
+}
+html[data-hub] #records-panel .panel-header button,
+html[data-hub] #records-panel .close-btn { display: none; }
+html[data-hub] #capture, html[data-hub] body > div[style*="9999"] { display: none !important; }   /* capture card; mock-mode dev buttons */
+html[data-hub] #records-panel, html[data-hub] #records-panel * { font-family: var(--ui-body); }
+html[data-hub] #records-panel .panel-header, html[data-hub] #records-panel [class*="speed"] { font-family: var(--ui-display); }

@@ -83,3 +83,16 @@
 .rk-from { color: var(--ui-tx-3); }
 .rk-to img { filter: none; }
 .rk-arrow i { border-color: var(--ui-tx-3) !important; border-width: 2px 2px 0 0 !important; }
+
+/* ── Hub mode (TAB hub, spz-hud web/src/hub): the window fills the hub content
+   area, its own rail is replaced by the hub sections, no dim of its own. ── */
+html[data-hub] #root { background: transparent !important; }
+html[data-hub] .shell {
+  position: fixed;
+  top: 104px; right: 36px; bottom: 64px; left: 300px;
+  width: auto !important; height: auto !important;
+  max-width: none !important; max-height: none !important;
+  margin: 0;
+  animation: none;
+}
+html[data-hub] .rail { display: none !important; }

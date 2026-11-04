@@ -284,14 +284,14 @@ export const EVENTS: { label: string; msgs: Msg[] }[] = [
 // What client/keybar.lua would push for each scenario (default bindings).
 const KB_RACE = [
   { key: 'N', label: 'Standings' }, { key: 'F4', label: 'Last CP' }, { key: 'K', label: 'Flip' },
-  { key: 'B', label: 'Rewind' }, { key: 'F6', label: 'Results' }, { key: 'Z', label: 'Menu' },
+  { key: 'B', label: 'Rewind' }, { key: 'F6', label: 'Results' }, { key: 'TAB', label: 'Hub' }, { key: 'Z', label: 'Menu' },
 ]
 export const KEYBAR: Record<string, { key: string; label: string }[] | false> = {
-  freeroam: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }, { key: 'Z', label: 'Menu' }],
-  lobby: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }, { key: 'Z', label: 'Menu' }],
+  freeroam: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }, { key: 'TAB', label: 'Hub' }, { key: 'Z', label: 'Menu' }],
+  lobby: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }, { key: 'TAB', label: 'Hub' }, { key: 'Z', label: 'Menu' }],
   warmup: KB_RACE, race: KB_RACE, finale: KB_RACE, pursuit: KB_RACE,
   timetrial: [
     { key: 'N', label: 'Standings' }, { key: 'F4', label: 'Last CP' }, { key: 'K', label: 'Flip' },
-    { key: 'BKSP', label: 'Restart' }, { key: 'F6', label: 'Results' }, { key: 'Z', label: 'Menu' },
+    { key: 'BKSP', label: 'Restart' }, { key: 'F6', label: 'Results' }, { key: 'TAB', label: 'Hub' }, { key: 'Z', label: 'Menu' },
   ],
 }

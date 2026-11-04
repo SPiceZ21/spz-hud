@@ -24,6 +24,7 @@ client_scripts {
     'client/main.lua',
     'client/apps.lua',
     'client/keybar.lua',
+    'client/hub.lua',
 }
 
 dependencies {

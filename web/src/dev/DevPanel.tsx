@@ -20,6 +20,9 @@ const BACKDROPS: Record<string, string> = {
 }
 
 const send = (m: unknown) => window.postMessage(m, '*')
+// What client/hub.lua sends as the hub header.
+const HUB_PROFILE = { name: 'SPiceZ', rank: 'S-1', level: 24, credits: 125400, crew: 'NR', rating: 1840,
+  avatar: 'https://cdn.discordapp.com/embed/avatars/0.png' }
 
 // What client/main.lua sends as the registry (Config.Widgets in config.lua).
 const DEV_WIDGETS = [
@@ -245,6 +248,7 @@ export function DevPanel() {
         <label>HUD</label>
         <div class="dev-seg">
           <button data-on={editing} onClick={() => send({ type: 'edit', on: !editing })}>layout edit</button>
+          <button onClick={() => send({ type: 'hub', on: true, profile: HUB_PROFILE })}>hub (TAB)</button>
           <button data-on={speedo === 'analogue'} onClick={() => setSpeedo('analogue')}>analogue</button>
           <button data-on={speedo === 'digital'} onClick={() => setSpeedo('digital')}>digital</button>
           <button onClick={() => send({ type: 'hidden', hidden: true })}>hide</button>
