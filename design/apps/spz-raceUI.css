@@ -308,3 +308,6 @@
 
 /* Fastest-lap banner tag: the shared label, not monospace. */
 .fl-tag { font-family: var(--ui-display); font-size: 9px; font-weight: 700; letter-spacing: 0.18em; }
+
+/* Freeroam card: no licence badge (the rank art beside it says the class). */
+.fr-class { display: none !important; }
