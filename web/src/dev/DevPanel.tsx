@@ -5,7 +5,7 @@
 // page under it runs exactly the code paths it runs in game.
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { clearLog, getLog, getStubs, log, onLog, setStub, type LogEntry } from './devlog'
-import { BOOT, CLEAR, EVENTS, SCENARIOS, type Msg } from './scenarios'
+import { BOOT, CLEAR, EVENTS, KEYBAR, SCENARIOS, type Msg } from './scenarios'
 import { DEMOS } from './demos'
 import './dev.css'
 
@@ -38,6 +38,8 @@ function runScenario(id: string | null) {
   BOOT.forEach(sendMsg)
   CLEAR.forEach(sendMsg)
   const sc = SCENARIOS.find(x => x.id === id)
+  // The key strip is fed by Lua in game; here, from the scenario.
+  send({ type: 'data', id: 'keybar', data: (id && KEYBAR[id]) || false })
   if (!sc) { send({ type: 'state', state: 'freeroam' }); return }
   send({ type: 'state', state: sc.state })
   // After the CLEAR has landed, so a hide doesn't follow the show.

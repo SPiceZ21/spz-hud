@@ -279,3 +279,19 @@ export const EVENTS: { label: string; msgs: Msg[] }[] = [
   { label: 'Minigame 3·2·1', msgs: [{ app: 'spz-minigames', msg: { hud: 'flash', d: { text: '3', color: 'accent', ms: 900 } } }] },
   { label: 'Minigame result', msgs: [{ app: 'spz-minigames', msg: { hud: 'shard', d: { kicker: 'ROUND 2', title: 'YOU SURVIVED', sub: '+250 credits', color: 'ok', ms: 4000 } } }] },
 ]
+
+// ── Key strip (widget `keybar`) ─────────────────────────────────────────────
+// What client/keybar.lua would push for each scenario (default bindings).
+const KB_RACE = [
+  { key: 'N', label: 'Standings' }, { key: 'F4', label: 'Last CP' }, { key: 'K', label: 'Flip' },
+  { key: 'B', label: 'Rewind' }, { key: 'F6', label: 'Results' },
+]
+export const KEYBAR: Record<string, { key: string; label: string }[] | false> = {
+  freeroam: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }],
+  lobby: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }],
+  warmup: KB_RACE, race: KB_RACE, finale: KB_RACE, pursuit: KB_RACE,
+  timetrial: [
+    { key: 'N', label: 'Standings' }, { key: 'F4', label: 'Last CP' }, { key: 'K', label: 'Flip' },
+    { key: 'BKSP', label: 'Restart' }, { key: 'F6', label: 'Results' },
+  ],
+}
