@@ -4,8 +4,9 @@
 //    (2)  051  KM/H         gear ring · speed (leading zeros dim) · unit
 //    [=========>      ▒▒]   rev bar like the race HUD's checkpoint bar: a glowing
 //                            gradient fill; the tinted end is the redline
-//    [=====       ]          one small bar, two jobs (as the analogue arc):
-//    REWIND      3.2s        boost (0-100) while boost is on, else rewind
+//    [====][====][==  ][    ]  one small bar in four pieces, two jobs (as the
+//    REWIND           32.0s  analogue arc): boost while boost is on, else the
+//                            race's rewind budget (4 x 15 s, a piece each)
 //
 // No background: it sits on the game like the race timer, kept legible by a
 // tight shadow on the type.
@@ -25,6 +26,7 @@ export interface SpeedoData {
 }
 
 const RED_FROM = 86      // % of the bar where the redline zone starts
+const PIECES = 4         // boost / rewind bar segments (rewind: 15 s each)
 
 export function SpeedoDigital({ id }: { id: string }) {
   const d = useWidgetData<SpeedoData | false>(id)
@@ -57,7 +59,12 @@ export function SpeedoDigital({ id }: { id: string }) {
           data-low={boost === null && rwPct <= 25}
           data-out={boost === null && rwLeft <= 0}
         >
-          <span class="dsp-mini-bar"><i style={{ width: `${boost !== null ? boost : rwPct}%` }} /></span>
+          <span class="dsp-mini-bar">
+            {Array.from({ length: PIECES }, (_, i) => {
+              const f = Math.max(0, Math.min(1, ((boost !== null ? boost : rwPct) / 100) * PIECES - i))
+              return <span key={i} class="dsp-mini-seg"><i style={{ width: `${f * 100}%` }} /></span>
+            })}
+          </span>
           <span class="dsp-mini-l">{boost !== null ? 'Boost' : 'Rewind'}</span>
           <span class="dsp-mini-v">
             {boost !== null ? Math.round(boost) : rwLeft <= 0 ? 'Spent' : `${(rwLeft / 1000).toFixed(1)}s`}
@@ -70,5 +77,5 @@ export function SpeedoDigital({ id }: { id: string }) {
 
 /** Shown while placing it in /hudedit with nothing live (on foot). */
 export const speedoDigitalSample: SpeedoData = {
-  speed: 51, gear: 2, pct: 62, inRedline: false, rewindMax: 5000, rewindLeft: 3200, sideBoost: 64,
+  speed: 51, gear: 2, pct: 62, inRedline: false, rewindMax: 60000, rewindLeft: 32000, sideBoost: -1,
 }

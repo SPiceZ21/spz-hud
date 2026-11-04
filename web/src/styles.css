@@ -167,12 +167,12 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
   row-gap: 4px;
   margin-top: 2px;
 }
-.dsp-mini-bar {
-  grid-area: bar;
+.dsp-mini-bar { grid-area: bar; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+.dsp-mini-seg {
   position: relative; height: 6px; border-radius: 1px;
   background: rgba(255, 255, 255, 0.06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
 }
-.dsp-mini-bar i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 1px; transition: width 120ms linear; }
+.dsp-mini-seg i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 1px; transition: width 120ms linear; }
 .dsp-mini-l {
   grid-area: l;
   font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;

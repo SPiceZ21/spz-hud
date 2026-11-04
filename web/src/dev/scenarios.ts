@@ -27,7 +27,7 @@ const speedo = (base: number, swing: number) => (t: number): Msg[] => {
   return [{ app: 'spz-speedometer', msg: {
     type: 'update', speed, gear: Math.max(1, Math.min(6, 1 + Math.floor(speed / 40))), pct,
     inRedline: pct >= 90, shifting: false, limiter: false, launch: false, tcsCut: false,
-    boost: 0, status: {}, rewindMax: 5000, rewindLeft: 3200, sideBoost: 64,
+    boost: 0, status: {}, rewindMax: 60000, rewindLeft: 37000, sideBoost: -1,
   } }]
 }
 
