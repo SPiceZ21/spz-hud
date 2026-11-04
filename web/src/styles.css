@@ -205,3 +205,40 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
 
 /* Fixed-width digit slots (Panchang's digits are not equal width) */
 .dsp-dig { display: inline-block; width: 1.2em; text-align: center; }
+
+/* ── Key-hint strip (widgets/Keybar.tsx) ──
+   The shared look: one panel, cells divided by hairlines, the race HUD's
+   keycap, small-caps labels. */
+.kbar {
+  display: flex;
+  align-items: stretch;
+  background: rgba(9, 10, 12, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: 'Panchang', var(--font);
+  white-space: nowrap;
+}
+.kbar-item { display: flex; align-items: center; gap: 8px; padding: 7px 12px; }
+.kbar-item + .kbar-item { border-left: 1px solid rgba(255, 255, 255, 0.08); }
+.kbar-key {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: transparent;
+  color: #f4f4f5;
+  font: 800 10px 'Panchang', var(--font);
+}
+.kbar-key[data-wide='true'] { font-size: 8.5px; }
+.kbar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #a1a1aa;
+}

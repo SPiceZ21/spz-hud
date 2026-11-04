@@ -25,6 +25,7 @@ const send = (m: unknown) => window.postMessage(m, '*')
 const DEV_WIDGETS = [
   { id: 'speedo_digital', label: 'Speedometer (digital)', x: 98.4, y: 95.5, anchor: 'br', scale: 1,
     states: { freeroam: true, race: true, minigame: true } },
+  { id: 'keybar', label: 'Key hints', x: 76, y: 97, anchor: 'br', scale: 1, states: { freeroam: true, race: true } },
 ]
 const sendRegistry = (speedo: string) =>
   send({ type: 'registry', widgets: DEV_WIDGETS, layout: {}, settings: { speedo }, snap: 0.5 })

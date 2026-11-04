@@ -64,6 +64,9 @@
   background: var(--ui-line);
 }
 
+/* The race key hints are drawn by spz-hud's key strip (widget `keybar`). */
+.key-hints { display: none !important; }
+
 /* ── Key hints: keycaps stay keycaps, quieter ── */
 .key-hint .keycap {
   background: var(--ui-surface);

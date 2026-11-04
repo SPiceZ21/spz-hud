@@ -3,6 +3,7 @@
 // declare it before the UI ships it.
 import type { FunctionComponent } from 'preact'
 import { SpeedoDigital, speedoDigitalSample } from './SpeedoDigital'
+import { Keybar, keybarSample } from './Keybar'
 
 export interface WidgetComponent {
   view: FunctionComponent<{ id: string }>
@@ -12,4 +13,5 @@ export interface WidgetComponent {
 
 export const WIDGETS: Record<string, WidgetComponent> = {
   speedo_digital: { view: SpeedoDigital, sample: speedoDigitalSample },
+  keybar: { view: Keybar, sample: keybarSample },
 }

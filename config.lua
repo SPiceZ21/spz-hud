@@ -27,4 +27,10 @@ Config.Widgets = {
         x = 98.4, y = 95.5, anchor = 'br', scale = 1.0,
         states  = { freeroam = true, race = true, minigame = true },
     },
+    -- Key hints for the current state (client/keybar.lua): bottom, centre-right.
+    keybar = {
+        label   = 'Key hints',
+        x = 76, y = 97, anchor = 'br', scale = 1.0,
+        states  = { freeroam = true, race = true },
+    },
 }
