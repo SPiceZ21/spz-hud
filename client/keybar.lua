@@ -36,6 +36,9 @@ local function hints()
 
     if st.spectating or st.inMinigame or st.inPursuit then return out end
 
+    -- The radial menu (ox_lib keybind, default Z) is there in every state.
+    local function radial() add(key('+ox_lib-radial', 'Z'), 'Menu') end
+
     if st.inRace or st.inTimeTrial then
         add(key('standingstoggle', 'N', 'LDOWN_INDEX'), 'Standings')
         add(key('spz_respawn_cp', 'F4', 'LLEFT_INDEX'), 'Last CP')
@@ -46,6 +49,7 @@ local function hints()
             add(key('+spz_rewind', 'B', 'L1_INDEX'), 'Rewind')
         end
         if started('spz-leaderboard') then add(key('leaderboard', 'F6', 'SELECT_INDEX'), 'Results') end
+        radial()
         return out
     end
 
@@ -54,8 +58,9 @@ local function hints()
     if started('spz-carspawner') then add(key('car', 'F5'), 'Garage') end
     if not inCar and started('spz-emotes') then add(key('+emote_menu', 'O'), 'Emotes') end
     if started('spz-leaderboard') then add(key('leaderboard', 'F6', 'SELECT_INDEX'), 'Results') end
-    if started('spz-raceUI') then add(key('spz_freeroamhud', 'PAGEDOWN'), 'Profile') end
+    if started('spz-raceUI') then add(key('spz_freeroamhud', 'PAGEDOWN'), 'Profile') end   -- the card's show / hide
     if inCar then add(control(75, 'F', 'RUP_INDEX'), 'Exit') end
+    radial()
     return out
 end
 

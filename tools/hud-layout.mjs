@@ -60,7 +60,7 @@ export const LAYOUT = {
         { action: 'finishWindow', data: { seconds: 30 } },
         { action: 'lobby', data: { mode: 'queued', queueCount: 6, queuePos: 2, track: 'DOWNTOWN GRAND PRIX' } },
         { action: 'wanted', data: { stars: 3, max: 5 } },
-        { action: 'freeroam', data: { visible: true, license: 'S-1', credits: 125400, rank: 'A-3', crew: 'NR', rating: 1840, key: 'PAGEDOWN' } },
+        { action: 'freeroam', data: { visible: true, license: 'S-1', credits: 125400, rank: 'A-3', crew: 'NR', rating: 1840, avatar: 'https://cdn.discordapp.com/embed/avatars/0.png' } },
       ],
       off: [
         { action: 'raceOverlay', data: { visible: false } },

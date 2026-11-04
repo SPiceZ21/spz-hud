@@ -57,7 +57,7 @@ const POSITIONS = [
 const KEYHINTS = { action: 'keyhints', data: { standings: 'N', results: 'F6', respawn: 'F4', flip: 'K', rewind: 'B' } }
 
 const freeroamCard = (visible: boolean) => ({ app: 'spz-raceUI', msg: { action: 'freeroam', data: visible
-  ? { visible: true, license: 'S-1', credits: 125400, rank: 'A-3', crew: 'NR', rating: 1840, key: 'PAGEDOWN' }
+  ? { visible: true, license: 'S-1', credits: 125400, rank: 'A-3', crew: 'NR', rating: 1840, avatar: 'https://cdn.discordapp.com/embed/avatars/0.png' }
   : { visible: false } } })
 
 const nametags = (racing: boolean): Msg[] => [
@@ -284,14 +284,14 @@ export const EVENTS: { label: string; msgs: Msg[] }[] = [
 // What client/keybar.lua would push for each scenario (default bindings).
 const KB_RACE = [
   { key: 'N', label: 'Standings' }, { key: 'F4', label: 'Last CP' }, { key: 'K', label: 'Flip' },
-  { key: 'B', label: 'Rewind' }, { key: 'F6', label: 'Results' },
+  { key: 'B', label: 'Rewind' }, { key: 'F6', label: 'Results' }, { key: 'Z', label: 'Menu' },
 ]
 export const KEYBAR: Record<string, { key: string; label: string }[] | false> = {
-  freeroam: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }],
-  lobby: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }],
+  freeroam: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }, { key: 'Z', label: 'Menu' }],
+  lobby: [{ key: 'F5', label: 'Garage' }, { key: 'F6', label: 'Results' }, { key: 'PG DN', label: 'Profile' }, { key: 'F', label: 'Exit' }, { key: 'Z', label: 'Menu' }],
   warmup: KB_RACE, race: KB_RACE, finale: KB_RACE, pursuit: KB_RACE,
   timetrial: [
     { key: 'N', label: 'Standings' }, { key: 'F4', label: 'Last CP' }, { key: 'K', label: 'Flip' },
-    { key: 'BKSP', label: 'Restart' }, { key: 'F6', label: 'Results' },
+    { key: 'BKSP', label: 'Restart' }, { key: 'F6', label: 'Results' }, { key: 'Z', label: 'Menu' },
   ],
 }
