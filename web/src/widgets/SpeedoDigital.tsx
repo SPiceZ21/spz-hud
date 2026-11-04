@@ -43,7 +43,13 @@ export function SpeedoDigital({ id }: { id: string }) {
     <div class="dsp" data-red={d.inRedline === true}>
       <div class="dsp-top">
         <div class="dsp-gear" data-r={gear === 'R'}>{gear}</div>
-        <div class="dsp-speed"><span class="dsp-lead">{lead}</span>{speed}</div>
+        {/* Each digit in a fixed-width slot: Panchang's digits differ in width,
+            so plain text shifted left and right as the speed changed. */}
+        <div class="dsp-speed">
+          {(lead + speed).split('').map((c, i) => (
+            <span key={i} class={i < lead.length ? 'dsp-dig dsp-lead' : 'dsp-dig'}>{c}</span>
+          ))}
+        </div>
         <div class="dsp-side">
           <span class="dsp-unit">km/h</span>
         </div>
@@ -59,11 +65,9 @@ export function SpeedoDigital({ id }: { id: string }) {
           data-low={boost === null && rwPct <= 25}
           data-out={boost === null && rwLeft <= 0}
         >
-          <span class="dsp-mini-bar">
-            {Array.from({ length: PIECES }, (_, i) => {
-              const f = Math.max(0, Math.min(1, ((boost !== null ? boost : rwPct) / 100) * PIECES - i))
-              return <span key={i} class="dsp-mini-seg"><i style={{ width: `${f * 100}%` }} /></span>
-            })}
+          {/* One fill with one gradient; the four pieces are gaps masked out of it. */}
+          <span class="dsp-mini-bar" style={{ '--pieces': PIECES } as any}>
+            <i style={{ width: `${boost !== null ? boost : rwPct}%` }} />
           </span>
           <span class="dsp-mini-l">{boost !== null ? 'Boost' : 'Rewind'}</span>
           <span class="dsp-mini-v">
