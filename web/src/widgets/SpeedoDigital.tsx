@@ -4,8 +4,8 @@
 //    (2)  051  KM/H         gear ring · speed (leading zeros dim) · unit
 //    [=========>      ▒▒]   rev bar like the race HUD's checkpoint bar: a glowing
 //                            gradient fill; the tinted end is the redline
-//    REWIND 3.2s  BOOST 64  one row in two pieces, each only while it applies:
-//    [=====   ]   [====   ]  rewind (seconds left) and boost (0-100)
+//    [=====       ]          one small bar, two jobs (as the analogue arc):
+//    REWIND      3.2s        boost (0-100) while boost is on, else rewind
 //
 // No background: it sits on the game like the race timer, kept legible by a
 // tight shadow on the type.
@@ -51,21 +51,17 @@ export function SpeedoDigital({ id }: { id: string }) {
         <i class="dsp-bar-fill" style={{ width: `${pct}%` }} />
       </div>
       {(rwMax > 0 || boost !== null) && (
-        <div class="dsp-mini">
-          {rwMax > 0 && (
-            <div class="dsp-mini-row" data-kind="rewind" data-low={rwPct <= 25} data-out={rwLeft <= 0}>
-              <span class="dsp-mini-l">Rewind</span>
-              <span class="dsp-mini-v">{rwLeft <= 0 ? 'Spent' : `${(rwLeft / 1000).toFixed(1)}s`}</span>
-              <span class="dsp-mini-bar"><i style={{ width: `${rwPct}%` }} /></span>
-            </div>
-          )}
-          {boost !== null && (
-            <div class="dsp-mini-row" data-kind="boost">
-              <span class="dsp-mini-l">Boost</span>
-              <span class="dsp-mini-v">{Math.round(boost)}</span>
-              <span class="dsp-mini-bar"><i style={{ width: `${boost}%` }} /></span>
-            </div>
-          )}
+        <div
+          class="dsp-mini"
+          data-kind={boost !== null ? 'boost' : 'rewind'}
+          data-low={boost === null && rwPct <= 25}
+          data-out={boost === null && rwLeft <= 0}
+        >
+          <span class="dsp-mini-bar"><i style={{ width: `${boost !== null ? boost : rwPct}%` }} /></span>
+          <span class="dsp-mini-l">{boost !== null ? 'Boost' : 'Rewind'}</span>
+          <span class="dsp-mini-v">
+            {boost !== null ? Math.round(boost) : rwLeft <= 0 ? 'Spent' : `${(rwLeft / 1000).toFixed(1)}s`}
+          </span>
         </div>
       )}
     </div>
