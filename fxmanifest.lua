@@ -10,6 +10,7 @@ ui_page 'ui/index.html'
 
 files {
     'ui/**/*',
+    'dui/**/*',          -- in-world DUI pages (spz-races checkpoint pill / animation)
     'shim.lua',
 }
 
