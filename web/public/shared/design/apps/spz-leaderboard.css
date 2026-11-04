@@ -89,10 +89,11 @@
 html[data-hub] #root { background: transparent !important; }
 html[data-hub] .shell {
   position: fixed;
-  top: 104px; right: 36px; bottom: 64px; left: 300px;
+  top: 148px; right: 36px; bottom: 64px; left: 36px;
   width: auto !important; height: auto !important;
   max-width: none !important; max-height: none !important;
   margin: 0;
   animation: none;
 }
 html[data-hub] .rail { display: none !important; }
+html[data-hub='sub'] .shell { top: 184px; }   /* under the hub's sub-tabs */

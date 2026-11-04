@@ -4,7 +4,7 @@
 // Layers, bottom to top:
 //   backdrop (z 900)  hides the game and every other UI layer
 //   the section's app (z 1000: it holds focus, so the app host raises it)
-//   chrome (z 1500)   top bar, section rail, sub-tabs, key strip
+//   chrome (z 1500)   top bar, section tabs (Q / E), sub-tabs, key strip
 //
 // A section is an existing screen opened through its own command (client/hub.lua)
 // and laid into the content area by its hub-mode design rules; achievements are
@@ -95,7 +95,7 @@ export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {
     const tab = s.tabs ? s.tabs[sub]?.[0] : s.tab
     const fresh = prev !== res
     const show = () => {
-      setHubMode(res, true)
+      setHubMode(res, true, !!s.tabs)
       if (res === 'spz-leaderboard' && tab) toApp(res, { action: 'open', tab, player: profile.name })
       // Browser preview: no Lua to answer the records request.
       if (res === 'spz-speedcam' && !inGame) {
@@ -114,7 +114,7 @@ export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {
       wait = setTimeout(show, fresh ? 1200 : 0)
     }
     // A page that reloads drops data-hub; keep it on while this section is up.
-    const keep = setInterval(() => setHubMode(res, true), 500)
+    const keep = setInterval(() => setHubMode(res, true, !!s.tabs), 500)
     // Switching on before the open has landed must cancel it, or the old
     // section's open arrives after the new one and wins.
     return () => { clearTimeout(wait); clearInterval(keep) }
@@ -176,13 +176,12 @@ export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {
           </div>
         </header>
 
-        <nav class="hub-rail">
+        <nav class="hub-nav">
+          <button class="hub-qe" onClick={() => setIdx(i => (i + SECTIONS.length - 1) % SECTIONS.length)}><kbd>Q</kbd></button>
           {SECTIONS.map((s, i) => (
-            <button key={s.id} class="hub-item" data-on={i === idx} onClick={() => setIdx(i)}>
-              <span class="hub-num">{String(i + 1).padStart(2, '0')}</span>
-              <span class="hub-label">{s.label}</span>
-            </button>
+            <button key={s.id} class="hub-item" data-on={i === idx} onClick={() => setIdx(i)}>{s.label}</button>
           ))}
+          <button class="hub-qe" onClick={() => setIdx(i => (i + 1) % SECTIONS.length)}><kbd>E</kbd></button>
         </nav>
 
         {section.tabs && (
@@ -194,13 +193,12 @@ export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {
         )}
 
         {!section.app && (
-          <main class="hub-content">
+          <main class="hub-content" data-sub={!!section.tabs}>
             <Achievements profile={profile} />
           </main>
         )}
 
         <footer class="hub-keys">
-          <span><kbd>Q</kbd><kbd>E</kbd> Section</span>
           <span><kbd>TAB</kbd><kbd>ESC</kbd> Close</span>
         </footer>
       </div>

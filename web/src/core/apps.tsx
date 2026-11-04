@@ -282,10 +282,11 @@ export function AppMovers({ apps, layout, snap, onMove }: {
 // ── Hub mode ─────────────────────────────────────────────────────────────────
 // The hub draws some apps inside its frame. `data-hub` on the app's <html>
 // switches its design rules (design/apps/<resource>.css) to the hub layout.
-export function setHubMode(res: string, on: boolean) {
+/** sub: the section has sub-tabs above it, so the content starts lower. */
+export function setHubMode(res: string, on: boolean, sub = false) {
   const el = docOf(res)?.documentElement
   if (!el) return
-  if (on) el.setAttribute('data-hub', '1'); else el.removeAttribute('data-hub')
+  if (on) el.setAttribute('data-hub', sub ? 'sub' : '1'); else el.removeAttribute('data-hub')
 }
 
 /** The app's window (same origin), e.g. to catch the hub's keys inside it. */
