@@ -1,0 +1,91 @@
+/* ── In-game minigame HUD ─────────────────────────────────
+   Shared by every minigame through the spz-minigames exports
+   (Hud / Flash / Shard). Never takes focus or pointer input. */
+
+.hud { position: fixed; inset: 0; pointer-events: none; font-family: var(--body); color: var(--tx-1); --c: var(--accent); }
+.hud .glass { background: rgba(7,7,8,.82); border: 1px solid var(--line-2); box-shadow: 0 10px 34px rgba(0,0,0,.45); }
+
+/* top cluster */
+.hud-top { position: absolute; top: 2.2vh; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.hud-strip { display: flex; align-items: center; gap: 10px; padding: 5px 7px 5px 5px; border-radius: var(--r-md); animation: hud-in .22s ease-out; }
+.hud-ico { display: grid; place-items: center; width: 28px; height: 28px; border-radius: var(--r-sm); background: var(--c); color: #0a0a0a; font-size: 13px; }
+.hud-title { font-family: var(--font); font-weight: 800; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding-right: 4px; }
+.hud-chips { display: flex; gap: 5px; }
+.hud-chip { font-family: var(--font); font-weight: 700; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+  padding: 6px 9px; border-radius: 99px; background: var(--bg-2); color: var(--tx-2); border: 1px solid var(--line); }
+.hud-chip.hot { color: var(--c); border-color: color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 14%, transparent); }
+
+.hud-status { position: relative; min-width: 230px; padding: 10px 26px 12px; border-radius: var(--r-lg); text-align: center; overflow: hidden; animation: hud-in .22s ease-out; --v: var(--tx-1); }
+.hud-status::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--v); opacity: .9; }
+.hud-status::after { content: ""; position: absolute; inset: 0; background: radial-gradient(90% 120% at 50% 0%, color-mix(in srgb, var(--v) 16%, transparent), transparent 70%); }
+.hud-label { position: relative; z-index: 1; font-family: var(--font); font-weight: 700; font-size: 9px; letter-spacing: .22em; color: var(--tx-3); text-transform: uppercase; }
+.hud-value { position: relative; z-index: 1; font-family: var(--font); font-weight: 800; font-size: 34px; line-height: 1.15; letter-spacing: .04em; color: var(--v); font-variant-numeric: tabular-nums; text-transform: uppercase; }
+.hud-sub { position: relative; z-index: 1; font-size: 11.5px; color: var(--tx-2); margin-top: 2px; }
+
+.hud-alert { font-family: var(--font); font-weight: 700; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; padding: 8px 14px; border-radius: 99px;
+  color: var(--bad); background: rgba(255,77,94,.14); border: 1px solid rgba(255,77,94,.5); box-shadow: 0 0 24px rgba(255,77,94,.25); animation: hud-pulse 1s ease-in-out infinite; }
+.hud-hint { font-size: 11.5px; font-weight: 600; padding: 6px 12px; border-radius: 99px; color: var(--h, var(--tx-2)); }
+
+/* bottom cluster */
+.hud-bot { position: absolute; bottom: 6.5vh; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.hud-meter { width: 300px; padding: 10px 14px 12px; border-radius: var(--r-md); --m: var(--ok); }
+.hud-meter-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
+.hud-meter-h span { font-family: var(--font); font-weight: 700; font-size: 9px; letter-spacing: .18em; color: var(--tx-3); text-transform: uppercase; }
+.hud-meter-h b { font-family: var(--font); font-weight: 800; font-size: 13px; color: var(--m); font-variant-numeric: tabular-nums; }
+.hud-meter .bar { height: 6px; }
+.hud-meter .bar i { background: var(--m); transition: width .15s linear, background .3s; }
+.hud-foot { display: flex; align-items: center; gap: 8px; font-family: var(--font); font-weight: 700; font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  padding: 7px 12px; border-radius: 99px; color: var(--f, var(--tx-2)); }
+.hud-foot kbd { margin: 0; color: var(--tx-1); background: var(--bg-2); }
+
+/* 3-2-1 / GO / WAVE n */
+.hud-flash { position: absolute; left: 0; right: 0; top: 30vh; text-align: center; font-family: var(--font); font-weight: 800; font-size: 120px; line-height: 1;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--fl, #fff);
+  text-shadow: 0 0 40px color-mix(in srgb, var(--fl, var(--c)) 55%, transparent), 0 6px 24px rgba(0,0,0,.6);
+  animation: hud-flash var(--ms, 900ms) cubic-bezier(.2,.9,.3,1) forwards; }
+.hud-flash.long { font-size: 72px; }
+
+/* round / match result */
+.hud-shard { position: absolute; left: 50%; top: 30vh; transform: translateX(-50%); width: min(560px, 90vw); padding: 22px 28px 24px; border-radius: var(--r-lg);
+  text-align: center; overflow: hidden; --s: var(--c); animation: hud-shard .35s cubic-bezier(.2,.9,.3,1); }
+.hud-shard::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--s); }
+.hud-shard::after { content: ""; position: absolute; inset: 0; background: radial-gradient(80% 120% at 50% 0%, color-mix(in srgb, var(--s) 22%, transparent), transparent 70%); }
+.hud-shard > * { position: relative; z-index: 1; }
+.hud-shard .k { font-family: var(--font); font-weight: 700; font-size: 10px; letter-spacing: .22em; color: var(--tx-3); text-transform: uppercase; }
+.hud-shard .t { font-family: var(--font); font-weight: 800; font-size: 46px; letter-spacing: .05em; margin-top: 8px; color: var(--s); text-transform: uppercase; }
+.hud-shard .s { font-size: 14px; color: var(--tx-2); margin-top: 6px; line-height: 1.5; }
+.hud-shard.out { animation: hud-out .3s ease-in forwards; }
+
+@keyframes hud-in { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes hud-pulse { 50% { box-shadow: 0 0 6px rgba(255,77,94,.1); opacity: .78; } }
+@keyframes hud-flash { 0% { opacity: 0; transform: scale(1.7); } 18% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: scale(.92); } }
+@keyframes hud-shard { from { opacity: 0; transform: translate(-50%, 14px) scale(.97); } }
+@keyframes hud-out { to { opacity: 0; transform: translate(-50%, -8px); } }
+
+/* scoreboard — right edge, per-game rows */
+.hud-board { position: absolute; right: 1.6vw; top: 50%; transform: translateY(-50%); width: 250px; border-radius: var(--r-md); overflow: hidden; animation: hud-in .22s ease-out; }
+.hud-board-h { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px 9px; border-bottom: 1px solid var(--line); }
+.hud-board-h span { font-family: var(--font); font-weight: 700; font-size: 9px; letter-spacing: .2em; color: var(--tx-3); text-transform: uppercase; }
+.hud-board-h b { font-family: var(--font); font-weight: 700; font-size: 9px; letter-spacing: .1em; color: var(--c); }
+.hud-rows { display: flex; flex-direction: column; padding: 5px; gap: 2px; }
+.hud-row { display: grid; grid-template-columns: 18px 16px 1fr auto; gap: 7px; align-items: center; padding: 6px 7px; border-radius: var(--r-sm); position: relative; }
+.hud-row .n { font-family: var(--font); font-weight: 700; font-size: 9px; color: var(--tx-3); text-align: right; }
+.hud-row .i { font-size: 11px; color: var(--ic, var(--tx-3)); text-align: center; }
+.hud-row .nm { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud-row .nm small { display: block; font-size: 10px; font-weight: 500; color: var(--tx-3); margin-top: 1px; }
+.hud-row .v { font-family: var(--font); font-weight: 800; font-size: 11px; color: var(--vc, var(--tx-1)); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hud-row.me { background: color-mix(in srgb, var(--c) 14%, transparent); }
+.hud-row.me::before { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; border-radius: 3px; background: var(--c); }
+.hud-row.out { opacity: .38; }
+.hud-row.out .nm { text-decoration: line-through; text-decoration-color: rgba(255,255,255,.35); }
+.hud-row.sep { margin-top: 6px; }
+
+/* ── key bar: the mode's controls, live bindings (glyphs: keyglyph.css) ── */
+.hud-keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; padding: 2px 6px; }
+.hud-key { display: inline-flex; align-items: center; gap: 7px; }
+.hud-key > span:last-child { font-family: var(--font); font-weight: 600; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255, 255, 255, .85); text-shadow: 0 1px 3px rgba(0, 0, 0, .8); }
+.hud-key.hot .kg { border-color: var(--c); }
+.hud-key.hot > span:last-child { color: #fff; }
+.hud-key.dim { opacity: .4; }
+.hud-foot .kg { height: 20px; min-width: 20px; font-size: 10.5px; margin-right: 2px; }

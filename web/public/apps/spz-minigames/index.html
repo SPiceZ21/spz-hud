@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(){var n="spz-minigames";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}catch(e){window.GetParentResourceName=function(){return n}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
+  <meta charset="utf-8">
+  <title>Minigame Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="hud.css">
+  <link rel="stylesheet" href="keyglyph.css">
+    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
+    <link rel="stylesheet" href="../../shared/design/apps/spz-minigames.css">
+  </head>
+<body>
+  <div id="hub" class="hub hidden">
+    <aside class="side">
+      <header class="brand">
+        <div class="brand-mark"><i class="fa-solid fa-gamepad"></i></div>
+        <div>
+          <div class="brand-t">MINIGAMES</div>
+          <div class="brand-s">Pick a game · queue up · play</div>
+        </div>
+      </header>
+      <nav id="list" class="list"></nav>
+      <footer class="side-foot"><kbd>ESC</kbd> close</footer>
+    </aside>
+
+    <main id="detail" class="detail"></main>
+    <button id="x" class="x" title="Close"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-h"><span>Invite player</span><button id="modal-x" class="x sm"><i class="fa-solid fa-xmark"></i></button></div>
+      <input id="modal-q" class="search" placeholder="Search…" spellcheck="false">
+      <div id="modal-list" class="modal-list"></div>
+    </div>
+  </div>
+
+  <div id="hud" class="hud"></div>
+
+  <script src="app.js"></script>
+  <script src="keyglyph.js"></script>
+  <script src="hud.js"></script>
+</body>
+</html>

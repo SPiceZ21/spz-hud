@@ -1,0 +1,47 @@
+/* spz-spectate on the shared look. */
+
+.mod {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+.spec-eyebrow .dot { box-shadow: none; }
+.spec-ctrl .kc, .rf-keys .kc {
+  background: transparent;
+  border: 1px solid var(--ui-line-2);
+  border-radius: var(--ui-r-sm);
+}
+.spec-ctrl .kc.esc { border-color: var(--ui-line-2); color: var(--primary); }
+
+/* Race board: one panel, rows with hairlines, no side stripes. */
+#rf-list {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  overflow: hidden;
+  gap: 0 !important;
+}
+.rf-meta {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-left: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+}
+.rrow, .rrow.leader {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ui-line);
+  border-radius: 0;
+}
+.rrow:last-child { border-bottom: 0; }
+.rflag { box-shadow: none; }
+.rrow.leader .rgap { border-color: transparent; color: var(--ui-warn); }
+
+/* Rank / crew / record chips: words in a colour, one hairline, no fill. */
+.chip, .chip-rank, .chip-crew, .chip-rec {
+  background: transparent;
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-sm);
+}
+.rgap, .rrow.leader .rgap { background: transparent; border-color: transparent; }

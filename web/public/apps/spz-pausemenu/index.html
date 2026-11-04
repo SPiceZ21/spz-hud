@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(){var n="spz-pausemenu";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}catch(e){window.GetParentResourceName=function(){return n}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPZ Pause Menu</title>
+  <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
+    <link rel="stylesheet" href="../../shared/design/apps/spz-pausemenu.css">
+  </head>
+<body>
+  <div id="root" class="hidden">
+    <div class="shade"></div>
+
+    <main class="stage">
+      <header class="top">
+        <div class="menu-kicker"><i></i>Paused</div>
+        <div class="brand">SPICEZ <b>RACING</b></div>
+        <div class="clock" id="clock"></div>
+      </header>
+
+      <section class="bento" id="bento"></section>
+      <section class="quick-row" id="quick"></section>
+
+      <footer class="legend">
+        <span class="key"><kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> Navigate</span>
+        <span class="key"><kbd>Enter</kbd> Select</span>
+        <span class="key"><kbd>Esc</kbd> Resume</span>
+      </footer>
+    </main>
+
+    <div class="modal hidden" id="modal">
+      <div class="modal-box">
+        <div class="modal-bar"></div>
+        <h3 class="modal-title" id="modalTitle"></h3>
+        <p class="modal-body" id="modalBody"></p>
+        <div class="modal-actions">
+          <button class="mbtn" id="modalCancel">Cancel</button>
+          <button class="mbtn mbtn-danger" id="modalConfirm">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

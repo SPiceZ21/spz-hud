@@ -1,0 +1,485 @@
+/* Local Panchang (asset/fonts) — project display font. No CDN, offline-safe. */
+@font-face { font-family: 'Panchang'; font-weight: 400; src: url('../../shared/fonts/Panchang-Regular.ttf')   format('truetype'); }
+@font-face { font-family: 'Panchang'; font-weight: 500; src: url('../../shared/fonts/Panchang-Medium.ttf')    format('truetype'); }
+@font-face { font-family: 'Panchang'; font-weight: 600; src: url('../../shared/fonts/Panchang-Semibold.ttf')  format('truetype'); }
+@font-face { font-family: 'Panchang'; font-weight: 700; src: url('../../shared/fonts/Panchang-Bold.ttf')      format('truetype'); }
+@font-face { font-family: 'Panchang'; font-weight: 800; src: url('../../shared/fonts/Panchang-Extrabold.ttf') format('truetype'); }
+
+:root {
+  --primary:  #ff6600;
+  --primary-rgb: 255, 102, 0;
+  --gold:     #ffcf3f;
+  --font:     'Panchang', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'JetBrains Mono', monospace;
+  --mod-bg:   rgba(9, 10, 13, 0.9);
+  --mod-border: rgba(255, 255, 255, 0.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: transparent;
+  overflow: hidden;
+  font-family: var(--font);
+  color: #fff;
+  user-select: none;
+}
+
+/* NOTE: no backdrop-filter — CEF renders it as an opaque black box. */
+
+#root {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 720px;
+  animation: sIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#root.hidden { display: none; }
+.hidden { display: none !important; }
+
+@keyframes sIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Top bar (eyebrow + controls) ────────────────────────── */
+.spec-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3px;
+}
+
+.spec-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.spec-eyebrow .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 7px var(--primary);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.spec-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.35);
+}
+.spec-ctrl .kc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 3px;
+}
+.spec-ctrl .kc.esc { color: var(--primary); border-color: rgba(var(--primary-rgb), 0.4); }
+.spec-ctrl .fsep { color: rgba(255, 255, 255, 0.28); }
+.spec-ctrl .counter {
+  font-family: var(--font-mono);
+  color: rgba(255, 255, 255, 0.7);
+  min-width: 38px;
+  text-align: center;
+}
+
+/* ── Module row ──────────────────────────────────────────── */
+.spec-row {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+/* single-line modules — short height, wide */
+.mod {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  background: var(--mod-bg);
+  border: 1px solid var(--mod-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.mod-label {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+  flex-shrink: 0;
+}
+
+/* ── Identity module (grows to fill width) ───────────────── */
+.mod-id { flex: 1; min-width: 0; }
+
+.id-flag {
+  width: 18px;
+  height: 12px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+}
+
+.id-num {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 800;
+  font-style: italic;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.id-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.id-rec {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #1a1206;
+  background: var(--gold);
+  border-radius: 2px;
+  padding: 1px 4px;
+  flex-shrink: 0;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 3px;
+  padding: 1px 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+.chip-rank { color: #fff; background: rgba(255, 255, 255, 0.06); }
+.chip-crew { color: var(--primary); border-color: rgba(var(--primary-rgb), 0.35); background: rgba(var(--primary-rgb), 0.08); }
+
+/* ── Status module ───────────────────────────────────────── */
+.status-val {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.mod-status .status-val.freeroam { color: rgba(255, 255, 255, 0.55); }
+.mod-status .status-val.racing   { color: var(--gold); }
+
+/* ── Speed module ────────────────────────────────────────── */
+.speed-val {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.speed-unit { font-size: 8px; font-weight: 700; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.4); }
+.speed-veh {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 8px;
+}
+/* Same slot the betting board held: top-right, clear of the minimap column. */
+#rf-root {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  /* Wider than the old betting board: gaps are real times now, and
+     "+1:02.88 1L" plus a driver name does not fit in 256px. */
+  width: 288px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  animation: rfIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#rf-root.hidden { display: none; }
+
+@keyframes rfIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Top bar ─────────────────────────────────────────────── */
+.rf-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3px;
+}
+.rf-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.55);
+}
+.dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.9);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+/* A finished race is not live — the marker stops moving and goes neutral. */
+#rf-root.final .dot { background: rgba(255, 255, 255, 0.5); box-shadow: none; animation: none; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dot { animation: none; }
+  #rf-root { animation: none; }
+}
+
+.rf-lap {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Modules ─────────────────────────────────────────────── */
+.mod {
+  background: var(--mod-bg);
+  border: 1px solid var(--mod-border);
+  border-radius: 3px;
+}
+
+.rf-meta {
+  /* The board no longer borrows spectate's .mod class, so it paints its own
+     surface rather than inheriting one that belongs to the bottom bar. */
+  background: var(--mod-bg, rgba(9, 10, 13, 0.9));
+  border: 1px solid var(--mod-border, rgba(255, 255, 255, 0.07));
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 9px;
+  border-left: 2px solid var(--primary);
+}
+.rf-track {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.rf-class {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Running order ───────────────────────────────────────── */
+.rf-list { display: flex; flex-direction: column; gap: 2px; }
+
+.rrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 8px;
+  background: var(--mod-bg);
+  border: 1px solid var(--mod-border);
+  border-radius: 3px;
+  border-left: 2px solid rgba(255, 255, 255, 0.14);
+}
+.rrow.leader { border-left-color: var(--gold); }
+.rrow.dnf    { opacity: 0.45; }
+.rrow.dc     { opacity: 0.6; }
+
+.rpos {
+  font-size: 10px;
+  font-weight: 800;
+  font-style: italic;
+  width: 15px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.rrow.leader .rpos { color: var(--gold); }
+
+.rflag {
+  width: 14px; height: 10px;
+  object-fit: cover;
+  border-radius: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.rnum {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 2px;
+  padding: 0 3px;
+  min-width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Name is the only elastic cell — the tag rides inside it so a marker never
+   costs the driver's name a whole column plus its gap. */
+.rname {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+.rname > span {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rtag {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 1px 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.rtag.bot { color: rgba(255, 255, 255, 0.4); background: rgba(255, 255, 255, 0.07); }
+.rtag.dc  { color: var(--warning);           background: rgba(232, 163, 61, 0.14); }
+
+.rgap {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  padding: 1px 5px;
+  min-width: 42px;
+  white-space: nowrap;
+  text-align: center;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.rrow.leader .rgap { color: var(--gold); border-color: rgba(255, 207, 63, 0.22); }
+.rrow.dnf .rgap    { color: rgba(255, 255, 255, 0.45); }
+
+.rf-more {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.32);
+  text-align: center;
+  padding: 2px 0 0;
+}
+
+/* ── Mini view ───────────────────────────────────────────────
+   Same markup, less of it. Drops the track strip and keeps the running order
+   plus the key hints — a shortcut you cannot see is a shortcut nobody uses.
+   Width stays put: narrowing it re-truncated the names, and a panel that
+   changes width on a keypress also moves every row under the eye. Mini is
+   SHORTER, not narrower. */
+#rf-root.mini .rf-meta { display: none; }
+#rf-root.mini .rrow { height: 20px; }
+#rf-root.mini .rname { font-size: 9px; }
+
+/* ── Footer ──────────────────────────────────────────────── */
+.rf-keys {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.42);
+  text-align: right;
+  padding: 0 3px;
+}
+.rf-keys .kc {
+  /* Matches the keycaps on the spectator bar: the key itself reads clearly,
+     the word next to it stays quiet. */
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 2px;
+  padding: 0 3px;
+}
+
+.rf-keys .fsep { margin-right: 6px; }
+.rf-keys .fsep:last-child { margin-right: 0; }

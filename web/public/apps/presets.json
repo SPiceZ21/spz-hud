@@ -1,0 +1,864 @@
+{
+  "spz-nametag": [
+    {
+      "label": "clear",
+      "msg": {
+        "action": "clear"
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    },
+    {
+      "label": "update",
+      "msg": {
+        "action": "update",
+        "nametags": null
+      }
+    }
+  ],
+  "spz-speedometer": [
+    {
+      "label": "hide",
+      "msg": {
+        "type": "hide"
+      }
+    },
+    {
+      "label": "show",
+      "msg": {
+        "type": "show"
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "type": "theme",
+        "theme": null
+      }
+    },
+    {
+      "label": "update",
+      "msg": {
+        "type": "update",
+        "speed": null,
+        "gear": null,
+        "pct": null,
+        "inRedline": null,
+        "shifting": null,
+        "limiter": null,
+        "launch": null,
+        "tcsCut": null,
+        "boost": null,
+        "status": null,
+        "rewindLeft": null,
+        "sideBoost": null
+      }
+    },
+    {
+      "label": "update",
+      "msg": {
+        "type": "update",
+        "speed": null,
+        "gear": null,
+        "pct": null,
+        "inRedline": null,
+        "shifting": false,
+        "limiter": false,
+        "launch": false,
+        "tcsCut": false,
+        "boost": 0,
+        "status": {},
+        "rewindMax": null,
+        "rewindLeft": null,
+        "sideBoost": null
+      }
+    }
+  ],
+  "spz-speedcam": [
+    {
+      "label": "capture",
+      "msg": {
+        "type": "capture",
+        "cameraName": null,
+        "plate": null,
+        "plateIndex": null,
+        "speed": null,
+        "unit": null,
+        "personalBest": null,
+        "globalRecord": null,
+        "prevBest": null,
+        "duration": null,
+        "headshot": null
+      }
+    },
+    {
+      "label": "closeRecords",
+      "msg": {
+        "type": "closeRecords"
+      }
+    },
+    {
+      "label": "minimap",
+      "msg": {
+        "type": "minimap",
+        "minimap": null
+      }
+    },
+    {
+      "label": "openRecords",
+      "msg": {
+        "type": "openRecords"
+      }
+    },
+    {
+      "label": "records",
+      "msg": {
+        "type": "records",
+        "records": {},
+        "cameraList": null
+      }
+    },
+    {
+      "label": "records",
+      "msg": {
+        "type": "records",
+        "records": null,
+        "cameraList": null
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "type": "theme",
+        "theme": null
+      }
+    }
+  ],
+  "spz-raceUI": [
+    {
+      "label": "countdown",
+      "msg": {
+        "action": "countdown",
+        "data": null
+      }
+    },
+    {
+      "label": "cpWaypoint",
+      "msg": {
+        "action": "cpWaypoint",
+        "data": null
+      }
+    },
+    {
+      "label": "dismissStats",
+      "msg": {
+        "action": "dismissStats"
+      }
+    },
+    {
+      "label": "fastestLap",
+      "msg": {
+        "action": "fastestLap",
+        "data": null
+      }
+    },
+    {
+      "label": "finishWindow",
+      "msg": {
+        "action": "finishWindow",
+        "data": {}
+      }
+    },
+    {
+      "label": "finishWindowEnd",
+      "msg": {
+        "action": "finishWindowEnd",
+        "data": {}
+      }
+    },
+    {
+      "label": "flourish",
+      "msg": {
+        "action": "flourish",
+        "data": null
+      }
+    },
+    {
+      "label": "freeroam",
+      "msg": {
+        "action": "freeroam",
+        "data": null
+      }
+    },
+    {
+      "label": "hideAll",
+      "msg": {
+        "action": "hideAll"
+      }
+    },
+    {
+      "label": "keyhints",
+      "msg": {
+        "action": "keyhints",
+        "data": null
+      }
+    },
+    {
+      "label": "lobby",
+      "msg": {
+        "action": "lobby",
+        "data": null
+      }
+    },
+    {
+      "label": "postRaceStats",
+      "msg": {
+        "action": "postRaceStats",
+        "data": null
+      }
+    },
+    {
+      "label": "raceIntro",
+      "msg": {
+        "action": "raceIntro",
+        "data": {}
+      }
+    },
+    {
+      "label": "raceIntro",
+      "msg": {
+        "action": "raceIntro",
+        "data": null
+      }
+    },
+    {
+      "label": "raceOverlay",
+      "msg": {
+        "action": "raceOverlay",
+        "data": {}
+      }
+    },
+    {
+      "label": "radar",
+      "msg": {
+        "action": "radar",
+        "data": {}
+      }
+    },
+    {
+      "label": "rewind",
+      "msg": {
+        "action": "rewind",
+        "data": null
+      }
+    },
+    {
+      "label": "rewind",
+      "msg": {
+        "action": "rewind",
+        "data": {}
+      }
+    },
+    {
+      "label": "sector",
+      "msg": {
+        "action": "sector",
+        "data": null
+      }
+    },
+    {
+      "label": "sectorReset",
+      "msg": {
+        "action": "sectorReset",
+        "data": {}
+      }
+    },
+    {
+      "label": "sound",
+      "msg": {
+        "action": "sound",
+        "data": {}
+      }
+    },
+    {
+      "label": "splitDelta",
+      "msg": {
+        "action": "splitDelta",
+        "data": null
+      }
+    },
+    {
+      "label": "spzBooted",
+      "msg": {
+        "action": "spzBooted"
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    },
+    {
+      "label": "tt_hide",
+      "msg": {
+        "action": "tt_hide"
+      }
+    },
+    {
+      "label": "wanted",
+      "msg": {
+        "action": "wanted",
+        "data": null
+      }
+    },
+    {
+      "label": "warmup",
+      "msg": {
+        "action": "warmup",
+        "data": null
+      }
+    },
+    {
+      "label": "warmupEnd",
+      "msg": {
+        "action": "warmupEnd",
+        "data": {}
+      }
+    }
+  ],
+  "spz-spectate": [
+    {
+      "label": "board",
+      "msg": {
+        "action": "board",
+        "board": null,
+        "view": null,
+        "maxRows": null,
+        "keys": {}
+      }
+    },
+    {
+      "label": "boardHide",
+      "msg": {
+        "action": "boardHide"
+      }
+    },
+    {
+      "label": "hide",
+      "msg": {
+        "action": "hide"
+      }
+    },
+    {
+      "label": "show",
+      "msg": {
+        "action": "show"
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    },
+    {
+      "label": "update",
+      "msg": {
+        "action": "update",
+        "data": {}
+      }
+    }
+  ],
+  "spz-rocketleague": [
+    {
+      "label": "ended",
+      "msg": {
+        "action": "ended",
+        "winner": null,
+        "score": null
+      }
+    },
+    {
+      "label": "goal",
+      "msg": {
+        "action": "goal",
+        "team": null,
+        "scorer": null,
+        "warmup": null
+      }
+    },
+    {
+      "label": "hide",
+      "msg": {
+        "action": "hide"
+      }
+    },
+    {
+      "label": "hint",
+      "msg": {
+        "action": "hint",
+        "keys": null
+      }
+    },
+    {
+      "label": "kickoff",
+      "msg": {
+        "action": "kickoff",
+        "ms": null
+      }
+    },
+    {
+      "label": "show",
+      "msg": {
+        "action": "show"
+      }
+    },
+    {
+      "label": "state",
+      "msg": {
+        "action": "state",
+        "state": null,
+        "me": null
+      }
+    },
+    {
+      "label": "teams",
+      "msg": {
+        "action": "teams",
+        "blue": null,
+        "orange": null
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    }
+  ],
+  "spz-minigames": [
+    {
+      "label": "state",
+      "msg": {
+        "action": "state",
+        "games": null
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    }
+  ],
+  "spz-poll": [
+    {
+      "label": "closePoll",
+      "msg": {
+        "action": "closePoll"
+      }
+    },
+    {
+      "label": "openPoll",
+      "msg": {
+        "action": "openPoll",
+        "data": null
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    },
+    {
+      "label": "updatePoll",
+      "msg": {
+        "action": "updatePoll",
+        "data": null
+      }
+    }
+  ],
+  "spz-chat": [
+    {
+      "label": "commands",
+      "msg": {
+        "action": "commands",
+        "list": null
+      }
+    },
+    {
+      "label": "hide",
+      "msg": {
+        "action": "hide"
+      }
+    },
+    {
+      "label": "message",
+      "msg": {
+        "action": "message",
+        "payload": null
+      }
+    },
+    {
+      "label": "message",
+      "msg": {
+        "action": "message",
+        "payload": {}
+      }
+    },
+    {
+      "label": "minimap",
+      "msg": {
+        "action": "minimap",
+        "rect": null
+      }
+    },
+    {
+      "label": "online",
+      "msg": {
+        "action": "online",
+        "list": null
+      }
+    },
+    {
+      "label": "show",
+      "msg": {
+        "action": "show"
+      }
+    },
+    {
+      "label": "spzBooted",
+      "msg": {
+        "action": "spzBooted"
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    },
+    {
+      "label": "visible",
+      "msg": {
+        "action": "visible",
+        "visible": null
+      }
+    }
+  ],
+  "spz-radio": [
+    {
+      "label": "init",
+      "msg": {
+        "action": "init",
+        "stations": null
+      }
+    },
+    {
+      "label": "nowPlaying",
+      "msg": {
+        "action": "nowPlaying",
+        "data": null
+      }
+    },
+    {
+      "label": "state",
+      "msg": {
+        "action": "state",
+        "station": null,
+        "volume": null,
+        "on": null,
+        "ducked": null
+      }
+    }
+  ],
+  "spz-carspawner": [
+    {
+      "label": "close",
+      "msg": {
+        "action": "close"
+      }
+    },
+    {
+      "label": "open",
+      "msg": {
+        "action": "open",
+        "vehicles": null,
+        "shots": null
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    }
+  ],
+  "spz-tunners": [
+    {
+      "label": "close",
+      "msg": {
+        "action": "close"
+      }
+    },
+    {
+      "label": "menu",
+      "msg": {
+        "action": "menu",
+        "data": {}
+      }
+    },
+    {
+      "label": "open",
+      "msg": {
+        "action": "open"
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    },
+    {
+      "label": "vehicle",
+      "msg": {
+        "action": "vehicle",
+        "data": {}
+      }
+    }
+  ],
+  "spz-emotes": [
+    {
+      "label": "close",
+      "msg": {
+        "action": "close"
+      }
+    },
+    {
+      "label": "open",
+      "msg": {
+        "action": "open",
+        "categories": null,
+        "emotes": null,
+        "favs": null,
+        "theme": null,
+        "playing": null,
+        "cancelKey": null
+      }
+    },
+    {
+      "label": "playing",
+      "msg": {
+        "action": "playing",
+        "label": null
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    }
+  ],
+  "spz-crew": [
+    {
+      "label": "data",
+      "msg": {
+        "action": "data",
+        "data": null,
+        "list": null
+      }
+    },
+    {
+      "label": "hide",
+      "msg": {
+        "action": "hide"
+      }
+    },
+    {
+      "label": "show",
+      "msg": {
+        "action": "show"
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    }
+  ],
+  "spz-leaderboard": [
+    {
+      "label": "close",
+      "msg": {
+        "action": "close"
+      }
+    },
+    {
+      "label": "open",
+      "msg": {
+        "action": "open",
+        "player": null,
+        "raceId": null
+      }
+    },
+    {
+      "label": "rankUp",
+      "msg": {
+        "action": "rankUp",
+        "oldRank": null,
+        "newRank": null,
+        "isPromotion": true
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    }
+  ],
+  "spz-replay": [],
+  "spz-pausemenu": [
+    {
+      "label": "close",
+      "msg": {
+        "action": "close"
+      }
+    },
+    {
+      "label": "face",
+      "msg": {
+        "action": "face",
+        "txd": null
+      }
+    },
+    {
+      "label": "menu",
+      "msg": {
+        "action": "menu",
+        "items": null,
+        "status": {}
+      }
+    },
+    {
+      "label": "open",
+      "msg": {
+        "action": "open",
+        "items": null,
+        "player": null,
+        "status": {}
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    }
+  ],
+  "spz-tutorial": [
+    {
+      "label": "hide",
+      "msg": {
+        "action": "hide"
+      }
+    },
+    {
+      "label": "step",
+      "msg": {
+        "action": "step",
+        "step": {}
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "action": "theme",
+        "theme": null
+      }
+    }
+  ],
+  "spz-spawn": [
+    {
+      "label": "appearanceStepDone",
+      "msg": {
+        "type": "appearanceStepDone"
+      }
+    },
+    {
+      "label": "characterCreationError",
+      "msg": {
+        "type": "characterCreationError",
+        "message": null
+      }
+    },
+    {
+      "label": "creationPause",
+      "msg": {
+        "type": "creationPause"
+      }
+    },
+    {
+      "label": "hide",
+      "msg": {
+        "type": "hide"
+      }
+    },
+    {
+      "label": "hideCover",
+      "msg": {
+        "type": "hideCover"
+      }
+    },
+    {
+      "label": "show",
+      "msg": {
+        "type": "show",
+        "playerData": null,
+        "spawns": null
+      }
+    },
+    {
+      "label": "showCharacterCreation",
+      "msg": {
+        "type": "showCharacterCreation",
+        "suggested": null
+      }
+    },
+    {
+      "label": "showCover",
+      "msg": {
+        "type": "showCover"
+      }
+    },
+    {
+      "label": "theme",
+      "msg": {
+        "type": "theme",
+        "theme": null
+      }
+    }
+  ]
+}

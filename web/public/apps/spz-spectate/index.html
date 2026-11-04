@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(){var n="spz-spectate";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}catch(e){window.GetParentResourceName=function(){return n}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>spz-spectate</title>
+  <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
+    <link rel="stylesheet" href="../../shared/design/apps/spz-spectate.css">
+  </head>
+<body>
+  <div id="root" class="hidden">
+
+    <!-- top bar: eyebrow + controls -->
+    <div class="spec-top">
+      <div class="spec-eyebrow"><span class="dot"></span> SPECTATING</div>
+      <div class="spec-ctrl">
+        <span class="kc">Q</span>
+        <span class="kc">R</span>
+        <span class="fsep">CYCLE</span>
+        <span id="counter" class="counter">1 / 1</span>
+        <span class="kc esc">ESC</span>
+        <span class="fsep">EXIT</span>
+      </div>
+    </div>
+
+    <!-- module row: identity · status · speed -->
+    <div class="spec-row">
+
+      <div class="mod mod-id">
+        <img id="flag" class="id-flag hidden" src="" alt="">
+        <span id="num" class="id-num hidden">00</span>
+        <span id="name" class="id-name">—</span>
+        <span id="rec" class="id-rec hidden">REC</span>
+        <span id="rank" class="chip chip-rank hidden">D-5</span>
+        <span id="crew" class="chip chip-crew hidden"></span>
+      </div>
+
+      <div class="mod mod-status">
+        <span class="mod-label">STATUS</span>
+        <span id="status" class="status-val freeroam">FREEROAM</span>
+      </div>
+
+      <div class="mod mod-speed">
+        <span class="mod-label">SPEED</span>
+        <span id="speed" class="speed-val">0</span>
+        <span class="speed-unit">KM/H</span>
+        <span id="veh" class="speed-veh">On foot</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Live race board — independent of the spectator bar above: shown to
+       everyone outside the race, whether or not they are spectating. -->
+  <div id="rf-root" class="hidden">
+
+    <div class="rf-top">
+      <span class="rf-eyebrow"><span class="dot"></span> <span id="rf-state">LIVE RACE</span></span>
+      <span id="rf-lap" class="rf-lap">LAP 1/1</span>
+    </div>
+
+    <div class="rf-meta">
+      <span id="rf-track" class="rf-track">—</span>
+      <span id="rf-class" class="rf-class"></span>
+    </div>
+
+    <div id="rf-list" class="rf-list"></div>
+
+    <!-- Key hints. Shown in every view including mini: a shortcut you cannot
+         see is a shortcut nobody uses. -->
+    <div class="rf-keys">
+      <span id="rf-k-cycle" class="kc">F7</span><span class="fsep">SIZE</span>
+      <span id="rf-k-hide" class="kc">F8</span><span class="fsep">HIDE</span>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

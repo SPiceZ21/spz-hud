@@ -1,0 +1,30 @@
+/* spz-speedcam on the shared look. */
+
+#capture,
+.cap-vehicle, .cap-profile {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+#capture .cam-icon { border-radius: var(--ui-r-sm); }
+.cap-face { background: rgba(255, 255, 255, 0.04); border-radius: var(--ui-r-sm); }
+
+/* Badges are words in a colour, not tinted boxes. */
+.badge, #capture .badge,
+.badge-global, .badge-personal, .badge-improvement,
+#capture .badge-personal, #capture .badge-improvement {
+  background: transparent;
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-sm);
+  box-shadow: none;
+}
+.badge-personal, #capture .badge-personal { color: var(--ui-ok); }
+.badge-global { color: var(--orange); }
+.cap-global {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+  color: var(--orange);
+}

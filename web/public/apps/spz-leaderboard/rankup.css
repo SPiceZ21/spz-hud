@@ -1,0 +1,59 @@
+/* Rank-up overlay. The badge is a Blender-rendered video with alpha
+   (Assets/rankfx), so there is no panel behind it. No backdrop-filter
+   anywhere: FiveM's CEF draws it as a black box. */
+
+.rankup {
+  position: fixed; left: 50%; top: 4vh; transform: translateX(-50%);
+  width: 640px; display: flex; flex-direction: column; align-items: center;
+  pointer-events: none; z-index: 9999;
+  opacity: 0; transition: opacity .45s ease;
+}
+.rankup.show { opacity: 1; }
+
+/* videos are rendered at 1280x1152 (2x) so they stay sharp at this size */
+.rankup-stage {
+  position: relative; width: 640px; height: 576px;
+  transition: transform .95s cubic-bezier(.4, 0, .2, 1), opacity .95s ease;
+}
+.rankup-stage video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 0 26px var(--rk, rgba(120,120,255,.5)));
+}
+.rankup-stage video.hide { visibility: hidden; }
+.rankup-stage .rk-old { transition: opacity .5s ease; filter: none; }
+.rankup-stage .rk-old.gone { opacity: 0; }
+
+/* ── text: RANK UP + [old] ▶ [new] ── */
+.rankup-text { margin-top: -78px; display: flex; flex-direction: column; align-items: center;
+  transition: opacity .45s ease, transform .45s ease; }
+.rankup-kicker {
+  font-family: 'Panchang', 'Segoe UI', sans-serif; font-weight: 800; font-size: 13px;
+  letter-spacing: .55em; text-transform: uppercase; color: #fff;
+  text-shadow: 0 0 16px var(--rk, #8a8aff), 0 2px 8px rgba(0,0,0,.85);
+  opacity: 0; transform: translateY(10px);
+}
+.rankup-line { margin-top: 12px; display: flex; align-items: center; gap: 18px; opacity: 0; transform: translateY(10px); }
+.rk-from, .rk-to { display: flex; align-items: center; gap: 10px;
+  font-family: 'Panchang', 'Segoe UI', sans-serif; font-weight: 800; letter-spacing: .06em; color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,.85); }
+.rk-from img, .rk-to img { height: 34px; width: auto; }
+.rk-from { opacity: .45; font-size: 17px; }
+.rk-from img { filter: grayscale(.6); }
+.rk-to { font-size: 26px; }
+.rk-to img { height: 44px; filter: drop-shadow(0 0 10px var(--rk, #8a8aff)); }
+
+/* three chevrons pulsing left -> right in the tier colour */
+.rk-arrow { display: flex; gap: 3px; }
+.rk-arrow i { width: 10px; height: 10px; border-top: 3px solid var(--rk, #8a8aff); border-right: 3px solid var(--rk, #8a8aff);
+  transform: rotate(45deg); opacity: .25; animation: rk-chev 1.2s ease-in-out infinite; }
+.rk-arrow i:nth-child(2) { animation-delay: .15s; }
+.rk-arrow i:nth-child(3) { animation-delay: .3s; }
+@keyframes rk-chev { 0%, 100% { opacity: .2; } 40% { opacity: 1; } }
+
+.rankup.text .rankup-kicker { animation: rk-in .5s ease forwards; }
+.rankup.text .rankup-line   { animation: rk-in .5s ease .15s forwards; }
+@keyframes rk-in { to { opacity: 1; transform: translateY(0); } }
+
+/* ── exit: text goes first, then the badge eases down and out ── */
+.rankup.out .rankup-text  { opacity: 0; transform: translateY(8px); }
+.rankup.out .rankup-stage { opacity: 0; transform: scale(.9) translateY(-10px); transition-delay: .2s; }

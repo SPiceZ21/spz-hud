@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(){var n="spz-emotes";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}catch(e){window.GetParentResourceName=function(){return n}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
+  <meta charset="utf-8">
+  <title>spz-emotes</title>
+  <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
+    <link rel="stylesheet" href="../../shared/design/apps/spz-emotes.css">
+  </head>
+<body>
+  <div id="root" class="hidden">
+    <section class="panel">
+      <header>
+        <h1>Emotes</h1>
+        <button id="close" title="Close (Esc)">✕</button>
+      </header>
+
+      <div class="search">
+        <input id="q" type="text" placeholder="Search emotes…" spellcheck="false" autocomplete="off">
+      </div>
+
+      <nav id="cats"></nav>
+
+      <div id="grid"></div>
+
+      <footer>
+        <div id="now"><span class="dot"></span><span id="nowLabel">Nothing playing</span></div>
+        <button id="stop">Stop <kbd id="cancelKey">X</kbd></button>
+      </footer>
+    </section>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

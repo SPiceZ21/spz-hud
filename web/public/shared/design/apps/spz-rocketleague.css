@@ -1,0 +1,34 @@
+/* spz-rocketleague on the shared look. Team colours are the information, so
+   they colour the team name and score; no gradient fills, stripes or glows. */
+.board {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+.team, .team.blue, .team.orange { background: transparent; border-radius: 0; }
+.team.blue   { color: var(--blue); }
+.team.orange { color: var(--orange); }
+.clock { background: transparent; border-left: 1px solid var(--ui-line); border-right: 1px solid var(--ui-line); border-radius: 0; }
+
+.roster div, .roster.blue div, .roster.orange div {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-sm);
+}
+.roster.blue div   { color: var(--blue); }
+.roster.orange div { color: var(--orange); }
+
+.banner { border-radius: var(--ui-r-lg); background: var(--ui-surface); border-color: var(--ui-line); }
+.shard { background: var(--ui-surface); }
+.shard-bar { display: none !important; }
+
+/* Key hints: the same as the race HUD's (keycap + label, no box per line). */
+.hint div { background: transparent; border: 0; padding-left: 0; }
+.hint kbd {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line-2);
+  border-bottom-width: 2px;
+  border-radius: var(--ui-r-sm);
+  color: var(--ui-tx-1);
+}

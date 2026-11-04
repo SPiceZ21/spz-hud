@@ -1,0 +1,85 @@
+/* spz-leaderboard (tablet) on the shared look. */
+
+/* Frame */
+.shell { background: var(--ui-surface-solid); border-color: var(--ui-line); border-radius: var(--ui-r-lg); box-shadow: none; }
+.rail { background: var(--ui-surface-solid); }
+.rail-btn.active::before { display: none !important; }   /* no side stripe */
+.rail-btn.active { background: var(--ui-raised); color: var(--accent); }
+.hero-art, .hero-art::after { background: none !important; }   /* no header wash */
+
+/* Controls: flat, small radii, the primary is a plain fill */
+.btn, .seg, .search, .chip-info, .track-search, .track-toggle { border-radius: var(--ui-r-md); }
+.seg-btn { border-radius: var(--ui-r-sm); }
+.btn-primary { box-shadow: none; }
+.replay-btn { box-shadow: none; border-radius: var(--ui-r-sm); }
+.live-dot, .d-S, .d-A { box-shadow: none; }
+
+/* Podium: three equal cards, the place shown by its colour in the name line,
+   no tinted wash */
+.pod, .pod-1, .pod-2, .pod-3 {
+  background: transparent;
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+}
+.pod::before { display: none !important; }
+
+/* Stat underline bars: the number is the data */
+.metric-bar, .col-bar { display: none !important; }
+
+/* Rows: one list with hairlines, not a stack of gradient cards */
+.row, .row.r1, .row.r2, .row.r3, .row.r-lead, .row.r-trail {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ui-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+.row:hover, .row.open { background: var(--ui-raised); box-shadow: none; }
+.row.mine { background: var(--ui-raised); border-bottom-color: var(--ui-line); }
+.row.mine .name, .row.mine .driver-name { color: var(--accent); }
+
+/* Place: a number in its podium colour, not a filled badge */
+.pos, .row.r1 .pos, .row.r2 .pos, .row.r3 .pos {
+  background: transparent;
+  border: 0;
+  color: var(--ui-tx-3);
+}
+.row.r1 .pos { color: var(--gold); }
+.row.r2 .pos { color: var(--silver); }
+.row.r3 .pos { color: var(--bronze); }
+
+/* Class chips and outcome tags: coloured words with one hairline */
+.chip, .chip.S, .chip.A, .chip.B, .chip.C, .chip.D,
+.outcome, .outcome.o-win, .outcome.o-loss, .outcome.o-pending {
+  background: transparent;
+  border-color: var(--ui-line);
+  border-radius: var(--ui-r-sm);
+}
+.outcome.o-win { color: var(--ui-ok); }
+.outcome.o-loss { color: var(--ui-bad); }
+
+/* Other panels: one surface level */
+.me-rank, .dcard, .mscell, .chart, .feed-row {
+  background: transparent;
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+}
+.versus { background: transparent; border: 1px solid var(--ui-line); border-radius: var(--ui-r-lg); }
+.feed-row > i { display: none !important; }   /* no side stripe */
+.heat-cell.l4 { box-shadow: none; }
+
+/* ── Rank-up moment: the badge art stays, everything around it follows the
+   flourish (shared small-caps caption, bold value, no glows). ── */
+.rankup-stage video { filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.6)); }   /* no tier-coloured halo */
+.rankup-kicker {
+  font-family: var(--ui-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--ui-tx-2);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+.rk-from, .rk-to { font-family: var(--ui-display); letter-spacing: 0.02em; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55); }
+.rk-from { color: var(--ui-tx-3); }
+.rk-to img { filter: none; }
+.rk-arrow i { border-color: var(--ui-tx-3) !important; border-width: 2px 2px 0 0 !important; }

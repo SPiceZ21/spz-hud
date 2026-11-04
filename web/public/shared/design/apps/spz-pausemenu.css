@@ -1,0 +1,61 @@
+/* spz-pausemenu on the shared look. */
+
+/* Backdrop: a plain dim, no vignette gradient. */
+.shade { background: rgba(5, 5, 6, 0.86); }
+
+/* Tiles: one surface, flat. Selected = accent border, nothing else. */
+.tile,
+.tile.driver,
+.tile.map.active {
+  background: var(--ui-surface-solid);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+.tile:hover { border-color: var(--ui-line-2); }
+.tile.active,
+.tile.danger.active {
+  background: var(--ui-surface-solid);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+.tile.danger.active { border-color: var(--ui-bad); }
+.tile.map.active .map-real { box-shadow: none; }
+
+/* Decorative watermark icons: gone. */
+.t-ghost { display: none !important; }
+
+/* Chips inside a tile are labels, not boxes. */
+.t-chip {
+  background: transparent;
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-sm);
+}
+.tile.active .t-chip { background: transparent; border-color: var(--accent); color: var(--accent); }
+.tile.danger.active .t-chip,
+.tile.danger.active .t-go { background: transparent; border-color: var(--ui-bad); color: var(--ui-bad); }
+.badge, .badge.primary, .badge.success, .badge.error {
+  background: transparent;
+  border-color: var(--ui-line);
+  border-radius: var(--ui-r-sm);
+}
+
+/* Profile stats: a grid of numbers with hairlines, not six little cards. */
+.stat-grid { gap: 0 !important; border-top: 1px solid var(--ui-line); }
+.stat {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--ui-line);
+}
+.stat:not(:nth-child(3n)) { border-right: 1px solid var(--ui-line); }
+.face { background: rgba(255, 255, 255, 0.04); }
+
+/* Status kicker: no glowing dot. */
+.menu-kicker { background: transparent; border-radius: var(--ui-r-sm); }
+.menu-kicker i, .menu-kicker.live i { box-shadow: none; }
+
+/* Quit confirm: no glowing red stripe. */
+.modal-box { box-shadow: none; border-radius: var(--ui-r-lg); }
+.modal-bar { display: none !important; }
+.mbtn { border-radius: var(--ui-r-md); }

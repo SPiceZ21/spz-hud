@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <script>(function(){var n="spz-radio";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}catch(e){window.GetParentResourceName=function(){return n}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
+  <meta charset="utf-8" />
+  <title>SPZ Radio</title>
+  <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
+    <link rel="stylesheet" href="../../shared/design/apps/spz-radio.css">
+  </head>
+<body>
+  <div id="root">
+    <audio id="audio" preload="none"></audio>
+
+    <!-- Song-change toast, shown while the panel is closed -->
+    <div id="toast" class="toast hidden">
+      <div class="toast-art" id="toastArt"><div class="eq"><i></i><i></i><i></i><i></i></div></div>
+      <div class="toast-tx">
+        <span class="toast-tag" id="toastTag">SPZ RADIO</span>
+        <b id="toastTitle">—</b>
+        <small id="toastArtist"></small>
+      </div>
+    </div>
+
+    <div id="panel" class="hidden">
+      <div class="shade"></div>
+      <div class="stage">
+        <div class="top">
+          <div class="brand">SPICEZ <b>RADIO</b></div>
+          <div class="kicker live" id="liveKicker"><i></i><span>ON AIR</span></div>
+          <div class="hint"><kbd>ESC</kbd> close</div>
+        </div>
+
+        <div class="hero tile">
+          <div class="hero-art" id="heroArt">
+            <div class="eq big" id="heroEq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="hero-tx">
+            <span class="label" id="heroStation">NOW PLAYING</span>
+            <h1 id="heroTitle">—</h1>
+            <p id="heroArtist">Connecting…</p>
+          </div>
+          <div class="hero-meta">
+            <span class="label">LISTENERS</span>
+            <b id="heroListeners">0</b>
+          </div>
+        </div>
+
+        <div class="stations" id="stations"></div>
+
+        <div class="controls tile">
+          <button class="power" id="power" title="Radio on / off">
+            <svg viewBox="0 0 24 24"><path d="M12 3v9M6.3 6.3a8 8 0 1 0 11.4 0" /></svg>
+          </button>
+          <div class="vol">
+            <span class="label">VOLUME</span>
+            <input type="range" id="volume" min="0" max="100" step="1" />
+          </div>
+          <b class="vol-val" id="volVal">35%</b>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

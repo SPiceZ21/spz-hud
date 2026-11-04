@@ -1,0 +1,79 @@
+/* spz-minigames on the shared look: in-game HUD (hud.css) and the hub. */
+
+/* One surface per panel. */
+.hud .glass {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  box-shadow: none;
+}
+.hud-strip, .hud-meter, .hud-board { border-radius: var(--ui-r-lg); }
+.hud-status, .hud-shard { border-radius: var(--ui-r-lg); }
+
+/* No stripes, no glow washes: the status colour is in the value. */
+.hud-status::before, .hud-status::after,
+.hud-shard::before, .hud-shard::after,
+.hud-row.me::before,
+.item.on::before { display: none !important; }
+
+/* Chips are text inside the strip, not boxes inside a box. */
+.hud-chip {
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--ui-line);
+  border-radius: 0;
+  padding-left: 10px;
+}
+.hud-chip.hot { background: transparent; color: var(--c); border-color: var(--ui-line); }
+.hud-ico { border-radius: var(--ui-r-sm); }
+
+/* The alert is the one loud thing: colour in the text and border, no glow. */
+.hud-alert {
+  background: var(--ui-surface);
+  border: 1px solid color-mix(in srgb, var(--ui-bad) 60%, transparent);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+  color: var(--ui-bad);
+}
+.hud-hint, .hud-foot { border-radius: var(--ui-r-lg); }
+.hud-foot kbd { background: transparent; border: 1px solid var(--ui-line-2); border-radius: var(--ui-r-sm); }
+
+/* Board rows: hairlines; "me" is a raised row with accent text. */
+.hud-row { border-radius: 0; border-bottom: 1px solid var(--ui-line); }
+.hud-row:last-child { border-bottom: 0; }
+.hud-row.me { background: var(--ui-raised); }
+.hud-row.me .nm { color: var(--c); }
+
+/* ── Top stack: ONE panel, top-left corner ──
+   Title strip, status, alert and hint used to be separate boxes of three
+   different widths. Now they are sections of one column: as wide as its
+   widest part, one surface, hairlines between, corners only on the outside.
+   Anchored top-left (same inset as the race standings); /hudedit can still
+   move it, with `translate`. */
+.hud-top {
+  left: 1.6vw;
+  right: auto;
+  top: 2.2vh;
+  width: max-content;
+  min-width: 260px;
+  margin: 0;
+  align-items: stretch;
+  gap: 0;
+}
+.hud-top > * {
+  background: var(--ui-surface) !important;
+  border: 1px solid var(--ui-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.hud-top > * + * { border-top: 0 !important; }
+.hud-top > :first-child { border-radius: var(--ui-r-lg) var(--ui-r-lg) 0 0 !important; }
+.hud-top > :last-child  { border-radius: 0 0 var(--ui-r-lg) var(--ui-r-lg) !important; }
+.hud-top > :only-child  { border-radius: var(--ui-r-lg) !important; }
+
+.hud-strip { justify-content: flex-start; padding: 6px 10px; }
+.hud-status { min-width: 0; padding: 8px 14px 10px; text-align: left; }
+.hud-alert, .hud-hint { text-align: left; padding: 7px 14px; }
+.hud-alert { color: var(--ui-bad); }
+
+/* Hub header: no decorative icon tile beside the title. */
+.brand-mark { display: none !important; }

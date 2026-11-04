@@ -1,0 +1,589 @@
+@font-face {
+  font-family: 'Panchang';
+  src: url('../../shared/fonts/Panchang-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --orange:      #FF6200;
+  --orange-rgb:  255, 98, 0;
+  --orange-dim:  rgba(var(--orange-rgb), 0.15);
+  --orange-glow: rgba(var(--orange-rgb), 0.35);
+  --red:         #ef4444;
+  --red-rgb:     239, 68, 68;
+  --green:       #22c55e;
+  --gray-950:    #080a0d;
+  --gray-900:    #0e1014;
+  --gray-800:    #1a1e26;
+  --gray-700:    #252b36;
+  --gray-500:    #4a5568;
+  --gray-400:    #718096;
+  --gray-200:    #cbd5e0;
+  --gray-100:    #e2e8f0;
+  --gray-50:     #f7fafc;
+  --font-mono:   'Consolas', 'Monaco', monospace;
+  --font-display: 'Panchang', 'Inter', sans-serif;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0) !important;
+  background: transparent !important;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Camera flash ─────────────────────────────────────────────────────────── */
+
+#flash {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  display: none; /* Avoid full-screen CEF rendering overlays when idle */
+}
+
+#flash.fire {
+  display: block;
+  animation: cam-flash 0.35s ease-out forwards;
+}
+
+@keyframes cam-flash {
+  0%   { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+
+/* ── Scan line (photo effect) ────────────────────────────────────────────── */
+
+#flash.fire::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  animation: scan-line 0.35s linear forwards;
+}
+
+@keyframes scan-line {
+  0%   { top: 0; }
+  100% { top: 100%; }
+}
+
+/* ── Capture card ─────────────────────────────────────────────────────────── */
+
+/* Sits directly above the GTA V minimap (bottom-left) at its exact width.
+   The client pushes the real minimap rect (`minimap` NUI message) and script.js
+   overwrites these — the values below are only the 16:9 / default-safezone
+   fallback used when the card is opened outside FiveM. */
+:root {
+  --map-left: 1.6vw;    /* minimap left edge */
+  --map-w:    16.5vw;   /* minimap width */
+  --map-top:  22.5vh;   /* map's top edge, measured from screen bottom */
+  --map-gap:  6px;      /* space between card and map */
+}
+
+#capture {
+  position: fixed;
+  left: var(--map-left);
+  bottom: calc(var(--map-top) + var(--map-gap));
+  width: var(--map-w);
+  background: rgba(8, 10, 13, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: visible;   /* let the world-record pill sit above the box */
+  box-shadow: 0 8px 22px rgba(0,0,0,0.6);
+  transform: translateY(12px);
+  opacity: 0;
+  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.22s ease;
+  z-index: 50;
+}
+
+#capture.visible { transform: translateY(0); opacity: 1; }
+
+#capture.hiding { transform: translateY(12px); opacity: 0; transition: transform 0.2s ease, opacity 0.2s ease; }
+
+/* Horizontal rectangle layout */
+.cap-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+}
+.cap-speed {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-left: auto;   /* push speed to the right edge */
+  flex-shrink: 0;
+}
+
+/* ── Card header ─────────────────────────────────────────────────────────── */
+
+.cam-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--orange-dim);
+  border: 1px solid rgba(var(--orange-rgb), 0.25);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cam-icon svg { color: var(--orange); }
+
+.flash-badge {
+  width: 8px;
+  height: 8px;
+  background: var(--orange);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--orange);
+  animation: pulse-dot 1.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* ── Camera name ─────────────────────────────────────────────────────────── */
+
+/* ── Speed display ───────────────────────────────────────────────────────── */
+
+.speed-value {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--gray-50);
+  letter-spacing: -1px;
+}
+
+.speed-value.fast  { color: #f59e0b; }
+.speed-value.sonic { color: var(--red); text-shadow: 0 0 20px rgba(var(--red-rgb), 0.4); }
+
+.speed-unit {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-400);
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+/* ── Record badges ───────────────────────────────────────────────────────── */
+
+.badges {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 14px 12px;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.badge-global {
+  background: rgba(var(--orange-rgb), 0.12);
+  border: 1px solid rgba(var(--orange-rgb), 0.3);
+  color: var(--orange);
+}
+
+.badge-personal {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: var(--green);
+}
+
+.badge-improvement {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--gray-400);
+}
+
+/* ── Dismiss progress bar ────────────────────────────────────────────────── */
+
+.dismiss-bar {
+  height: 2px;
+  background: rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+
+.dismiss-progress {
+  height: 100%;
+  background: var(--orange);
+  width: 100%;
+  transform-origin: left;
+  transition: width linear;
+}
+
+/* ── Records panel ───────────────────────────────────────────────────────── */
+
+#records-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  width: 460px;
+  max-height: 70vh;
+  background: rgba(8, 10, 13, 0.98);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 200;
+}
+
+#records-panel.visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.close-btn {
+  width: 24px;
+  height: 24px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 5px;
+  cursor: pointer;
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-400);
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.close-btn:hover { background: rgba(255,255,255,0.1); color: var(--gray-50); }
+
+.panel-scroll {
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-700) transparent;
+}
+
+.record-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.record-row:hover { background: rgba(255,255,255,0.02); }
+
+.record-cam {
+  flex: 1;
+  min-width: 0;
+}
+
+.record-cam-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-100);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-cam-date {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gray-500);
+  margin-top: 2px;
+}
+
+.record-speed {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--orange);
+  flex-shrink: 0;
+  letter-spacing: -0.5px;
+}
+
+.record-speed span {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gray-500);
+  margin-left: 2px;
+}
+
+.empty-msg {
+  padding: 48px 24px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+
+
+/* ── Compact capture card ──────────────────────────────────────────────── */
+.cap-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 9px 5px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.cam-icon {
+  width: 20px;
+  height: 20px;
+  background: var(--orange-dim);
+  border: 1px solid rgba(var(--orange-rgb), 0.25);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cam-icon svg { color: var(--orange); }
+.cam-location {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gray-300);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.flash-badge {
+  width: 6px;
+  height: 6px;
+  background: var(--orange);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--orange);
+  animation: pulse-dot 1.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.cap-main {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  padding: 7px 10px 9px;
+}
+.speed-value {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--gray-50);
+  letter-spacing: -1px;
+}
+.speed-value.fast  { color: #f59e0b; }
+.speed-value.sonic { color: var(--red); text-shadow: 0 0 14px rgba(var(--red-rgb), 0.4); }
+.speed-unit {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gray-400);
+  letter-spacing: 0.06em;
+}
+
+/* badges inline, tiny chips */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 100%;
+  margin-top: 3px;
+}
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Wide-bar sizing overrides ─────────────────────────────── */
+#capture .cam-icon { width: 22px; height: 22px; border-radius: 5px; }
+#capture .cam-icon svg { width: 13px; height: 13px; }
+#capture .cam-location {
+  padding: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-50);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#capture .speed-value { font-size: 28px; line-height: 1; letter-spacing: -0.5px; }
+#capture .speed-unit  { font-size: 11px; margin: 0 0 0 2px; color: var(--gray-200); }
+
+/* badges are pills stacked above the card, not part of the card body */
+#capture .badges { flex-direction: row; padding: 0; gap: 4px; margin: 0; width: auto; }
+#capture .badges:empty { display: none; }
+
+/* ── Top row: plate + profile picture ──────────────────────── */
+
+/* Plate is a canvas painted with the game's own plate texture and glyph
+   atlas (see drawPlate in script.js) — 256x128 source, so 2:1. */
+.cap-vehicle,
+.cap-profile {
+  min-width: 0;
+  padding: 4px;
+  border-radius: 5px;
+  background: rgba(8, 10, 13, 0.94);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.plate {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.55);
+}
+
+/* Driver headshot: a square the same height as the plate. */
+.cap-profile { display: flex; }
+.cap-profile.empty { display: none; }
+.cap-face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 3px;
+  background: radial-gradient(circle at 50% 35%, rgba(255,255,255,0.12), rgba(20,22,27,1) 75%);
+}
+
+/* Standalone pills now — each carries its own dark backing so it stays
+   legible floating over the game world. */
+#capture .badge {
+  padding: 4px 8px;
+  font-size: 10.5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+#capture .badge-personal {
+  background: linear-gradient(rgba(34, 197, 94, 0.14), rgba(34, 197, 94, 0.14)), rgba(8, 10, 13, 0.94);
+}
+#capture .badge-improvement {
+  background: linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0.05)), rgba(8, 10, 13, 0.94);
+}
+
+/* ── Top row, floating above the info card ───────────────────
+   Grid 2fr / 1fr: the plate (2:1) is then exactly as tall as the square
+   profile picture beside it. With no picture the plate takes the full row. */
+.cap-pills {
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  margin-bottom: 6px;
+  width: 70%;                   /* plate + picture: smaller than the card, left-aligned */
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 6px;
+  align-items: stretch;
+}
+.cap-pills.no-face { grid-template-columns: 1fr; }
+.cap-pills.no-plate { grid-template-columns: 1fr 2fr; }
+
+/* Record pills: second line inside the info card. */
+.cap-records {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 10px 7px;
+  min-width: 0;
+}
+.cap-records.empty { display: none; }
+
+.cap-global {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  width: max-content;           /* small — only as wide as the text */
+  max-width: 100%;
+  padding: 4px 9px;
+  line-height: 1.6;             /* match the mono badge pills' height */
+  border-radius: 4px;
+  background: linear-gradient(rgba(var(--orange-rgb), 0.18), rgba(var(--orange-rgb), 0.18)), rgba(8, 10, 13, 0.94);
+  border: 1px solid rgba(var(--orange-rgb), 0.45);
+  color: var(--orange);
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.cap-global.show {
+  display: inline-flex;
+  animation: cap-global-in 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.cap-global svg { width: 12px; height: 12px; }
+@keyframes cap-global-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

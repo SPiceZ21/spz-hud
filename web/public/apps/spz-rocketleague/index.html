@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(){var n="spz-rocketleague";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}catch(e){window.GetParentResourceName=function(){return n}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <title>spz-rocketleague</title>
+  <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
+    <link rel="stylesheet" href="../../shared/design/apps/spz-rocketleague.css">
+  </head>
+<body>
+  <div id="hud" class="hidden">
+
+    <!-- scoreboard -->
+    <div class="board">
+      <div class="team blue"><span class="tname">BLUE</span><span class="score" id="sBlue">0</span></div>
+      <div class="clock">
+        <span id="clock">5:00</span>
+        <span class="ot hidden" id="ot">OVERTIME</span>
+      </div>
+      <div class="team orange"><span class="score" id="sOrange">0</span><span class="tname">ORANGE</span></div>
+    </div>
+    <div class="rosters">
+      <div class="roster blue" id="rBlue"></div>
+      <div class="roster orange" id="rOrange"></div>
+    </div>
+    <div class="banner hidden" id="banner"></div>
+
+    <!-- kickoff countdown -->
+    <div class="count hidden" id="count"></div>
+
+    <!-- goal / end -->
+    <div class="shard hidden" id="shard">
+      <div class="shard-bar"></div>
+      <div class="shard-title" id="shardTitle">GOAL!</div>
+      <div class="shard-sub" id="shardSub"></div>
+    </div>
+
+    <!-- controls hint -->
+    <div class="hint" id="hint"></div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

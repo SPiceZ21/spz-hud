@@ -1,0 +1,11 @@
+/* spz-nametag on the shared look. Tags sit over the open world, so they keep
+   a tight shadow for legibility, but no glow halos and no gradient plates. */
+.nt-plate {
+  background: var(--ui-surface);
+  border-radius: var(--ui-r-sm);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.nt-plate.talking { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
+.nt-flag { box-shadow: none; }
+.audio-equalizer { box-shadow: none; border-radius: var(--ui-r-sm); }
+.nt-plate-rank { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7); }

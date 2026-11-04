@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(){var n="spz-tunners";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}catch(e){window.GetParentResourceName=function(){return n}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
+  <meta charset="UTF-8" />
+  <title>SPZ Tuner</title>
+  <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
+  </head>
+<body>
+  <div id="root" class="hidden">
+    <!-- everything off the UI: drag to orbit the camera, scroll to zoom -->
+    <div id="stage"></div>
+
+    <!-- Car card (top-left): make, model, base stats -->
+    <aside id="car" class="car">
+      <div id="make" class="c-make"></div>
+      <div id="model" class="c-model"></div>
+      <div id="stats" class="c-stats"></div>
+    </aside>
+
+    <!-- Wallet (top-right) -->
+    <div id="wallet" class="wallet hidden"></div>
+
+    <!-- Section header + counter, sits above the strip -->
+    <div class="bar">
+      <div id="crumbs" class="crumbs"></div>
+      <h1 id="title">Customs</h1>
+      <span id="count" class="count"></span>
+    </div>
+
+    <!-- Part strip (bottom) -->
+    <div id="strip" class="strip"></div>
+
+    <!-- Key hints -->
+    <footer class="foot">
+      <span><kbd>←</kbd><kbd>→</kbd> Select</span>
+      <span><kbd>↑</kbd><kbd>↓</kbd> Change</span>
+      <span><kbd>Enter</kbd> Open / Install</span>
+      <span><kbd>Bksp</kbd> Back</span>
+      <span class="sep"></span>
+      <span><b>Drag</b> Orbit</span>
+      <span><b>Scroll</b> Zoom</span>
+      <span><kbd>D</kbd> Doors</span>
+      <span><kbd>V</kbd> View</span>
+      <button id="close" class="x" title="Close">✕</button>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

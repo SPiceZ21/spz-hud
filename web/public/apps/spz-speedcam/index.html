@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(){var n="spz-speedcam";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}catch(e){window.GetParentResourceName=function(){return n}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPZ Speed Cam</title>
+  <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
+    <link rel="stylesheet" href="../../shared/design/apps/spz-speedcam.css">
+  </head>
+<body>
+
+  <!-- Camera flash overlay -->
+  <div id="flash"></div>
+
+  <!-- Capture card — wide rectangle above the GTA minimap -->
+  <div id="capture">
+
+    <!-- Top row, above the info card: the plate (2:1, two thirds of the
+         width) and the driver's profile picture (square, same height). -->
+    <div class="cap-pills">
+      <div class="cap-vehicle" id="cap-vehicle">
+        <!-- Real in-game plate texture + font atlas, drawn to canvas -->
+        <canvas class="plate" id="plate" width="512" height="256"></canvas>
+      </div>
+      <!-- Headshot of the driver's character (game-rendered ped headshot) -->
+      <div class="cap-profile" id="cap-profile">
+        <img class="cap-face" id="cap-face" alt="">
+      </div>
+    </div>
+
+    <div class="cap-row">
+      <div class="cam-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+      </div>
+      <span class="cam-location" id="cam-location">—</span>
+      <div class="cap-speed">
+        <span class="speed-value" id="speed-value">0</span>
+        <span class="speed-unit" id="speed-unit">KM/H</span>
+      </div>
+    </div>
+
+    <!-- Record pills (NEW WR / NEW PB / improvement), second line of the info card -->
+    <div class="cap-records" id="cap-records">
+      <div class="cap-global" id="cap-global"></div>
+      <div class="badges" id="badges"></div>
+    </div>
+
+    <div class="dismiss-bar">
+      <div class="dismiss-progress" id="dismiss-progress"></div>
+    </div>
+
+  </div>
+
+  <!-- Records panel -->
+  <div id="records-panel">
+
+    <div class="panel-header">
+      <div class="panel-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+          <path d="M4 22h16"/>
+          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+          <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>
+        </svg>
+        My Speed Records
+      </div>
+      <button class="close-btn" id="close-records-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="panel-scroll">
+      <div id="records-list"></div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

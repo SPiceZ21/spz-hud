@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(){var n="spz-leaderboard";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}catch(e){window.GetParentResourceName=function(){return n}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPZ Leaderboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="rankup.css" />
+    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
+    <link rel="stylesheet" href="../../shared/design/apps/spz-leaderboard.css">
+  </head>
+<body>
+  <div id="root" class="hidden">
+    <div class="shell">
+
+      <!-- ── Icon rail ─────────────────────────────────────────── -->
+      <nav class="rail">
+        <div class="rail-items" id="rail"></div>
+        <button class="rail-btn" id="refreshBtn" title="Refresh data">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><polyline points="21 3 21 9 15 9"/></svg>
+        </button>
+        <button class="rail-btn rail-close" id="closeBtn" title="Close (ESC)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </nav>
+
+      <!-- ── Main ──────────────────────────────────────────────── -->
+      <main class="main">
+        <header class="hero">
+          <div class="hero-art"></div>
+          <div class="hero-txt">
+            <h1 class="hero-title" id="heroTitle">Global standings</h1>
+            <p class="hero-sub" id="heroSub">Every driver on the server, ranked by championship points, iRating and safety.</p>
+          </div>
+          <div class="hero-actions">
+            <div class="hero-stat">
+              <span class="hero-stat-l">Drivers</span>
+              <span class="hero-stat-v" id="heroCount">—</span>
+            </div>
+            <button class="btn btn-ghost" id="myPlaceBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z"/></svg>
+              Show my place
+            </button>
+          </div>
+        </header>
+
+        <div class="controls">
+          <label class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="searchInput" type="text" placeholder="Search driver / track" autocomplete="off" />
+            <span class="search-count" id="searchCount"></span>
+          </label>
+
+          <div class="seg" id="sortSeg"></div>
+
+          <div class="controls-right">
+            <!-- Class filter, inline — only shown on the Classes tab -->
+            <div class="seg classpick" id="classpick">
+              <button class="seg-btn active" data-cls="S"><i class="dot d-S"></i>S</button>
+              <button class="seg-btn" data-cls="A"><i class="dot d-A"></i>A</button>
+              <button class="seg-btn" data-cls="B"><i class="dot d-B"></i>B</button>
+              <button class="seg-btn" data-cls="C"><i class="dot d-C"></i>C</button>
+              <button class="seg-btn" data-cls="D"><i class="dot d-D"></i>D</button>
+            </div>
+            <div class="chipbar" id="chipbar"></div>
+          </div>
+        </div>
+
+        <div class="scroll" id="scroll">
+          <div class="podium" id="podium"></div>
+          <div class="board" id="body">
+            <div class="state">
+              <div class="spinner"></div>
+              <span>Loading telemetry…</span>
+            </div>
+          </div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script src="rankup.js"></script>
+</body>
+</html>

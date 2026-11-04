@@ -1,0 +1,99 @@
+/* spz-tutorial — SPiceZ core kit (pause menu / leaderboard / crew tokens):
+   gray-950 panel on a gray-800 line, 8px radius, Panchang uppercase title,
+   Poppins body, accent only on the active button and the progress fill.
+   No color-mix() / backdrop-filter: FiveM's CEF does not support them. */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+@font-face { font-family: 'Panchang'; src: url('../../shared/fonts/Panchang-Semibold.ttf') format('truetype'); font-weight: 600; }
+@font-face { font-family: 'Panchang'; src: url('../../shared/fonts/Panchang-Bold.ttf') format('truetype'); font-weight: 700; }
+@font-face { font-family: 'Panchang'; src: url('../../shared/fonts/Panchang-Extrabold.ttf') format('truetype'); font-weight: 800; }
+
+:root {
+  --accent: #ff6200;
+  --gray-50: #fafafa;  --gray-200: #e4e4e7; --gray-300: #d4d4d8; --gray-400: #a1a1aa; --gray-500: #71717a;
+  --gray-700: #3f3f46; --gray-800: #27272a; --gray-900: #18181b; --gray-950: #09090b;
+  --radius-md: 6px; --radius-lg: 8px; --radius-pill: 9999px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --font-primary: 'Panchang', sans-serif;
+  --font-secondary: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100vw; height: 100vh; overflow: hidden; background: transparent; color: var(--gray-50); user-select: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+#root { position: fixed; inset: 0; }
+#root.hidden { display: none; }
+
+/* Whole-screen dim, used when a step has no spot. */
+#dim { position: fixed; inset: 0; background: rgba(0, 0, 0, .7); transition: opacity 260ms ease; }
+#dim.off { opacity: 0; }
+
+/* The cut-out: everything outside it is dimmed by its own giant shadow. */
+#spot {
+  position: fixed; left: 50%; top: 50%; width: 0; height: 0;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 0 200vmax rgba(0, 0, 0, .7);
+  border: 2px solid var(--accent);
+  transition: left 420ms var(--ease), top 420ms var(--ease), width 420ms var(--ease), height 420ms var(--ease), opacity 260ms ease;
+  pointer-events: none;
+}
+#spot.off { opacity: 0; }
+
+/* Explanation card */
+#card {
+  position: fixed; width: 420px;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 18px;
+  background: var(--gray-950);
+  border: 1px solid var(--gray-800);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, .4);
+  transition: left 420ms var(--ease), top 420ms var(--ease);
+  animation: cardIn 320ms var(--ease) both;
+}
+#card.wide { width: 500px; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.c-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-secondary); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--gray-300); padding: 4px 10px; border-radius: var(--radius-pill);
+  background: var(--gray-800); border: 1px solid var(--gray-700);
+}
+.chip::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.count { font-family: var(--font-secondary); font-size: 12px; font-weight: 600; color: var(--gray-500); }
+
+h1 {
+  font-family: var(--font-primary); font-size: 19px; font-weight: 700;
+  letter-spacing: -0.01em; text-transform: uppercase; line-height: 1.15;
+}
+
+.body { font-family: var(--font-secondary); font-size: 13.5px; font-weight: 400; line-height: 1.65; color: var(--gray-400); }
+.body b { color: var(--gray-50); font-weight: 600; }
+.body i { color: var(--gray-500); }
+
+kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px; padding: 0 7px; margin: 0 1px; vertical-align: 1px;
+  font-family: var(--font-secondary); font-size: 11.5px; font-weight: 600; color: var(--gray-50);
+  background: var(--gray-800); border: 1px solid var(--gray-700); border-radius: var(--radius-md);
+}
+
+.bar { height: 3px; border-radius: 2px; background: var(--gray-800); overflow: hidden; }
+#bar-fill { height: 100%; width: 0; background: var(--accent); transition: width 420ms var(--ease); }
+
+.c-foot { display: flex; align-items: center; gap: 8px; }
+.grow { flex: 1; }
+.btn {
+  font-family: var(--font-primary); font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  height: 36px; padding: 0 16px; border-radius: var(--radius-md);
+  background: var(--gray-900); border: 1px solid var(--gray-800); color: var(--gray-200);
+  transition: border-color 150ms, background-color 150ms, color 150ms;
+}
+.btn:hover { border-color: var(--gray-700); color: var(--gray-50); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.ghost { background: none; border-color: transparent; color: var(--gray-500); padding: 0 6px; font-family: var(--font-secondary); font-weight: 600; text-transform: none; letter-spacing: 0; font-size: 12px; }
+.btn.ghost:hover { color: var(--gray-200); }
+.btn[disabled] { opacity: .35; cursor: default; }

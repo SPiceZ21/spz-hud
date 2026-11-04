@@ -1,0 +1,93 @@
+@font-face { font-family: 'Panchang'; src: url('../../shared/fonts/Panchang-Medium.ttf') format('truetype'); font-weight: 500; }
+@font-face { font-family: 'Panchang'; src: url('../../shared/fonts/Panchang-Semibold.ttf') format('truetype'); font-weight: 600; }
+@font-face { font-family: 'Panchang'; src: url('../../shared/fonts/Panchang-Bold.ttf') format('truetype'); font-weight: 700; }
+@font-face { font-family: 'Panchang'; src: url('../../shared/fonts/Panchang-Extrabold.ttf') format('truetype'); font-weight: 800; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* spz-core base theme; overwritten at runtime from the spz_theme_* convars.
+   Team colours come from the prl_rl_blue / prl_rl_orange convars. */
+:root {
+  --bg:         #070708;
+  --bg-card:    #101011;
+  --line:       rgba(255, 255, 255, 0.07);
+  --line-2:     rgba(255, 255, 255, 0.12);
+  --accent:     #ff6200;
+  --accent-rgb: 255, 98, 0;
+  --gold:       #f5b942;
+  --blue:       #3b82f6;
+  --blue-rgb:   59, 130, 246;
+  --orange:     #ff6200;
+  --orange-rgb: 255, 98, 0;
+  --tx-1: #f4f4f5; --tx-2: #b9b9bc; --tx-3: #85858a;
+  --font: 'Panchang', 'Inter', 'Segoe UI', sans-serif;
+  --r-sm: 8px; --r-md: 12px;
+}
+
+html, body { width: 100vw; height: 100vh; overflow: hidden; background: transparent; user-select: none; font-family: var(--font); color: var(--tx-1); }
+.hidden { display: none !important; }
+
+/* ── scoreboard ─────────────────────────────────────────────── */
+.board {
+  position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: stretch; gap: 4px;
+  background: rgba(7, 7, 8, 0.86); border: 1px solid var(--line-2); border-radius: var(--r-md);
+  padding: 4px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+.team { display: flex; align-items: center; gap: 12px; padding: 0 14px; border-radius: var(--r-sm); min-width: 150px; }
+.team.blue   { background: linear-gradient(90deg, rgba(var(--blue-rgb), 0.15), rgba(var(--blue-rgb), 0.9)); justify-content: flex-end; }
+.team.orange { background: linear-gradient(90deg, rgba(var(--orange-rgb), 0.9), rgba(var(--orange-rgb), 0.15)); justify-content: flex-start; }
+.tname { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; color: rgba(255, 255, 255, 0.85); }
+.score { font-size: 34px; font-weight: 800; line-height: 54px; min-width: 34px; text-align: center; text-shadow: 0 2px 12px rgba(0,0,0,.4); }
+.score.pop { animation: pop .6s ease; }
+@keyframes pop { 0% { transform: scale(1); } 35% { transform: scale(1.5); } 100% { transform: scale(1); } }
+.clock {
+  min-width: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--bg-card); border-radius: var(--r-sm); padding: 0 16px;
+}
+#clock { font-size: 24px; font-weight: 800; letter-spacing: 0.04em; }
+.ot { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; color: var(--gold); margin-top: 2px; }
+
+.rosters { position: absolute; top: 84px; left: 50%; transform: translateX(-50%); display: flex; gap: 130px; }
+.roster { display: flex; flex-direction: column; gap: 3px; min-width: 150px; font-size: 10px; font-weight: 600; color: var(--tx-2); }
+.roster.blue { align-items: flex-end; }
+.roster div { padding: 3px 9px; border-radius: 6px; background: rgba(7, 7, 8, 0.7); border: 1px solid var(--line); }
+.roster.blue div  { border-right: 2px solid var(--blue); }
+.roster.orange div { border-left: 2px solid var(--orange); }
+.roster div.me { color: var(--tx-1); }
+
+.banner {
+  position: absolute; top: 84px; left: 50%; transform: translateX(-50%);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.14em; padding: 8px 16px; border-radius: 999px;
+  background: rgba(7, 7, 8, 0.86); border: 1px solid rgba(var(--accent-rgb), 0.5); color: var(--tx-1); white-space: nowrap;
+}
+
+/* ── kickoff countdown ─────────────────────────────────────── */
+.count {
+  position: absolute; top: 34%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 120px; font-weight: 800; color: var(--tx-1);
+  text-shadow: 0 0 40px rgba(var(--accent-rgb), 0.7);
+}
+.count.tick { animation: tick .9s ease-out; }
+.count.go { color: var(--accent); }
+@keyframes tick { 0% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+
+/* ── goal / end shard ──────────────────────────────────────── */
+.shard {
+  position: absolute; top: 30%; left: 0; right: 0; text-align: center; padding: 26px 0 24px;
+  background: linear-gradient(90deg, transparent, rgba(7, 7, 8, 0.9) 20%, rgba(7, 7, 8, 0.9) 80%, transparent);
+  animation: shardIn .45s cubic-bezier(.2, .9, .3, 1.2);
+}
+.shard-bar { position: absolute; left: 20%; right: 20%; top: 0; height: 3px; background: var(--team, var(--accent)); box-shadow: 0 0 24px var(--team, var(--accent)); }
+.shard-title { font-size: 64px; font-weight: 800; letter-spacing: 0.06em; color: var(--team, var(--accent)); text-shadow: 0 0 30px var(--team, var(--accent)); }
+.shard-sub { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; color: var(--tx-2); margin-top: 8px; }
+@keyframes shardIn { 0% { transform: scaleY(0); opacity: 0; } 100% { transform: scaleY(1); opacity: 1; } }
+
+/* ── controls hint ─────────────────────────────────────────── */
+.hint {
+  position: absolute; left: 28px; bottom: 260px; display: flex; flex-direction: column; gap: 6px;
+  font-size: 10px; font-weight: 600; color: var(--tx-2); transition: opacity 1s;
+}
+.hint div { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(7, 7, 8, 0.8); border: 1px solid var(--line); border-radius: var(--r-sm); }
+.hint kbd { font-family: var(--font); font-weight: 800; color: var(--tx-1); background: rgba(var(--accent-rgb), 0.25); border: 1px solid rgba(var(--accent-rgb), 0.6); border-radius: 5px; padding: 2px 7px; min-width: 26px; text-align: center; }
+.hint.fade { opacity: 0; }

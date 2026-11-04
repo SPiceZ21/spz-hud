@@ -1,0 +1,9 @@
+/* spz-radio on the shared look. */
+.toast {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-left: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+.toast-art { border-radius: var(--ui-r-sm); }

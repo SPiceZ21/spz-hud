@@ -1,0 +1,313 @@
+/* spz-raceUI on the shared look (design/spz-ui.css). */
+
+/* ── Standings: one panel, rows separated by hairlines ── */
+.standings-list {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  overflow: hidden;
+  gap: 0 !important;
+}
+.racer-row {
+  background: transparent;
+  border-left: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--ui-line);
+}
+.racer-row:last-child { border-bottom: 0; }
+.racer-row.is-me { background: var(--ui-raised); }
+.racer-row.is-me .racer-pos,
+.racer-row.is-me .racer-name { color: var(--color-primary); }
+.racer-num,
+.racer-gap-box {
+  background: transparent;
+  border: 0;
+  color: var(--ui-tx-3);
+  padding-left: 0;
+  padding-right: 0;
+}
+.racer-flag { box-shadow: none; }
+
+/* ── Sectors: one strip, the colour lives in the time ── */
+.sector-strip {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  overflow: hidden;
+  gap: 0 !important;
+}
+.sector-cell,
+.sector-cell.purple,
+.sector-cell.green,
+.sector-cell.yellow {
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--ui-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+.sector-cell:last-child { border-right: 0; }
+.sector-cell.purple .sector-time { color: var(--ui-best); }
+.sector-cell.green .sector-time  { color: var(--ui-ok); }
+.sector-cell.yellow .sector-time { color: var(--ui-warn); }
+.sector-cell .sector-label { color: var(--ui-tx-3) !important; }
+
+/* ── Lap · timer: text on the game, no boxes ── */
+.pos-chip {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.cp-track {
+  border-radius: var(--ui-r-sm);
+  box-shadow: none;
+  background: var(--ui-line);
+}
+
+/* The race key hints are drawn by spz-hud's key strip (widget `keybar`). */
+.key-hints { display: none !important; }
+
+/* ── Key hints: keycaps stay keycaps, quieter ── */
+.key-hint .keycap {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line-2);
+  border-bottom-width: 2px;
+  border-radius: var(--ui-r-sm);
+  box-shadow: none;
+}
+
+/* ── Small banners: no stripes, no tints ── */
+.split-delta {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-md);
+}
+.fastest-lap,
+.fastest-lap.mine {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-md);
+  box-shadow: none;
+}
+.fastest-lap .fl-tag,
+.fastest-lap .fl-time { color: var(--ui-best); }
+.fastest-lap.mine .fl-name { color: var(--color-primary); }
+
+.finish-window {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+
+/* ── Warmup: one panel, not a row of tiles ── */
+.warmup-panel {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  gap: 0 !important;
+  overflow: hidden;
+}
+.wu-tile,
+.wu-tile.wu-title {
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--ui-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+.wu-tile:last-child { border-right: 0; }
+
+/* ── Lobby pill / freeroam card: one surface, chips become text ── */
+.lobby-pill,
+.lobby-pill.join,
+.lobby-pill.warmup {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+.fr-hud {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  box-shadow: none;
+}
+.fr-chip {
+  background: transparent;
+  border-left: 1px solid var(--ui-line);
+  border-radius: 0;
+  color: var(--ui-tx-2);
+}
+.fr-delta,
+.fr-delta.pos,
+.fr-delta.neg { background: transparent; }
+.fr-delta.pos { color: var(--ui-ok); }
+.fr-delta.neg { color: var(--ui-bad); }
+.fr-key { border-color: var(--ui-line-2); border-radius: var(--ui-r-sm); }
+.fr-class { border-radius: var(--ui-r-md); }
+
+/* Distance-to-checkpoint box: the panel surface like everything else. */
+.cp-chip {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+}
+.cp-track-fill { background: rgba(var(--color-primary-rgb), 0.55); border-right: 0; }
+
+/* Flat checkpoint pill: replaced by the in-world DUI pill (spz-races
+   client/cp_pill3d.lua). Never drawn flat, whatever the config says. */
+.cp-wp { display: none !important; }
+
+/* Finish countdown: urgency is the red number, not a pulsing halo. */
+.finish-window.urgent { animation: none; border-color: var(--ui-line); }
+.finish-window.urgent .fw-time { color: var(--ui-bad); }
+
+/* ════ Race moments: intro · countdown · results ════
+   The same system as the rest of the race HUD: one surface, hairlines, the
+   one small-caps label style, no streaks, glows or corner ornaments. */
+
+/* One label style everywhere (as WARM-UP / TRACK / S1 / FUSE). */
+.rt-label, .rt-eyebrow, .cd-grid-l, .rb-kicker, .rb-stat-label, .rb-flag-label {
+  font-family: var(--ui-display) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase;
+  color: var(--ui-tx-3) !important;
+}
+.rt-eyebrow { color: var(--color-primary) !important; }
+
+/* ── Results: one strip, cells divided by hairlines ── */
+.results-toast {
+  gap: 0;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  overflow: hidden;
+}
+.rt-box, .rt-pos, .rt-pos.podium-1, .rt-pos.podium-2, .rt-pos.podium-3, .rt-levelup {
+  background: transparent !important;
+  border: 0 !important;
+  border-right: 1px solid var(--ui-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.results-toast > :last-child { border-right: 0 !important; }
+.rt-levelup { color: var(--color-primary); display: flex; align-items: center; padding: 0 14px; }
+.rt-progress { border-radius: 0; }
+
+/* ── Countdown ──
+   Same parts as the warmup panel and results strip:
+     [ TRACK │ CLASS A │ 3 LAPS ]     one strip, hairline cells
+                3                    the number, alone
+          ▬ ▬ ▬ ▬ ▬                  one row of five lights (was two towers)
+            [ GRID  P4 / 12 ]        a matching strip                      */
+.cd-streaks, .cd-tree-r { display: none !important; }
+.cd-vignette, .cd.is-go .cd-vignette { background: rgba(0, 0, 0, 0.30) !important; }
+.cd-stage { gap: 14px; }
+
+/* Meta strip */
+.cd-meta {
+  gap: 0;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  overflow: hidden;
+}
+.cd-meta > * { padding: 9px 16px; }
+.cd-track { font-size: 15px; letter-spacing: 0.12em; text-shadow: none; }
+.cd-chip, .cd-chip.cd-class {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--ui-line);
+  border-radius: 0;
+  color: var(--ui-tx-2);
+}
+.cd-chip.cd-class { color: var(--color-primary); }
+
+/* Number above, lights below */
+.cd-main { flex-direction: column; gap: 16px; }
+.cd-numwrap { min-height: 0; }
+.cd-num, .cd.is-go .cd-num { font-size: 168px; text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important; }
+.cd-tree {
+  order: 2;
+  flex-direction: row;              /* lamps are listed last-first, so they fill from the left */
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.cd-lamp, .cd-lamp.lit {
+  width: 46px;
+  height: 6px;
+  border-radius: 2px;
+  box-shadow: none;
+  background: var(--ui-line-2);
+}
+.cd-lamp.lit { background: var(--color-primary); }
+
+/* Grid strip */
+.cd-grid {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-r-lg);
+  padding: 7px 16px;
+}
+
+/* ── Intro card ── */
+.rb-bar::after { display: none !important; }          /* glowing edge line */
+.rb-kicker::before, .rb-kicker::after { background: var(--ui-line-2); }
+.rb-kicker-pip { box-shadow: none; }
+.rb-kicker-num { color: var(--color-primary); }
+.rb-rule { background: var(--ui-line-2) !important; }
+.rb-stat + .rb-stat::before { background: var(--ui-line-2) !important; }
+.rb-title, .rb-stat-value { text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6); }
+.rb-flag, .rb-flag.is-hot {
+  background: transparent;
+  border: 1px solid var(--ui-line-2);
+  border-radius: var(--ui-r-md);
+}
+.rb-flag::before, .rb-flag::after { display: none !important; }   /* corner ornaments */
+.rb-flag.is-hot .rb-flag-value { color: var(--color-primary); text-shadow: none; }
+.rb-flag, .rb-flag.is-hot { box-shadow: none !important; }
+.rb-pip.is-on { box-shadow: none; }
+
+/* Results: the place reads as one mark (2ND), the track name is not cut. */
+.rt-pos { align-items: center !important; justify-content: center; padding: 0 16px !important; }
+.rt-pos-num { font-style: normal; font-size: 28px; }
+.rt-pos-suffix { font-size: 11px; margin-left: 2px; position: relative; top: -8px; color: #fff; letter-spacing: 0.04em; }
+.rt-pos.podium-1 .rt-pos-suffix { color: #ffb700; }
+.rt-pos.podium-2 .rt-pos-suffix { color: #cfd6e0; }
+.rt-pos.podium-3 .rt-pos-suffix { color: #e08b4c; }
+.rt-head { flex-shrink: 0; }
+.rt-track { max-width: 360px; }
+
+/* Flourish (centre moment: PB, overtake, win…): the HUD's type, not a thin
+   light font with wide tracking and an underline. */
+.fl-icon { color: var(--fl-c-accent, var(--color-primary)); filter: none; }
+.fl[style*="--fl-c: #ffffff"] .fl-icon { color: var(--color-primary); }
+.fl-title {
+  font-family: var(--ui-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--ui-tx-2);
+}
+.fl-value {
+  font-family: var(--ui-display);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  color: #fff;
+}
+.fl::after { display: none !important; }   /* the drawn-out underline */
+
+/* Fastest-lap banner tag: the shared label, not monospace. */
+.fl-tag { font-family: var(--ui-display); font-size: 9px; font-weight: 700; letter-spacing: 0.18em; }
+
+/* Freeroam card: no licence badge (the rank art beside it says the class). */
+.fr-class { display: none !important; }
