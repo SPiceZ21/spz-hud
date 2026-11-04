@@ -108,7 +108,7 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
 .dsp-gear[data-r='true'] { border-color: #ff4d4d; color: #ff4d4d; }
 .dsp-speed {
   display: flex;
-  font-size: 66px;
+  font-size: 56px;
   font-weight: 200;
   font-style: italic;
   line-height: 1;
@@ -204,4 +204,4 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
 }
 
 /* Fixed-width digit slots (Panchang's digits are not equal width) */
-.dsp-dig { display: inline-block; width: 0.86em; text-align: center; }
+.dsp-dig { display: inline-block; width: 1.2em; text-align: center; }
