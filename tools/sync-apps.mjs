@@ -1,5 +1,10 @@
 // tools/sync-apps.mjs — copy every hosted UI into web/public/apps/<resource>/.
 //
+// NOTE: the resources' ui/ folders have been removed; web/public/apps is the
+// only copy of the hosted UIs and is edited directly (it is tracked in git).
+// Running this still refreshes the shared fonts, the design layer, apps.json
+// and presets.json, and copies any app whose ui/ source is brought back.
+//
 //   node tools/sync-apps.mjs              all apps
 //   node tools/sync-apps.mjs spz-poll     just these
 //
@@ -97,6 +102,13 @@ const NAME_SHIM = res =>
 const CROSS = /(?:https:\/\/cfx-nui-|nui:\/\/)(spz-[\w-]+)\/ui\/(?:dist\/)?/g
 
 function syncOne({ res }) {
+  // The resources' own ui/ folders were removed: spz-hud's copy in
+  // web/public/apps is now the only one, edited in place. An app with no
+  // source left is kept as it is.
+  if (!existsSync(join(ROOT, res, 'ui'))) {
+    if (existsSync(join(OUT, res, 'index.html'))) { console.log(`  ${res.padEnd(18)} kept (edited in spz-hud)`); return }
+    throw new Error(`${res}: no ui/ source and no copy in web/public/apps`)
+  }
   const { dir, built } = sourceOf(res)
   const out = join(OUT, res)
   rmSync(out, { recursive: true, force: true })

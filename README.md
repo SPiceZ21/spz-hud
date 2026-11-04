@@ -27,18 +27,21 @@ How a hosted resource is wired:
 
 ### Editing a hosted UI
 
-Edit the UI in its own resource as before (for example `spz-poll/ui`, then `npm run build` there). Then sync and rebuild here:
+The resources' own `ui/` folders have been removed. `web/public/apps/<resource>/` is the only copy, it is tracked in git, and you edit it there directly. Rules that keep the look consistent go in `design/` instead.
+
+- **Plain HTML/JS apps:** edit the files directly.
+- **Built apps** (raceUI, speedometer, poll, nametag, spawn): `web/public/apps/` holds only their compiled output.
+  - **Small changes:** edit the CSS there, or add rules in `design/apps/<resource>.css`.
+  - **Code changes:** restore the source from that resource's git history (the commit before "Remove the UI"), rebuild it, and run `node tools/sync-apps.mjs <resource>`, which copies it back.
+
+Then:
 
 ```
-node tools/sync-apps.mjs            # every app (or: node tools/sync-apps.mjs spz-poll)
+node tools/sync-apps.mjs            # refresh shared fonts, design, apps.json, presets.json
 cd web && npm run build             # writes ../ui
 ```
 
-`sync-apps` also:
-
-- moves fonts that two or more apps ship identically to `web/public/shared/fonts`, and rewrites the CSS to use them (this saves 5 MB);
-- rewrites links into another resource's UI (`https://cfx-nui-spz-x/ui/...`) to that app's copy here;
-- fills in any `public/` asset missing from an old `dist`.
+The checkpoint DUI pages (the in-world pill and gate animation) are in `dui/cp/`, served as `nui://spz-hud/dui/cp/...`; spz-races loads them from there.
 
 ## The shared look (design/)
 
