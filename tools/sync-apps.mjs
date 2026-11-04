@@ -276,6 +276,12 @@ function presetsFor(res) {
 }
 
 const presets = {}
-for (const a of APPS) presets[a.res] = presetsFor(a.res)
+// A resource no longer in this folder (archived, deleted locally) keeps the
+// presets read from it last time.
+let previous = {}
+try { previous = JSON.parse(readFileSync(join(OUT, 'presets.json'), 'utf8')) } catch { previous = {} }
+for (const a of APPS) {
+  presets[a.res] = existsSync(join(ROOT, a.res, 'client')) ? presetsFor(a.res) : (previous[a.res] || [])
+}
 writeFileSync(join(OUT, 'presets.json'), JSON.stringify(presets, null, 2))
 console.log(`wrote apps/presets.json (${Object.values(presets).reduce((n, l) => n + l.length, 0)} messages)`)
