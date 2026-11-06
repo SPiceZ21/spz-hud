@@ -258,3 +258,8 @@
 .hx-score b { font: italic 800 26px/1 'Panchang', sans-serif; }
 .hx-score span { font: 700 10px 'Panchang', sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: #a1a1aa; margin-right: 10px; }
 .hx-btn { height: 26px; padding: 0 12px; border: 0; border-radius: 3px; cursor: pointer; background: #f4f4f5; color: #0a0b0d; font: italic 800 11px 'Panchang', sans-serif; text-transform: uppercase; }
+
+/* In game the pins are drawn by the game itself (DUI texture, every frame);
+   these buttons stay as invisible click targets over them. */
+.hm[data-game='true'] .hm-ico { opacity: 0; }
+.hm[data-game='true'] .hm-label { display: none; }

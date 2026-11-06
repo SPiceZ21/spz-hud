@@ -47,8 +47,8 @@ export function HubMap() {
   const [height, setHeight] = useState(1700)
   const [filter, setFilter] = useState('all')
   const [sel, setSel] = useState<string | null>(null)
-  const drag = useRef<{ x: number; y: number; moved: boolean } | null>(null)
-  const pend = useRef({ dx: 0, dy: 0, raf: 0 })
+  const drag = useRef<{ x: number; y: number; moved: boolean; rot: boolean } | null>(null)
+  const pend = useRef({ dx: 0, dy: 0, rx: 0, ry: 0, raf: 0 })
 
   useEffect(() => {
     if (inGame) post('hubMap', { on: true })
@@ -66,6 +66,8 @@ export function HubMap() {
   }, [])
 
   const kinds = FILTERS.find(f => f[0] === filter)![2]
+  // The game draws the pins (client/hub_map.lua), so it needs the filter too.
+  useEffect(() => { if (inGame) post('hubMapFilter', { kinds }) }, [filter])
   const shown = pos.filter(p => meta[p.id] && kinds.includes(meta[p.id].kind))
   const selected = sel ? meta[sel] : null
   const labelsOn = height < 1100
@@ -75,15 +77,17 @@ export function HubMap() {
     const p = pend.current
     p.raf = 0
     if (p.dx || p.dy) { if (inGame) post('hubMapPan', { dx: p.dx, dy: p.dy }); p.dx = 0; p.dy = 0 }
+    if (p.rx || p.ry) { if (inGame) post('hubMapRotate', { dx: p.rx, dy: p.ry }); p.rx = 0; p.ry = 0 }
   }
-  const onDown = (e: PointerEvent) => { drag.current = { x: e.clientX, y: e.clientY, moved: false } }
+  // Left drag pans, right drag turns / tilts the camera.
+  const onDown = (e: PointerEvent) => { drag.current = { x: e.clientX, y: e.clientY, moved: false, rot: e.button === 2 } }
   const onMove = (e: PointerEvent) => {
     const d = drag.current
     if (!d) return
     const dx = e.clientX - d.x, dy = e.clientY - d.y
     if (Math.abs(dx) + Math.abs(dy) > 2) d.moved = true
     d.x = e.clientX; d.y = e.clientY
-    pend.current.dx += dx; pend.current.dy += dy
+    if (d.rot) { pend.current.rx += dx; pend.current.ry += dy } else { pend.current.dx += dx; pend.current.dy += dy }
     if (!pend.current.raf) pend.current.raf = requestAnimationFrame(flush)
   }
   const onUp = () => { drag.current = null }
@@ -98,7 +102,7 @@ export function HubMap() {
   }, [sel])
 
   return (
-    <div class="hm" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp} onWheel={onWheel}>
+    <div class="hm" data-game={inGame} onContextMenu={e => e.preventDefault()} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp} onWheel={onWheel}>
       {shown.map(p => {
         const m = meta[p.id]
         return (
@@ -141,4 +145,4 @@ export function HubMap() {
   )
 }
 
-export const MAP_KEYS: [string, string][] = [['DRAG', 'Pan'], ['WHEEL', 'Zoom'], ['CLICK', 'Select'], ['ENTER', 'Waypoint']]
+export const MAP_KEYS: [string, string][] = [['DRAG', 'Pan'], ['R-DRAG', 'Angle'], ['WHEEL', 'Zoom'], ['CLICK', 'Select'], ['ENTER', 'Waypoint']]

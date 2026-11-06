@@ -234,11 +234,11 @@ kbd {
 .sx-loc {
   position: relative; display: flex; align-items: baseline; gap: 14px;
   padding: 12px 14px 16px; border: 0; border-radius: 3px; cursor: pointer; text-align: left;
-  background: rgba(8, 9, 11, 0.72); color: #a1a1aa;
+  background: transparent; color: #a1a1aa;
   transition: background 120ms, color 120ms;
 }
-.sx-loc:hover { background: rgba(8, 9, 11, 0.86); color: #f4f4f5; }
-.sx-loc[data-on='true'] { background: rgba(8, 9, 11, 0.92); color: #fff; }
+.sx-loc:hover { color: #f4f4f5; }
+.sx-loc[data-on='true'] { color: #fff; }
 .sx-idx { font: italic 800 13px var(--font-display, 'Panchang'), sans-serif; color: #71717a; }
 .sx-loc[data-on='true'] .sx-idx { color: var(--color-primary, #ff6200); }
 .sx-loc-name { font: italic 800 18px var(--font-display, 'Panchang'), sans-serif; text-transform: uppercase; }
@@ -264,3 +264,6 @@ kbd {
 .sp-root[data-stage='showcase'] .sx-driver { transition-delay: 250ms; }
 .sp-root[data-stage='showcase'] .sx-commit { transition-delay: 380ms; }
 .sx-keys kbd { background: transparent !important; color: #f4f4f5 !important; box-shadow: none !important; }
+
+/* No panel behind the locations: the text sits on the scene (legible via a tight shadow). */
+.sx-loc, .sx-list-head { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7); }

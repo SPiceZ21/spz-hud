@@ -1,0 +1,47 @@
+<!doctype html>
+<!--
+  TAB hub map pins, as one texture (client/hub_map.lua opens this in a DUI and
+  draws it with DrawSpriteUv every frame, so the pins move with the camera
+  as smoothly as the game itself). 1024 x 128: eight 128 px cells, all WHITE
+  so the game tints each layer:
+    0 rounded square (fill)   1 rounded square (ring)
+    2 flag (track)  3 camera  4 gamepad (minigame)  5 garage  6 person  7 disc (you)
+-->
+<html>
+<head><meta charset="utf-8"><style>html,body{margin:0;background:transparent;overflow:hidden}canvas{display:block}</style></head>
+<body>
+<canvas id="c" width="1024" height="128"></canvas>
+<script>
+(function () {
+  var ctx = document.getElementById('c').getContext('2d');
+  ctx.clearRect(0, 0, 1024, 128);
+  ctx.fillStyle = '#fff'; ctx.strokeStyle = '#fff';
+  function rr(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  }
+  // 0: fill, 1: ring
+  rr(8, 8, 112, 112, 22); ctx.fill();
+  ctx.lineWidth = 9; rr(128 + 12, 12, 104, 104, 20); ctx.stroke();
+  // glyphs: the same 24-unit paths as the page's icons, scaled into a cell
+  var GLYPHS = [
+    'M5 3h2v18H5zM8 4h11l-2 4 2 4H8z',
+    'M3 7h13l5-3v12l-5-3H3zM6 16h4v4H6z',
+    'M7 7h10a5 5 0 0 1 0 10l-2-2H9l-2 2A5 5 0 0 1 7 7zm1 3v2H6v1h2v2h1v-2h2v-1H9v-2zm8 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2z',
+    'M12 3 2 10v11h20V10zm-6 9h12v2H6zm0 4h12v2H6z',
+    'M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8zM4 21a8 8 0 0 1 16 0z',
+  ];
+  GLYPHS.forEach(function (d, i) {
+    ctx.save();
+    ctx.translate((2 + i) * 128 + 28, 28);
+    ctx.scale(72 / 24, 72 / 24);
+    ctx.fill(new Path2D(d));
+    ctx.restore();
+  });
+  // 7: disc
+  ctx.beginPath(); ctx.arc(7 * 128 + 64, 64, 54, 0, Math.PI * 2); ctx.fill();
+})();
+</script>
+</body>
+</html>

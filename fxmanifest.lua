@@ -50,6 +50,7 @@ client_scripts {
 server_scripts {
     'config_chat_server.lua',   -- SERVER ONLY: chat API keys (never shared with players)
     'server/pausemenu.lua',
+    'server/hub_map.lua',        -- the map's private bucket + player pins
     'server/nametag.lua',
     'server/chat_giphy.lua',
     'server/chat.lua',
