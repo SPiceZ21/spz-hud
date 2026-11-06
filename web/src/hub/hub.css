@@ -297,3 +297,23 @@
 .hp-head .hp-avatar { width: 64px; height: 64px; margin: 0; }
 .hx-page > .hx-scroll { padding-right: 4px; }
 .hx-page > .hx-pagehead { flex: none; }
+
+/* Profile stat groups: Ratings · Results · Wallet, side by side, sized by tile count */
+.hp-groups { display: flex; flex-wrap: wrap; gap: 14px; }
+.hp-group { flex: var(--n) 1 calc(var(--n) * 150px); min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.hp-group > .hx-tile-k { margin: 0; }
+.hp-row { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 10px; }
+.hp-row .hx-tile { padding: 16px 18px; }
+.hp-row .hx-tile-v { font-size: 28px; }
+
+/* Scrollbars in the hub: thin and dark, like the rest of the UI (not the white default) */
+.hx-scroll, .hub-content, .hm { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.14) transparent; }
+.hx-scroll::-webkit-scrollbar, .hub-content::-webkit-scrollbar { width: 6px; height: 6px; }
+.hx-scroll::-webkit-scrollbar-track, .hub-content::-webkit-scrollbar-track { background: transparent; }
+.hx-scroll::-webkit-scrollbar-thumb, .hub-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: 3px; }
+.hx-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.26); }
+.hx-scroll { overflow-x: hidden; }
+.hp-group { min-width: 200px; }
+.hp-row .hx-tile-v { font-size: 26px; overflow: hidden; text-overflow: ellipsis; }
+.hp-group:last-child { flex: 0 0 240px; }
+.hp-row .hx-tile { padding: 14px 14px; } .hp-row .hx-tile-v { font-size: 24px; }

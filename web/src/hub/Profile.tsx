@@ -67,16 +67,32 @@ export function Profile({ profile }: { profile: HubProfile }) {
           </div>
         </header>
 
-        <div class="hx-tiles" style={{ '--tile': '250px' } as any}>
-          <Tile k="iRating" v={n(s.iRating ?? profile.rating)} accent />
-          <Tile k="Safety rating" v={s.sr != null ? s.sr.toFixed(2) : '—'} />
-          <Tile k="Level" v={n(s.level ?? profile.level)} s={`${n(s.total_xp)} XP`} />
-          <Tile k="Races" v={n(s.total_races)} />
-          <Tile k="Wins" v={n(s.wins)} s={pct(s.win_rate) + ' of races'} />
-          <Tile k="Podiums" v={n(s.podiums)} s={pct(s.podium_rate) + ' of races'} />
-          <Tile k="Avg finish" v={s.avg_position ? s.avg_position.toFixed(1) : '—'} />
-          <Tile k="DNF rate" v={pct(s.dnf_rate)} s={`${n(s.dnfs)} DNFs`} />
-          <Tile k="Credits" v={n(profile.credits)} />
+        {/* Grouped: what you are rated, what you have done, what you have. */}
+        <div class="hp-groups">
+          <section class="hp-group" style={{ '--n': 3 } as any}>
+            <h4 class="hx-tile-k">Ratings</h4>
+            <div class="hp-row">
+              <Tile k="iRating" v={n(s.iRating ?? profile.rating)} accent />
+              <Tile k="Safety" v={s.sr != null ? s.sr.toFixed(2) : '—'} />
+              <Tile k="Level" v={n(s.level ?? profile.level)} s={`${n(s.total_xp)} XP`} />
+            </div>
+          </section>
+          <section class="hp-group" style={{ '--n': 5 } as any}>
+            <h4 class="hx-tile-k">Results</h4>
+            <div class="hp-row">
+              <Tile k="Races" v={n(s.total_races)} />
+              <Tile k="Wins" v={n(s.wins)} s={pct(s.win_rate)} />
+              <Tile k="Podiums" v={n(s.podiums)} s={pct(s.podium_rate)} />
+              <Tile k="Avg finish" v={s.avg_position ? s.avg_position.toFixed(1) : '—'} />
+              <Tile k="DNF rate" v={pct(s.dnf_rate)} s={`${n(s.dnfs)} DNFs`} />
+            </div>
+          </section>
+          <section class="hp-group" style={{ '--n': 1 } as any}>
+            <h4 class="hx-tile-k">Wallet</h4>
+            <div class="hp-row">
+              <Tile k="Credits" v={n(profile.credits)} />
+            </div>
+          </section>
         </div>
 
         <h3 class="hx-sec">Recent races</h3>
