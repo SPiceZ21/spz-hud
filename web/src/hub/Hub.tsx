@@ -15,6 +15,7 @@ import { post, inGame } from '../core/nui'
 import { appWindow, ownerOf, reloadApp, setHubMode, toApp } from '../core/apps'
 import { Achievements } from './Achievements'
 import { HubMap, MAP_KEYS } from './HubMap'
+import { Profile } from './Profile'
 import './hub.css'
 
 type AppRes = 'spz-leaderboard' | 'spz-crew' | 'spz-speedcam'
@@ -30,7 +31,7 @@ interface Section {
 
 const SECTIONS: Section[] = [
   { id: 'map', label: 'Map' },
-  { id: 'profile', label: 'Profile', app: 'spz-leaderboard', cmd: 'leaderboard', tab: 'me' },
+  { id: 'profile', label: 'Profile' },
   { id: 'standings', label: 'Standings', app: 'spz-leaderboard', cmd: 'leaderboard',
     tabs: [['standings', 'Global'], ['classes', 'Classes'], ['records', 'Track records']] },
   { id: 'rivals', label: 'Rivals', app: 'spz-leaderboard', cmd: 'leaderboard',
@@ -166,7 +167,7 @@ export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {
   return (
     <>
       {!isMap && <div class="hub-backdrop" />}
-      <div class="hub-chrome" data-map={isMap}>
+      <div class="hub-chrome" data-map={isMap} data-native={section.id === 'profile'}>
         <header class="hub-bar">
           <img class="hub-logo" src="./apps/spz-spawn/logo.png" alt="SPiceZ" />
           <nav class="hub-tabs">
@@ -198,6 +199,7 @@ export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {
         )}
 
         {isMap && <HubMap />}
+        {section.id === 'profile' && <Profile profile={profile} />}
         {section.id === 'achievements' && (
           <main class="hub-content" data-sub={!!section.tabs}>
             <Achievements profile={profile} />

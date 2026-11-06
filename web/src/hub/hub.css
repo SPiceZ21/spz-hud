@@ -67,7 +67,7 @@
 .hub-avatar { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }
 .hub-name { font: italic 800 15px 'Panchang', sans-serif; text-transform: uppercase; }
 .hub-sub { font: 700 10px 'Panchang', sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: #a1a1aa; }
-.hub-chrome[data-map='true'] .hub-id { display: none; }   /* the map uses that row for its filters */
+.hub-chrome[data-map='true'] .hub-id, .hub-chrome[data-native='true'] .hub-id { display: none; }   /* map: its filters use the row; native tabs carry their own identity */
 
 /* Sub-tabs, left-aligned above the content */
 .hub-subtabs {
@@ -192,3 +192,42 @@
 }
 .hm-card-btn kbd { border: 1px solid #0a0b0d; border-radius: 4px; padding: 1px 5px; font: 800 9px 'Panchang', sans-serif; }
 .hm-card-close { position: absolute; top: 10px; right: 12px; border: 0; background: none; color: #71717a; font-size: 20px; cursor: pointer; }
+
+/* ══ Hub design system (native tabs: Profile, …) ══
+   Solid dark plates with a hairline, italic uppercase titles, small-caps
+   labels, big italic numbers. No accent bars, no gradients, no glow. */
+.hx-page { position: absolute; top: 148px; right: 36px; bottom: 64px; left: 36px; display: flex; gap: 14px; }
+.hx-plate { background: rgba(10, 11, 13, 0.96); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 4px; padding: 20px 22px; min-width: 0; }
+.hx-title { margin: 0; font: italic 800 24px/1.05 'Panchang', sans-serif; text-transform: uppercase; }
+.hx-head { margin: 0 0 12px; font: italic 800 14px 'Panchang', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; }
+.hx-label { font: 700 10px 'Panchang', sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: #a1a1aa; }
+.hx-empty { padding: 14px 0; font: 500 13px 'Inter', 'Segoe UI', sans-serif; color: #71717a; }
+.hx-rows { margin: 18px 0 0; }
+.hx-rows div { display: flex; justify-content: space-between; padding: 11px 0; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+.hx-rows dt { font: 700 10px 'Panchang', sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: #a1a1aa; }
+.hx-rows dd { margin: 0; font: italic 800 15px 'Panchang', sans-serif; }
+.hx-fig { display: flex; flex-direction: column; gap: 6px; padding: 0 20px; border-left: 1px solid rgba(255, 255, 255, 0.07); }
+.hx-fig:first-child { border-left: 0; padding-left: 0; }
+.hx-fig b { font: italic 800 30px/1 'Panchang', sans-serif; }
+.hx-fig span { font: 700 10px 'Panchang', sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: #a1a1aa; }
+.hx-table { width: 100%; border-collapse: collapse; }
+.hx-table th { text-align: left; padding: 0 8px 8px; font: 700 9px 'Panchang', sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; }
+.hx-table td { padding: 10px 8px; border-top: 1px solid rgba(255, 255, 255, 0.06); font: 600 13px 'Inter', 'Segoe UI', sans-serif; color: #d4d4d8; white-space: nowrap; }
+.hx-table th:first-child, .hx-table td:first-child { padding-left: 0; }
+.hx-strong { color: #f4f4f5 !important; font-weight: 700 !important; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+.hx-dim { color: #71717a !important; }
+.hx-num { text-align: right; font: italic 800 13px 'Panchang', sans-serif !important; color: #f4f4f5 !important; }
+.hx-table th:not(:first-child) { text-align: right; }
+.hx-pos { width: 46px; font: italic 800 14px 'Panchang', sans-serif !important; color: #f4f4f5 !important; }
+.hx-pos[data-p='1'] { color: var(--color-primary) !important; }
+.hx-pos[data-p='dnf'] { color: #71717a !important; }
+.hx-tag { margin-left: 8px; padding: 2px 6px; border-radius: 3px; background: #f4f4f5; color: #0a0b0d; font: 800 9px 'Panchang', sans-serif; vertical-align: 1px; }
+
+/* Profile */
+.hp-id { width: 330px; flex: none; }
+.hp-avatar { display: block; width: 88px; height: 88px; border-radius: 6px; object-fit: cover; background: #18181b; margin-bottom: 16px; }
+.hp-id .hx-label { margin-top: 6px; }
+.hp-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.hp-figs { display: flex; }
+.hp-lists { flex: 1; min-height: 0; display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; }
+.hp-lists .hx-plate { overflow: auto; }
