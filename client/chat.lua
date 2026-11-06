@@ -173,6 +173,12 @@ function openChat()
     if not inWorld() then return end
     open = true
     SetNuiFocus(true, true)
+    -- The page has two "hidden" switches (spz-booting until spzBooted, and
+    -- hud-hidden until visible). Both were only sent once / on change, so a
+    -- chat page that loaded after them (a restart, a reload) stayed invisible
+    -- forever: T gave focus to a box nobody could see. Re-assert them here.
+    SendNUIMessage({ action = 'spzBooted' })
+    SendNUIMessage({ action = 'visible', visible = true })
     SendNUIMessage({ action = 'show' })
     pushCommands()
     pushOnline()
@@ -321,7 +327,13 @@ end)
 CreateThread(function()
     while true do
         if open then
-            if IsControlJustPressed(0, 322) then closeChat() end -- INPUT_FRONTEND_PAUSE_ALTERNATE (Esc)
+            -- With NUI focus the game reports these controls as DISABLED, so the
+            -- plain check never fired and a chat that failed to show could not
+            -- be closed: the stuck cursor.
+            if IsControlJustPressed(0, 322) or IsDisabledControlJustPressed(0, 322)    -- Esc
+            or IsDisabledControlJustPressed(0, 200) then                              -- pause / Esc
+                closeChat()
+            end
             Wait(0)
         else
             Wait(250)
