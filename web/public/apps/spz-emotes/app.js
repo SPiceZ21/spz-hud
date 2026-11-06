@@ -1,6 +1,7 @@
 // spz-emotes menu. Data comes from client/menu.lua on open.
 const $ = (id) => document.getElementById(id)
-const RES = 'spz-emotes'
+// The owning resource (spz-hud since the merge), from the name shim in index.html.
+const RES = typeof GetParentResourceName === 'function' ? GetParentResourceName() : 'spz-emotes'
 const post = (name, body) =>
   fetch(`https://${RES}/${name}`, { method: 'POST', body: JSON.stringify(body || {}) }).catch(() => {})
 

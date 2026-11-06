@@ -1,5 +1,8 @@
 (function () {
-  const RES = 'spz-chat';
+  // The resource that owns this page (spz-hud since the merge; the name shim
+  // in index.html answers this). Hard-coding 'spz-chat' sent every callback
+  // to a resource that no longer exists: chat never closed, commands never ran.
+  const RES = typeof GetParentResourceName === 'function' ? GetParentResourceName() : 'spz-chat';
   const el = (id) => document.getElementById(id);
   const rootEl = el('root');
   const dock = el('dock');
