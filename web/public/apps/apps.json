@@ -35,6 +35,7 @@
   {
     "res": "spz-speedometer",
     "z": 20,
+    "owner": "spz-hud",
     "moves": [
       {
         "id": "gauge",
@@ -577,7 +578,8 @@
   },
   {
     "res": "spz-pausemenu",
-    "z": 85
+    "z": 85,
+    "owner": "spz-hud"
   },
   {
     "res": "spz-tutorial",

@@ -20,6 +20,30 @@ end)
 
 exports('AppKeepInput', function(app, on) Focus.SetKeepInput(app, on) end)
 
+-- Pages driven by spz-hud's own files (merged in: spz-speedometer,
+-- spz-pausemenu). Same contract as app.lua for other resources, but direct:
+-- no export round trip, and messages sent before the page is ready are queued
+-- by HudSend instead of dropped.
+--   local SendNUIMessage, SetNuiFocus, SetNuiFocusKeepInput = SpzHudApp('spz-pausemenu')
+function SpzHudApp(app)
+    local keep = false
+    local function send(msg)
+        if msg ~= nil then HudSend({ type = 'app', app = app, msg = msg }) end
+    end
+    local function focus(keyboard, cursor)
+        if keyboard or cursor then
+            Focus.Request(app, { keyboard = keyboard == true, cursor = cursor == true, keepInput = keep }, app)
+        else
+            Focus.Release(app)
+        end
+    end
+    local function keepInput(on)
+        keep = on == true
+        Focus.SetKeepInput(app, keep)
+    end
+    return send, focus, keepInput
+end
+
 -- Pages driven by another resource (apps.json `owner`: spz-races drives the
 -- spz-raceUI, spz-poll and spz-leaderboard pages).
 local owned = {}   -- [owner] = { app, ... }

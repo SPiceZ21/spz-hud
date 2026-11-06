@@ -42,7 +42,7 @@ const DESIGN_OUT = join(PUBLIC, 'shared', 'design')
 // What players can move in /hudedit, per app, is in tools/hud-layout.mjs.
 export const APPS = [
   { res: 'spz-nametag',      z: 10 },
-  { res: 'spz-speedometer',  z: 20 },
+  { res: 'spz-speedometer',  z: 20, owner: 'spz-hud' },
   { res: 'spz-speedcam',     z: 25, owner: 'spz-races' },
   { res: 'spz-raceUI',       z: 30, owner: 'spz-races' },
   { res: 'spz-spectate',     z: 30, owner: 'spz-races' },
@@ -57,7 +57,7 @@ export const APPS = [
   { res: 'spz-crew',         z: 80 },
   { res: 'spz-leaderboard',  z: 80, owner: 'spz-races' },
   { res: 'spz-replay',       z: 80, owner: 'spz-races' },
-  { res: 'spz-pausemenu',    z: 85 },
+  { res: 'spz-pausemenu',    z: 85, owner: 'spz-hud' },
   { res: 'spz-tutorial',     z: 90 },
   { res: 'spz-spawn',        z: 95 },
 ]

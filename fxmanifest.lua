@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-description 'SPiceZ HUD host: one overlay page, player-placed widgets, shared focus'
+description 'SPiceZ HUD host: one overlay page, player-placed widgets, shared focus, speedometer, pause menu'
 author 'SPiceZ'
 version '0.1.0'
 
@@ -18,6 +18,7 @@ files {
 shared_scripts {
     '@ox_lib/init.lua',
     'config.lua',
+    'config_pausemenu.lua',   -- Config.PauseMenu (merged from spz-pausemenu)
 }
 
 client_scripts {
@@ -26,8 +27,17 @@ client_scripts {
     'client/apps.lua',
     'client/keybar.lua',
     'client/hub.lua',
+    -- Merged in from spz-speedometer and spz-pausemenu. Their pages are still
+    -- the spz-speedometer / spz-pausemenu apps; SpzHudApp (apps.lua) binds each.
+    'client/speedometer.lua',
+    'client/pausemenu.lua',
+}
+
+server_scripts {
+    'server/pausemenu.lua',
 }
 
 dependencies {
     'ox_lib',
+    'spz-core',     -- theme, KeyFor, tablet (speedometer, pause menu)
 }
