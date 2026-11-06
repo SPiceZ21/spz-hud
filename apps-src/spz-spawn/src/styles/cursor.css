@@ -1,0 +1,158 @@
+/*
+ * Reticle cursor — see components/Cursor.tsx for the behaviour and for why the
+ * native arrow is only hidden once this thing is known to be running.
+ */
+
+/* Applied to <html> only while the reticle is live. Everything, including the
+   pointer-cursor buttons already declared in nui-base.css, defers to it —
+   without !important a `cursor: pointer` on a button would put the arrow back
+   on exactly the elements the reticle is there to respond to. */
+html.spz-cursor-live,
+html.spz-cursor-live * {
+  cursor: none !important;
+}
+
+.cur {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;   /* it must never be what a click lands on */
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.cur.is-live {
+  opacity: 1;
+}
+
+/* ── Dot ───────────────────────────────────────────────────────────────── */
+/* Positioned by transform from the script; the centring offset lives on the
+   child so the two do not fight over the same property. */
+
+.cur-dot,
+.cur-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+}
+
+.cur-dot::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 10px 1px rgba(var(--color-primary-rgb), 0.85);
+  transition: width 180ms var(--anim-ease), height 180ms var(--anim-ease),
+              border-radius 180ms var(--anim-ease), background 180ms var(--anim-ease);
+}
+
+.cur.is-down .cur-dot::before {
+  width: 8px;
+  height: 8px;
+}
+
+/* Over an input the reticle would be in the way of the thing it is pointing at,
+   so it becomes the caret it replaced. */
+.cur[data-mode='text'] .cur-dot::before {
+  width: 2px;
+  height: 19px;
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(var(--color-primary-rgb), 0.6);
+}
+
+.cur[data-mode='off'] .cur-dot::before {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+}
+
+/* ── Ring ──────────────────────────────────────────────────────────────── */
+
+.cur-ring::before {
+  content: '';
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(var(--color-primary-rgb), 0.5);
+  transition: width 220ms var(--anim-ease), height 220ms var(--anim-ease),
+              border-color 220ms var(--anim-ease), opacity 180ms var(--anim-ease);
+}
+
+.cur[data-mode='hover'] .cur-ring::before {
+  width: 40px;
+  height: 40px;
+  border-color: rgba(var(--color-primary-rgb), 0.95);
+}
+
+.cur.is-down .cur-ring::before {
+  width: 21px;
+  height: 21px;
+  border-color: rgba(var(--color-primary-rgb), 1);
+}
+
+.cur[data-mode='text'] .cur-ring::before {
+  opacity: 0;
+}
+
+.cur[data-mode='off'] .cur-ring::before {
+  width: 30px;
+  height: 30px;
+  border-color: rgba(255, 255, 255, 0.28);
+  border-style: dashed;
+}
+
+/* Corner ticks. Idle they sit wide and faint; on a target they close in, which
+   is what makes the reticle read as LOCKING ON rather than just growing. */
+.cur-ring i {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  opacity: 0;
+  border: 1.5px solid var(--color-primary);
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), opacity 180ms ease;
+}
+
+.cur-ring .tl { border-right: 0; border-bottom: 0; transform: translate(-19px, -19px); }
+.cur-ring .tr { border-left: 0;  border-bottom: 0; transform: translate(19px, -19px); }
+.cur-ring .bl { border-right: 0; border-top: 0;    transform: translate(-19px, 19px); }
+.cur-ring .br { border-left: 0;  border-top: 0;    transform: translate(19px, 19px); }
+
+.cur[data-mode='hover'] .cur-ring i { opacity: 1; }
+.cur[data-mode='hover'] .cur-ring .tl { transform: translate(-15px, -15px); }
+.cur[data-mode='hover'] .cur-ring .tr { transform: translate(15px, -15px); }
+.cur[data-mode='hover'] .cur-ring .bl { transform: translate(-15px, 15px); }
+.cur[data-mode='hover'] .cur-ring .br { transform: translate(15px, 15px); }
+
+.cur.is-down[data-mode='hover'] .cur-ring .tl { transform: translate(-11px, -11px); }
+.cur.is-down[data-mode='hover'] .cur-ring .tr { transform: translate(11px, -11px); }
+.cur.is-down[data-mode='hover'] .cur-ring .bl { transform: translate(-11px, 11px); }
+.cur.is-down[data-mode='hover'] .cur-ring .br { transform: translate(11px, 11px); }
+
+/* ── Label ─────────────────────────────────────────────────────────────── */
+/* Opt-in per control via data-cursor-label. Used sparingly — a label on every
+   hover is a tooltip system, and this is a pointer. */
+
+.cur-label {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  background: rgba(var(--color-primary-rgb), 0.92);
+  color: #0a0a0c;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  animation: cur-label-in 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes cur-label-in {
+  from { opacity: 0; transform: translate(-4px, -2px); }
+  to   { opacity: 1; transform: none; }
+}

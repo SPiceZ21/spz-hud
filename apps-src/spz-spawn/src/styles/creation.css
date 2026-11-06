@@ -1,0 +1,668 @@
+/*
+ * Character creation.
+ *
+ * A docked left rail rather than a centred dialog. The four things being chosen
+ * here — alias, model, nation, number — are the player's identity for the rest
+ * of the server, so the ped they are building stays on screen beside the form
+ * instead of being covered by it. A modal box in the middle of the screen says
+ * "fill in this form"; a rail beside your racer says "this is you".
+ *
+ * The scrim is a one-sided gradient: opaque enough on the left to read type
+ * against, fully clear by the middle so the ped is never dimmed.
+ */
+
+.cc-root {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  display: flex;
+  color: var(--gray-50);
+  font-family: var(--font-secondary);
+}
+
+.cc-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    rgba(3, 3, 5, 0.97) 0%,
+    rgba(3, 3, 5, 0.93) 26%,
+    rgba(3, 3, 5, 0.55) 42%,
+    rgba(3, 3, 5, 0) 62%
+  );
+}
+
+/* Faint accent wash bleeding off the leading edge — stops the rail reading as
+   a flat black bar without putting a visible border anywhere. */
+.cc-scrim::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 340px;
+  background: radial-gradient(
+    120% 80% at 0% 40%,
+    rgba(var(--color-primary-rgb), 0.1) 0%,
+    rgba(var(--color-primary-rgb), 0) 70%
+  );
+}
+
+.cc-rail {
+  position: relative;
+  width: 470px;
+  max-width: 46vw;
+  height: 100%;
+  padding: 5vh 40px 4vh 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Flex column: children must hold their height or they compress instead of
+   scrolling, and the rail never gets a scrollbar. */
+.cc-rail > * {
+  flex-shrink: 0;
+}
+
+/* ── Masthead ─────────────────────────────────────────────────────────── */
+
+.cc-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(var(--color-primary-rgb), 0.85);
+}
+
+.cc-eyebrow i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
+}
+
+.cc-title {
+  margin-top: 10px;
+  font-family: var(--font-primary);
+  font-weight: 300;
+  font-size: 38px;
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.cc-title b {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.cc-sub {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--gray-400);
+  max-width: 34ch;
+}
+
+/* ── Field block ──────────────────────────────────────────────────────── */
+
+.cc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/*
+ * The nation field has to outrank the fields below it, and plain z-index on the
+ * menu is not enough to do it.
+ *
+ * The entrance animation ends on `transform: translateY(0)` with fill-mode
+ * `both`, so every row keeps a transform after it finishes — and a transformed
+ * element is its own stacking context. That makes each row an isolated layer
+ * painted in DOM order, so the open dropdown was trapped inside its own row's
+ * context and the "Race number" row below simply painted over the top of it, no
+ * matter how high the menu's z-index went.
+ *
+ * Raising the row itself is what lifts the whole context above its siblings.
+ */
+.cc-raise {
+  position: relative;
+  z-index: 30;
+}
+
+.cc-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  transition: color 200ms var(--anim-ease);
+}
+
+.cc-field[data-done='true'] .cc-label {
+  color: var(--gray-300);
+}
+
+/* Step marker doubles as the completion tick: the number is the state. */
+.cc-step {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--gray-700);
+  color: var(--gray-500);
+  font-size: 8.5px;
+  transition: all 260ms var(--anim-ease);
+}
+
+.cc-field[data-done='true'] .cc-step {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #000;
+  box-shadow: 0 0 12px rgba(var(--color-primary-rgb), 0.5);
+}
+
+.cc-hint {
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--gray-500);
+  min-height: 14px;
+}
+
+.cc-hint.is-bad {
+  color: #f87171;
+}
+
+.cc-count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--gray-600);
+}
+
+/* ── Text control ─────────────────────────────────────────────────────── */
+
+.cc-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  transition: box-shadow 200ms var(--anim-ease), background 200ms var(--anim-ease);
+}
+
+.cc-control:focus-within {
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--color-primary-rgb), 0.7),
+    0 0 0 4px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.cc-control.is-bad {
+  box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.6);
+}
+
+.cc-control .cc-lead {
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  color: var(--gray-600);
+}
+
+.cc-control input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 14px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--gray-50);
+  font-family: var(--font-primary);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 0.03em;
+}
+
+.cc-control input::placeholder {
+  color: var(--gray-700);
+  letter-spacing: 0.02em;
+}
+
+.cc-control .cc-trail {
+  display: flex;
+  align-items: center;
+  padding-right: 15px;
+}
+
+/* ── Model cards ──────────────────────────────────────────────────────── */
+
+.cc-models {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.cc-model {
+  position: relative;
+  height: 92px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 240ms var(--anim-ease);
+}
+
+.cc-model:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.cc-model svg {
+  color: var(--gray-500);
+  transition: color 240ms var(--anim-ease);
+}
+
+.cc-model span {
+  font-family: var(--font-primary);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  transition: color 240ms var(--anim-ease);
+}
+
+.cc-model[data-on='true'] {
+  background: rgba(var(--color-primary-rgb), 0.1);
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--color-primary-rgb), 0.55),
+    0 8px 26px -12px rgba(var(--color-primary-rgb), 0.7);
+}
+
+.cc-model[data-on='true'] svg,
+.cc-model[data-on='true'] span {
+  color: var(--color-primary);
+}
+
+/* Light rising off the bottom edge of the chosen card. */
+.cc-model[data-on='true']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 40px;
+  background: linear-gradient(to top, rgba(var(--color-primary-rgb), 0.22), transparent);
+  pointer-events: none;
+}
+
+/* ── Nation picker ────────────────────────────────────────────────────── */
+/*
+ * A native <select> was unusable here: seventy entries with no search, text
+ * clipped by the control, no flag, and an OS dropdown that looks nothing like
+ * the rest of the game. This is a combobox — type to filter, arrows to move,
+ * Enter to take it.
+ */
+
+.cc-nation {
+  position: relative;
+}
+
+.cc-flag {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+  flex-shrink: 0;
+}
+
+.cc-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown);
+  max-height: 232px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  border-radius: 10px;
+  background: rgba(10, 10, 13, 0.98);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.09),
+    0 24px 50px -16px rgba(0, 0, 0, 0.95);
+  animation: cc-menu-in 160ms var(--anim-ease) both;
+}
+
+@keyframes cc-menu-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cc-option {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 11px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12.5px;
+  color: var(--gray-300);
+}
+
+.cc-option[data-cursor='true'] {
+  background: rgba(var(--color-primary-rgb), 0.14);
+  color: #fff;
+}
+
+.cc-option[data-picked='true'] {
+  color: var(--color-primary);
+}
+
+.cc-empty {
+  padding: 14px 11px;
+  font-size: 12px;
+  color: var(--gray-600);
+}
+
+/* ── Number plate ─────────────────────────────────────────────────────── */
+/*
+ * The race number is shown at the size it is worn, not just typed into a box.
+ * It is the one piece of identity that appears on every nametag and every row
+ * of the standings tower, so the field previews it rather than describing it.
+ */
+
+.cc-plate-row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.cc-plate {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.cc-plate[data-on='true'] {
+  background: linear-gradient(160deg, rgba(var(--color-primary-rgb), 0.16), rgba(var(--color-primary-rgb), 0.04));
+  box-shadow: inset 0 0 0 1px rgba(var(--color-primary-rgb), 0.5);
+}
+
+.cc-plate b {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-style: italic;
+  color: var(--gray-700);
+  transition: color 220ms var(--anim-ease);
+}
+
+.cc-plate[data-on='true'] b {
+  color: var(--color-primary);
+  text-shadow: 0 0 22px rgba(var(--color-primary-rgb), 0.55);
+}
+
+/* Number plate row: the real plate texture (2:1) needs a wider preview than
+   the race-number badge, or an 8-character plate is clipped. */
+.cc-plate-row.is-plate {
+  grid-template-columns: 184px 1fr;   /* 184 x 92: readable at a glance */
+  align-items: center;
+}
+.cc-plate.is-texture {
+  background: none;
+  box-shadow: none;
+  border-radius: 4px;
+}
+.cc-plate.is-texture[data-on='true'] { box-shadow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.6); }
+.cc-plate-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Identity strip ───────────────────────────────────────────────────── */
+/*
+ * Exactly how the four answers combine on a nametag and in the standings. The
+ * form is abstract; this is the artefact, so mistakes are caught here rather
+ * than after they are permanent.
+ */
+
+.cc-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 15px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.cc-identity .num {
+  flex-shrink: 0;
+  font-family: var(--font-primary);
+  font-weight: 800;
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1;
+  color: var(--color-primary);
+  min-width: 44px;
+}
+
+.cc-identity .alias {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-primary);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gray-100);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cc-identity .tag {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+  flex-shrink: 0;
+}
+
+.cc-identity.is-empty .num,
+.cc-identity.is-empty .alias {
+  color: var(--gray-700);
+}
+
+/* ── Commit ───────────────────────────────────────────────────────────── */
+
+.cc-commit {
+  margin-top: auto;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cc-go {
+  position: relative;
+  height: 52px;
+  border: 0;
+  border-radius: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  background: var(--color-primary);
+  color: #08080a;
+  box-shadow: 0 12px 34px -12px rgba(var(--color-primary-rgb), 0.9);
+  transition: all 200ms var(--anim-ease);
+}
+
+.cc-go:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.cc-go:active:not(:disabled) {
+  transform: translateY(0) scale(0.995);
+}
+
+/* Disabled is legible, not a ghost: the reason it is disabled is printed
+   directly beneath it, so the control has to stay readable enough to be worth
+   looking at. */
+.cc-go:disabled {
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--gray-500);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+}
+
+/* Sheen sweeps once when the form becomes submittable — the only animation
+   that fires on state rather than on time, so it reads as "you're ready". */
+.cc-go:not(:disabled)::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 42%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.42), transparent);
+  animation: cc-sheen 900ms var(--anim-ease) 1 both;
+}
+
+@keyframes cc-sheen {
+  from { transform: translateX(-160%); }
+  to   { transform: translateX(360%); }
+}
+
+/* Secondary action: same shape, no fill. Sits under the primary one where two
+   are offered, so the pair reads as "this, or that" rather than two buttons. */
+.cc-go-quiet {
+  height: 44px;
+  background: transparent;
+  color: var(--gray-200);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.cc-go-quiet:hover:not(:disabled) {
+  filter: none;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+}
+
+.cc-go-quiet::after {
+  display: none;   /* the sheen belongs to the primary action only */
+}
+
+.cc-blocker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--gray-500);
+  min-height: 15px;
+}
+
+.cc-error {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 14px;
+  border-radius: 9px;
+  background: rgba(239, 68, 68, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.35);
+  font-size: 11.5px;
+  color: #fca5a5;
+  animation: cc-shake 380ms var(--anim-ease) both;
+}
+
+@keyframes cc-shake {
+  0%   { transform: translateX(0); }
+  22%  { transform: translateX(-6px); }
+  46%  { transform: translateX(5px); }
+  70%  { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+/* ── Entrance ─────────────────────────────────────────────────────────── */
+/*
+ * Rows arrive in reading order rather than all at once, which gives the panel a
+ * direction to be read in. Short and once only — this sits in front of someone
+ * who wants to start racing.
+ */
+
+.cc-stagger > * {
+  animation: cc-rise 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.cc-stagger > *:nth-child(1) { animation-delay: 40ms; }
+.cc-stagger > *:nth-child(2) { animation-delay: 90ms; }
+.cc-stagger > *:nth-child(3) { animation-delay: 140ms; }
+.cc-stagger > *:nth-child(4) { animation-delay: 190ms; }
+.cc-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.cc-stagger > *:nth-child(6) { animation-delay: 290ms; }
+.cc-stagger > *:nth-child(7) { animation-delay: 340ms; }
+
+@keyframes cc-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Shorter viewports (720p and the 16:10 laptops that are common in FiveM)
+   cannot afford the display type or the generous rhythm. */
+@media (max-height: 800px) {
+  .cc-rail { padding: 3.5vh 34px 3vh 40px; gap: 16px; }
+  .cc-title { font-size: 30px; }
+  .cc-sub { display: none; }
+  .cc-control { height: 44px; }
+  .cc-plate-row.is-plate { grid-template-columns: 152px 1fr; }
+  .cc-model { height: 78px; }
+  .cc-go { height: 46px; }
+}

@@ -75,8 +75,15 @@ function walk(dir, fn) {
   }
 }
 
+// A UI's source: its resource's ui/ folder, or spz-hud/apps-src/<resource>
+// for a resource that was merged away (spz-spawn's page is built from there).
+const uiDir = res => {
+  const own = join(HUD, 'apps-src', res)
+  return existsSync(own) ? own : join(ROOT, res, 'ui')
+}
+
 function sourceOf(res) {
-  const ui = join(ROOT, res, 'ui')
+  const ui = uiDir(res)
   const dist = join(ui, 'dist')
   if (existsSync(join(ui, 'package.json'))) {
     if (!existsSync(join(dist, 'index.html'))) throw new Error(`${res}: ui/dist missing — run npm run build in ${res}/ui`)
@@ -128,7 +135,7 @@ function syncOne({ res, owner, ns }) {
   // The resources' own ui/ folders were removed: spz-hud's copy in
   // web/public/apps is now the only one, edited in place. An app with no
   // source left is kept as it is.
-  if (!existsSync(join(ROOT, res, 'ui'))) {
+  if (!existsSync(uiDir(res))) {
     if (existsSync(join(OUT, res, 'index.html'))) { refreshShim({ res, owner, ns }); console.log(`  ${res.padEnd(18)} kept (edited in spz-hud)`); return }
     throw new Error(`${res}: no ui/ source and no copy in web/public/apps`)
   }
@@ -143,7 +150,7 @@ function syncOne({ res, owner, ns }) {
 
   // Vite copies ui/public into dist at build time; a dist built before an
   // asset was added to public/ would be missing it. Fill any gaps from public.
-  const pub = join(ROOT, res, 'ui', 'public')
+  const pub = join(uiDir(res), 'public')
   let filled = 0
   if (built && existsSync(pub)) {
     walk(pub, src => {

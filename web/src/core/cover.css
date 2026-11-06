@@ -172,3 +172,14 @@
 .cover-surface { --cv-rgb: var(--color-primary-rgb, 255, 98, 0); position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .cover-surface .cover-slice { transform: none; }
 .cover-surface .cover-slice::after { display: none; }
+
+/* ══ Simplified (overrides the above): clean solid slices, nothing else ══
+   No texture, glow, grain, vignette, lit edges, corner frame or footer: the
+   slices are one flat surface (the spawn screen's / TAB hub's #08090b), and
+   only the logo, the status line and one thin bar sit on it. */
+.cover-slice { background: #08090b !important; background-image: none !important; }
+.cover-slice::after, .cover-aurora, .cover-grain, .cover-vign, .cover-frame, .cover-foot, .cover-rule, .cover-pip { display: none !important; }
+.cover-logo { filter: none; height: 56px; }
+.cover-status { font: 700 10px 'Panchang', 'Segoe UI', sans-serif; letter-spacing: 0.2em; color: #a1a1aa; }
+.cover-bar { width: 180px; height: 2px; background: rgba(255, 255, 255, 0.1); }
+.cover-bar span { background: rgb(var(--cv-rgb)); }
