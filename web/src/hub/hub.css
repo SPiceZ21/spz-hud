@@ -348,3 +348,14 @@
 .hx-podium-top { display: flex; align-items: flex-start; justify-content: space-between; }
 .hx-tile-badge { position: absolute; top: 12px; right: 12px; }
 .hx-vs { display: flex; align-items: center; gap: 18px; }
+
+/* Speed records: your plate (the game's San Andreas plate as the background) */
+.hx-unit { margin-left: 6px; font: italic 800 13px 'Panchang', sans-serif; color: #a1a1aa; }
+.hx-plate-sa {
+  position: absolute; top: 16px; right: 16px; width: 132px; height: 66px;
+  background: url('./apps/spz-speedcam/plates/plate01.png') center / 100% 100% no-repeat;
+  border-radius: 6px; display: grid; place-items: center;
+}
+.hx-plate-sa span { margin-top: 12px; font: 700 21px/1 'Arial Narrow', 'Roboto Condensed', Impact, sans-serif; letter-spacing: 0.04em; color: #1b2f6b; }
+.hx-tile-foot { flex-wrap: nowrap; }
+.hx-tile-foot > div { white-space: nowrap; }

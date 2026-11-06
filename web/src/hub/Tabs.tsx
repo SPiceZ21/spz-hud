@@ -245,10 +245,11 @@ export function Replays({ onWatch }: { onWatch: () => void }) {
 }
 
 // ── Speed records ─────────────────────────────────────────────────────────────
-interface SpeedData { records?: { camera_id: string; speed_kmh?: number; vehicle_model?: string; updated_at?: string }[]; cameras?: { id: string; name: string; minSpeedKmh?: number }[] }
+interface SpeedData { plate?: string; records?: { camera_id: string; speed_kmh?: number; vehicle_model?: string; updated_at?: string }[]; cameras?: { id: string; name: string; minSpeedKmh?: number }[] }
 export function SpeedRecords() {
   const [d, setD] = useState<SpeedData | null>(inGame ? null : {
     records: [{ camera_id: 'c1', speed_kmh: 243, vehicle_model: 'zentorno', updated_at: '2026-11-06' }, { camera_id: 'c2', speed_kmh: 201, vehicle_model: 'elegy', updated_at: '2026-11-05' }],
+    plate: '46EEK572',
     cameras: [{ id: 'c1', name: 'Route 68', minSpeedKmh: 112 }, { id: 'c2', name: 'Richman', minSpeedKmh: 112 }, { id: 'c3', name: 'Vespucci Blvd', minSpeedKmh: 104 }],
   })
   useEffect(() => { if (inGame) post<SpeedData>('hubSpeedRecords', {}, 'spz-races').then(r => setD(r || {})) }, [])
@@ -259,13 +260,16 @@ export function SpeedRecords() {
   return (
     <Page title="Speed records" sub="Your fastest pass through every speed camera" right={d && <div class="hx-score"><b>{hit}</b><span>of {cams.length} cameras</span></div>}>
       {cams.length === 0 ? <Empty d={d} text="No speed cameras on this server." /> : (
-        <Grid min={240}>
+        <Grid min={380}>
           {cams.map(c => {
             const b = best[c.id]
             return (
               <Tile key={c.id} k={c.minSpeedKmh ? `Trigger ${Math.round(c.minSpeedKmh)} km/h` : 'Camera'}
-                v={b?.speed_kmh ? `${Math.round(b.speed_kmh)}` : '—'} accent={!!b} t={c.name} s={b ? 'km/h, your best' : 'Not passed yet'}
-                foot={b ? [['Car', b.vehicle_model ? b.vehicle_model.toUpperCase() : '—'], ['Date', day(b.updated_at)]] : undefined} />
+                v={b?.speed_kmh ? <>{Math.round(b.speed_kmh)}<small class="hx-unit">km/h</small></> : '—'} accent={!!b} t={c.name}
+                s={b ? undefined : 'Not passed yet'}
+                foot={b ? [['Car', b.vehicle_model ? b.vehicle_model.toUpperCase() : '—'], ['Date', day(b.updated_at)]] : undefined}>
+                {b && d?.plate && <div class="hx-plate-sa"><span>{d.plate}</span></div>}
+              </Tile>
             )
           })}
         </Grid>
