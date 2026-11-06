@@ -98,7 +98,15 @@
           "duration": 60000
         }
       ],
-      "off": []
+      "off": [
+        {
+          "type": "capture",
+          "cameraName": "",
+          "speed": 0,
+          "unit": "KM/H",
+          "duration": 1
+        }
+      ]
     }
   },
   {

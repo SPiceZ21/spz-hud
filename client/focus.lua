@@ -86,3 +86,12 @@ AddEventHandler('onResourceStop', function(res)
     end
     if changed then apply() end
 end)
+
+-- Who holds focus, newest last (for /hudstatus).
+function Focus.Stack()
+    local out = {}
+    for i, e in ipairs(stack) do
+        out[i] = ('%s(kb=%s cur=%s keep=%s)'):format(e.owner, tostring(e.keyboard), tostring(e.cursor), tostring(e.keepInput))
+    end
+    return out
+end

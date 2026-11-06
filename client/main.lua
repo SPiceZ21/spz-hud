@@ -244,3 +244,21 @@ function HudWidgetEnabled(id)
     local d = widgets[id]
     return d ~= nil and d.enabled ~= false
 end
+
+
+-- /hudstatus: what spz-hud thinks is going on (F8 console). For when the HUD
+-- looks wrong in game: page handshake, queued messages, focus holders, state.
+RegisterCommand('hudstatus', function()
+    print(('^5[spz-hud]^7 page ready=%s  queued=%d  state=%s  hidden(native)=%s  editing=%s'):format(
+        tostring(ready), #queue, tostring(state), tostring(IsPauseMenuActive() or IsScreenFadedOut() or IsHudHidden()), tostring(editing)))
+    local st = Focus.Stack()
+    print(('^5[spz-hud]^7 focus stack (%d): %s'):format(#st, #st > 0 and table.concat(st, ', ') or 'empty'))
+    print(('^5[spz-hud]^7 IsNuiFocused=%s  IsNuiFocusKeepingInput=%s'):format(tostring(IsNuiFocused()), tostring(IsNuiFocusKeepingInput())))
+end, false)
+
+-- /hudunstick: drop every focus holder (emergency, if the cursor will not go away).
+RegisterCommand('hudunstick', function()
+    for _, e in ipairs(Focus.Stack()) do Focus.Release(e:match('^(.-)%(')) end
+    SetNuiFocus(false, false)
+    print('^5[spz-hud]^7 focus cleared')
+end, false)

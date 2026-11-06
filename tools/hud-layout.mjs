@@ -121,7 +121,7 @@ export const LAYOUT = {
       on: [{ type: 'capture', cameraName: 'Vespucci Blvd', speed: 168, unit: 'KM/H', plate: '46EEK572', plateIndex: 0,
              personalBest: true, globalRecord: false, prevBest: 152, duration: 60000 }],
       // No hide message exists: the card dismisses itself after `duration`.
-      off: [],
+      off: [{ type: 'capture', cameraName: '', speed: 0, unit: 'KM/H', duration: 1 }],   // no hide message: a 1 ms capture replaces it
     },
   },
 

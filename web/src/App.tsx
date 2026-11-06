@@ -3,7 +3,7 @@ import { publish, peek } from './core/bus'
 import { post, inGame } from './core/nui'
 import { ANCHOR_SHIFT, type GameState, type Layout, type Placement, type WidgetDef } from './core/types'
 import { WIDGETS } from './widgets'
-import { AppHost, AppMovers, placeApp, toApp, reloadApp, type AppEntry } from './core/apps'
+import { AppHost, AppMovers, demoOff, placeApp, toApp, reloadApp, type AppEntry } from './core/apps'
 import { Cover } from './core/Cover'
 import type { FunctionComponent } from 'preact'
 import { Hub, type HubProfile } from './hub/Hub'
@@ -161,6 +161,7 @@ export function App() {
     } else {
       for (const id of sampled.current) if (peek(id) === WIDGETS[id]?.sample) publish(id, false)
       sampled.current = []
+      demoOff()
     }
     setEditing(on)
   }

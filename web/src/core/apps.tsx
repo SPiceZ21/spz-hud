@@ -213,6 +213,14 @@ export function AppHost({ focus, onApps, hidden = {} }: {
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n))
 
+// Apps given demo data for placing: res -> the messages that take it down.
+const demoed = new Map<string, unknown[]>()
+/** End of edit mode: take down every demo that was put up for placing. */
+export function demoOff() {
+  for (const [res, off] of demoed) for (const m of off) toApp(res, m)
+  demoed.clear()
+}
+
 export function AppMovers({ apps, layout, snap, onMove }: {
   apps: AppEntry[]
   layout: Record<string, Placement>
@@ -221,21 +229,46 @@ export function AppMovers({ apps, layout, snap, onMove }: {
 }) {
   const [, tick] = useState(0)
   const drag = useRef<{ key: string; sx: number; sy: number; o: Placement } | null>(null)
+  const onMoveRef = useRef(onMove)
+  onMoveRef.current = onMove
 
   // Apps with elements not on screen (on foot, not racing…) show their demo
-  // while placing, and take it down afterwards.
+  // while placing; App calls demoOff() when edit mode ends.
   useEffect(() => {
-    const demoed = apps.filter(a => a.demo && a.moves?.some(m => !appRect(a.res, m.sel)))
-    for (const a of demoed) for (const m of a.demo!.on) toApp(a.res, m)
+    for (const a of apps) {
+      if (!a.demo || demoed.has(a.res) || !a.moves?.some(m => !appRect(a.res, m.sel))) continue
+      demoed.set(a.res, a.demo.off)
+      for (const m of a.demo.on) toApp(a.res, m)
+    }
     // Elements move while dragging and re-lay out on their own: re-measure.
     let raf = 0
     const loop = () => { tick(n => n + 1); raf = requestAnimationFrame(loop) }
     raf = requestAnimationFrame(loop)
-    return () => {
-      cancelAnimationFrame(raf)
-      for (const a of demoed) for (const m of a.demo!.off) toApp(a.res, m)
-    }
+    return () => cancelAnimationFrame(raf)
   }, [])
+
+  // Dragging is tracked on the window, not the handle: the handle re-measures
+  // and moves every frame under the pointer, and in game it could lose the
+  // pointer (or another handle could take it), so drags stuck or jumped.
+  useEffect(() => {
+    const move = (e: PointerEvent) => {
+      const d = drag.current
+      if (!d) return
+      const step = snap > 0 ? snap : 0.1
+      const nx = d.o.x + ((e.clientX - d.sx) / window.innerWidth) * 100
+      const ny = d.o.y + ((e.clientY - d.sy) / window.innerHeight) * 100
+      onMoveRef.current(d.key, { ...d.o, x: clamp(Math.round(nx / step) * step, -100, 100), y: clamp(Math.round(ny / step) * step, -100, 100) })
+    }
+    const up = () => { drag.current = null }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+    window.addEventListener('blur', up)
+    return () => {
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+      window.removeEventListener('blur', up)
+    }
+  }, [snap])
 
   const handles: preact.JSX.Element[] = []
   for (const a of apps) for (const mv of a.moves ?? []) {
@@ -244,16 +277,8 @@ export function AppMovers({ apps, layout, snap, onMove }: {
     const r = appRect(a.res, mv.sel)
     if (!r) continue
     const down = (e: PointerEvent) => {
-      ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
-      drag.current = { key, sx: e.clientX, sy: e.clientY, o: p }
-    }
-    const move = (e: PointerEvent) => {
-      const d = drag.current
-      if (!d || d.key !== key) return
-      const step = snap > 0 ? snap : 0.1
-      const nx = d.o.x + ((e.clientX - d.sx) / window.innerWidth) * 100
-      const ny = d.o.y + ((e.clientY - d.sy) / window.innerHeight) * 100
-      onMove(key, { ...p, x: clamp(Math.round(nx / step) * step, -100, 100), y: clamp(Math.round(ny / step) * step, -100, 100) })
+      e.preventDefault()
+      if (!drag.current) drag.current = { key, sx: e.clientX, sy: e.clientY, o: p }
     }
     const wheel = (e: WheelEvent) => {
       e.preventDefault()
@@ -267,8 +292,6 @@ export function AppMovers({ apps, layout, snap, onMove }: {
         data-off={p.hidden === true}
         style={{ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` }}
         onPointerDown={down}
-        onPointerMove={move}
-        onPointerUp={() => { drag.current = null }}
         onWheel={wheel}
       >
         <div class="frame-tag" data-below={r.top < 34}>
