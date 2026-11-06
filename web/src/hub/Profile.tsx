@@ -56,65 +56,60 @@ export function Profile({ profile }: { profile: HubProfile }) {
   const tracks = [...(me?.tracks || [])].sort((a, b) => (b.races || 0) - (a.races || 0)).slice(0, 6)
   const history = (me?.history || []).slice(0, 8)
 
+  // Bento: one grid, tiles of different sizes (identity and iRating large,
+  // the counts small, the two lists wide).
   return (
     <div class="hx-page hx-col">
       <div class="hx-scroll">
-        <header class="hp-head">
-          {profile.avatar ? <img class="hp-avatar" src={profile.avatar} alt="" /> : <div class="hp-avatar" />}
-          <div>
-            <h2 class="hx-title">{profile.name || 'Driver'}</h2>
-            <div class="hx-label hx-mt">{[s.rank || profile.rank, profile.crew].filter(Boolean).join(' · ') || 'Racer'}</div>
+        <div class="bento">
+          <div class="hx-tile b-id">
+            {profile.avatar ? <img class="b-avatar" src={profile.avatar} alt="" /> : <div class="b-avatar" />}
+            <div class="b-name">{profile.name || 'Driver'}</div>
+            <div class="hx-tile-k">{[s.rank || profile.rank, profile.crew].filter(Boolean).join(' · ') || 'Racer'}</div>
           </div>
-        </header>
+          <div class="hx-tile b-ir">
+            <div class="hx-tile-k">iRating</div>
+            <div class="b-big">{n(s.iRating ?? profile.rating)}</div>
+            <div class="hx-tile-s">Skill rating from every race you finish</div>
+          </div>
+          <Tile k="Safety" v={s.sr != null ? s.sr.toFixed(2) : '—'} />
+          <Tile k="Level" v={n(s.level ?? profile.level)} s={`${n(s.total_xp)} XP`} />
+          <Tile k="Races" v={n(s.total_races)} s={`${pct(s.dnf_rate)} DNF`} />
+          <Tile k="Wins" v={n(s.wins)} s={`${pct(s.win_rate)} win rate`} />
+          <Tile k="Podiums" v={n(s.podiums)} s={`Avg finish ${s.avg_position ? s.avg_position.toFixed(1) : '—'}`} />
+          <Tile k="Credits" v={n(profile.credits)} />
 
-        {/* Grouped: what you are rated, what you have done, what you have. */}
-        <div class="hp-groups">
-          <section class="hp-group" style={{ '--n': 3 } as any}>
-            <h4 class="hx-tile-k">Ratings</h4>
-            <div class="hp-row">
-              <Tile k="iRating" v={n(s.iRating ?? profile.rating)} accent />
-              <Tile k="Safety" v={s.sr != null ? s.sr.toFixed(2) : '—'} />
-              <Tile k="Level" v={n(s.level ?? profile.level)} s={`${n(s.total_xp)} XP`} />
-            </div>
-          </section>
-          <section class="hp-group" style={{ '--n': 5 } as any}>
-            <h4 class="hx-tile-k">Results</h4>
-            <div class="hp-row">
-              <Tile k="Races" v={n(s.total_races)} />
-              <Tile k="Wins" v={n(s.wins)} s={pct(s.win_rate)} />
-              <Tile k="Podiums" v={n(s.podiums)} s={pct(s.podium_rate)} />
-              <Tile k="Avg finish" v={s.avg_position ? s.avg_position.toFixed(1) : '—'} />
-              <Tile k="DNF rate" v={pct(s.dnf_rate)} s={`${n(s.dnfs)} DNFs`} />
-            </div>
-          </section>
-          <section class="hp-group" style={{ '--n': 1 } as any}>
-            <h4 class="hx-tile-k">Wallet</h4>
-            <div class="hp-row">
-              <Tile k="Credits" v={n(profile.credits)} />
-            </div>
-          </section>
+          <div class="hx-tile b-races">
+            <div class="hx-tile-k">Recent races</div>
+            {!me ? <div class="hx-empty">Loading…</div> : history.length === 0 ? <div class="hx-empty">No races yet.</div> : (
+              <div class="b-list">
+                {history.map((r, i) => (
+                  <div key={i} class="b-row">
+                    <span class="b-pos" data-p={r.dnf ? 'dnf' : r.position}>{place(r)}</span>
+                    <span class="b-track">{r.track}{(r.personal_best === 1 || r.personal_best === true) && <span class="hx-tag">PB</span>}</span>
+                    <span class="b-dim">Class {cls(r.car_class)}</span>
+                    <span class="b-num">{lap(r.best_lap)}</span>
+                    <span class="b-num">+{n(r.points_earned)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div class="hx-tile b-tracks">
+            <div class="hx-tile-k">Your tracks</div>
+            {!me ? <div class="hx-empty">Loading…</div> : tracks.length === 0 ? <div class="hx-empty">No tracks yet.</div> : (
+              <div class="b-list">
+                {tracks.map(t => (
+                  <div key={t.track} class="b-row">
+                    <span class="b-track">{t.track}</span>
+                    <span class="b-dim">{n(t.races)} races</span>
+                    <span class="b-num">{lap(t.best_lap_ms)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-
-        <h3 class="hx-sec">Recent races</h3>
-        {!me ? <div class="hx-empty">Loading…</div> : history.length === 0 ? <div class="hx-empty">No races yet.</div> : (
-          <div class="hx-tiles" style={{ '--tile': '260px' } as any}>
-            {history.map((r, i) => (
-              <Tile key={i} k={`Class ${cls(r.car_class)}`} v={place(r)} accent={r.position === 1 && !r.dnf}
-                t={r.track} s={(r.personal_best === 1 || r.personal_best === true) ? 'Personal best' : undefined}
-                foot={[['Best lap', lap(r.best_lap)], ['Points', `+${n(r.points_earned)}`]]} />
-            ))}
-          </div>
-        )}
-
-        <h3 class="hx-sec">Your tracks</h3>
-        {!me ? <div class="hx-empty">Loading…</div> : tracks.length === 0 ? <div class="hx-empty">No tracks yet.</div> : (
-          <div class="hx-tiles" style={{ '--tile': '260px' } as any}>
-            {tracks.map(t => (
-              <Tile key={t.track} k="Best lap" v={lap(t.best_lap_ms)} t={t.track}
-                foot={[['Races', n(t.races)], ['Wins', n(t.wins)]]} />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   )
