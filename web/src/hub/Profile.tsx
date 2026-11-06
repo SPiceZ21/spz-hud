@@ -6,6 +6,7 @@ import { post, inGame } from '../core/nui'
 import { ownerOf } from '../core/apps'
 import type { HubProfile } from './Hub'
 import { Tile } from './Tile'
+import { RankBadge } from './RankBadge'
 
 interface Stats {
   total_races?: number; wins?: number; podiums?: number; dnfs?: number
@@ -63,7 +64,10 @@ export function Profile({ profile }: { profile: HubProfile }) {
       <div class="hx-scroll">
         <div class="bento">
           <div class="hx-tile b-id">
-            {profile.avatar ? <img class="b-avatar" src={profile.avatar} alt="" /> : <div class="b-avatar" />}
+            <div class="b-id-top">
+              {profile.avatar ? <img class="b-avatar" src={profile.avatar} alt="" /> : <div class="b-avatar" />}
+              <RankBadge rank={s.rank || profile.rank} size={128} />
+            </div>
             <div class="b-name">{profile.name || 'Driver'}</div>
             <div class="hx-tile-k">{[s.rank || profile.rank, profile.crew].filter(Boolean).join(' · ') || 'Racer'}</div>
           </div>

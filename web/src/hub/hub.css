@@ -340,3 +340,11 @@
 .b-tracks .b-num { width: 96px; }
 
 .bento .b-races, .bento .b-tracks { align-self: stretch; }
+
+/* Animated rank badges (RankBadge.tsx) */
+.rank-badge { display: block; object-fit: contain; pointer-events: none; flex: none; }
+.b-id-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: auto; }
+.b-id-top .b-avatar { margin: 0; }
+.hx-podium-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.hx-tile-badge { position: absolute; top: 12px; right: 12px; }
+.hx-vs { display: flex; align-items: center; gap: 18px; }

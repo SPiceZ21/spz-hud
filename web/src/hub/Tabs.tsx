@@ -9,6 +9,7 @@ import { post, inGame } from '../core/nui'
 import { ownerOf } from '../core/apps'
 import { lap } from './Profile'
 import { Tile } from './Tile'
+import { RankBadge } from './RankBadge'
 
 const n = (v?: number) => (v == null || Number.isNaN(v) ? '—' : Math.round(v).toLocaleString('en-US'))
 const day = (s?: string) => (s ? String(s).slice(0, 10) : '—')
@@ -80,7 +81,7 @@ function StandingsGrid({ classes, me }: { classes: boolean; me?: string }) {
           <div class="hx-podium">
             {podium.map(r => (
               <div key={r.name} class="hx-tile" data-p={r.rank} data-me={r.name === me}>
-                <div class="hx-place">{r.rank}</div>
+                <div class="hx-podium-top"><div class="hx-place">{r.rank}</div><RankBadge rank={r.rank_title} size={r.rank === 1 ? 104 : 84} /></div>
                 <div class="hx-tile-t">{r.name}</div>
                 <div class="hx-tile-s">{r.rank_title}</div>
                 <div class="hx-tile-foot">
@@ -91,10 +92,12 @@ function StandingsGrid({ classes, me }: { classes: boolean; me?: string }) {
               </div>
             ))}
           </div>
-          <Grid min={230}>
+          <Grid min={270}>
             {rest.map(r => (
               <Tile key={r.name} me={r.name === me} k={`#${r.rank} · ${r.rank_title || ''}`} v={n(r.points)} t={r.name} s="points"
-                foot={[['iR', n(r.iRating)], ['Wins', n(r.wins)], ['Avg', r.avg_position ? r.avg_position.toFixed(1) : '—']]} />
+                foot={[['iR', n(r.iRating)], ['Wins', n(r.wins)], ['Avg', r.avg_position ? r.avg_position.toFixed(1) : '—']]}>
+                <div class="hx-tile-badge"><RankBadge rank={r.rank_title} size={46} /></div>
+              </Tile>
             ))}
           </Grid>
         </>
@@ -153,10 +156,15 @@ function RivalBoardView() {
     <Page
       title={rv?.rival ? `Rival: ${rv.rival.username}` : 'Rival'}
       sub={rv?.rival ? [rv.rival.rank, rv.rival.i_rating != null ? `${n(rv.rival.i_rating)} iR` : null, rv.rival.level != null ? `Level ${rv.rival.level}` : null].filter(Boolean).join(' · ') : 'Your closest match, track by track'}
-      right={rv?.rival && <div class="hx-score"><b>{ahead}</b><span>ahead</span><b>{behind}</b><span>behind</span></div>}
+      right={rv?.rival && (
+        <div class="hx-vs">
+          <div class="hx-score"><b>{ahead}</b><span>ahead</span><b>{behind}</b><span>behind</span></div>
+          <RankBadge rank={rv.rival.rank} size={72} />
+        </div>
+      )}
     >
       {!rv?.rival ? <Empty d={d} text="No rival yet: race a few tracks and one is picked for you." /> : (
-        <Grid min={260}>
+        <Grid min={380}>
           {tracks.map(t => (
             <Tile key={t.track} k={t.margin == null ? 'No time yet' : t.margin > 0 ? 'Ahead by' : 'Behind by'}
               v={t.margin == null ? '—' : secs(t.margin)} sign={t.margin == null ? '' : t.margin > 0 ? 'up' : 'down'} t={t.track}
