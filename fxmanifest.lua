@@ -4,7 +4,7 @@ lua54 'yes'
 
 description 'SPiceZ HUD host: one overlay page, player-placed widgets, shared focus, speedometer, pause menu, nametags, chat, emotes'
 author 'SPiceZ'
-version '1.0.0'
+version '2.0.0'
 
 ui_page 'ui/index.html'
 
