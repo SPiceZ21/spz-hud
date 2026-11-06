@@ -5,6 +5,7 @@ import { useEffect, useState } from 'preact/hooks'
 import { post, inGame } from '../core/nui'
 import { ownerOf } from '../core/apps'
 import type { HubProfile } from './Hub'
+import { Tile } from './Tile'
 
 interface Stats {
   total_races?: number; wins?: number; podiums?: number; dnfs?: number
@@ -56,67 +57,48 @@ export function Profile({ profile }: { profile: HubProfile }) {
   const history = (me?.history || []).slice(0, 8)
 
   return (
-    <div class="hx-page hp">
-      <section class="hx-plate hp-id">
-        {profile.avatar ? <img class="hp-avatar" src={profile.avatar} alt="" /> : <div class="hp-avatar" />}
-        <h2 class="hx-title">{profile.name || 'Driver'}</h2>
-        <div class="hx-label">{[s.rank || profile.rank, profile.crew].filter(Boolean).join(' · ') || 'Racer'}</div>
-        <dl class="hx-rows">
-          <div><dt>iRating</dt><dd>{n(s.iRating ?? profile.rating)}</dd></div>
-          <div><dt>Safety rating</dt><dd>{s.sr != null ? s.sr.toFixed(2) : '—'}</dd></div>
-          <div><dt>Level</dt><dd>{n(s.level ?? profile.level)}</dd></div>
-          <div><dt>Total XP</dt><dd>{n(s.total_xp)}</dd></div>
-          <div><dt>Credits</dt><dd>{n(profile.credits)}</dd></div>
-        </dl>
-      </section>
+    <div class="hx-page hx-col">
+      <div class="hx-scroll">
+        <header class="hp-head">
+          {profile.avatar ? <img class="hp-avatar" src={profile.avatar} alt="" /> : <div class="hp-avatar" />}
+          <div>
+            <h2 class="hx-title">{profile.name || 'Driver'}</h2>
+            <div class="hx-label hx-mt">{[s.rank || profile.rank, profile.crew].filter(Boolean).join(' · ') || 'Racer'}</div>
+          </div>
+        </header>
 
-      <div class="hp-main">
-        <section class="hx-plate hp-figs">
-          {[
-            ['Races', n(s.total_races)], ['Wins', n(s.wins)], ['Podiums', n(s.podiums)],
-            ['Win rate', pct(s.win_rate)], ['Avg finish', s.avg_position ? s.avg_position.toFixed(1) : '—'], ['DNF rate', pct(s.dnf_rate)],
-          ].map(([l, v]) => <div key={l} class="hx-fig"><b>{v}</b><span>{l}</span></div>)}
-        </section>
-
-        <div class="hp-lists">
-          <section class="hx-plate">
-            <h3 class="hx-head">Recent races</h3>
-            {!me ? <div class="hx-empty">Loading…</div> : history.length === 0 ? <div class="hx-empty">No races yet.</div> : (
-              <table class="hx-table">
-                <tbody>
-                  {history.map((r, i) => (
-                    <tr key={i}>
-                      <td class="hx-pos" data-p={r.dnf ? 'dnf' : r.position}>{place(r)}</td>
-                      <td class="hx-strong">{r.track}{(r.personal_best === 1 || r.personal_best === true) && <span class="hx-tag">PB</span>}</td>
-                      <td class="hx-dim">Class {cls(r.car_class)}</td>
-                      <td class="hx-num">{lap(r.best_lap)}</td>
-                      <td class="hx-num">+{n(r.points_earned)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </section>
-
-          <section class="hx-plate">
-            <h3 class="hx-head">Your tracks</h3>
-            {!me ? <div class="hx-empty">Loading…</div> : tracks.length === 0 ? <div class="hx-empty">No tracks yet.</div> : (
-              <table class="hx-table">
-                <thead><tr><th>Track</th><th>Races</th><th>Wins</th><th>Best lap</th></tr></thead>
-                <tbody>
-                  {tracks.map(t => (
-                    <tr key={t.track}>
-                      <td class="hx-strong">{t.track}</td>
-                      <td class="hx-num">{n(t.races)}</td>
-                      <td class="hx-num">{n(t.wins)}</td>
-                      <td class="hx-num">{lap(t.best_lap_ms)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </section>
+        <div class="hx-tiles" style={{ '--tile': '250px' } as any}>
+          <Tile k="iRating" v={n(s.iRating ?? profile.rating)} accent />
+          <Tile k="Safety rating" v={s.sr != null ? s.sr.toFixed(2) : '—'} />
+          <Tile k="Level" v={n(s.level ?? profile.level)} s={`${n(s.total_xp)} XP`} />
+          <Tile k="Races" v={n(s.total_races)} />
+          <Tile k="Wins" v={n(s.wins)} s={pct(s.win_rate) + ' of races'} />
+          <Tile k="Podiums" v={n(s.podiums)} s={pct(s.podium_rate) + ' of races'} />
+          <Tile k="Avg finish" v={s.avg_position ? s.avg_position.toFixed(1) : '—'} />
+          <Tile k="DNF rate" v={pct(s.dnf_rate)} s={`${n(s.dnfs)} DNFs`} />
+          <Tile k="Credits" v={n(profile.credits)} />
         </div>
+
+        <h3 class="hx-sec">Recent races</h3>
+        {!me ? <div class="hx-empty">Loading…</div> : history.length === 0 ? <div class="hx-empty">No races yet.</div> : (
+          <div class="hx-tiles" style={{ '--tile': '260px' } as any}>
+            {history.map((r, i) => (
+              <Tile key={i} k={`Class ${cls(r.car_class)}`} v={place(r)} accent={r.position === 1 && !r.dnf}
+                t={r.track} s={(r.personal_best === 1 || r.personal_best === true) ? 'Personal best' : undefined}
+                foot={[['Best lap', lap(r.best_lap)], ['Points', `+${n(r.points_earned)}`]]} />
+            ))}
+          </div>
+        )}
+
+        <h3 class="hx-sec">Your tracks</h3>
+        {!me ? <div class="hx-empty">Loading…</div> : tracks.length === 0 ? <div class="hx-empty">No tracks yet.</div> : (
+          <div class="hx-tiles" style={{ '--tile': '260px' } as any}>
+            {tracks.map(t => (
+              <Tile key={t.track} k="Best lap" v={lap(t.best_lap_ms)} t={t.track}
+                foot={[['Races', n(t.races)], ['Wins', n(t.wins)]]} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
