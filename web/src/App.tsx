@@ -95,6 +95,30 @@ function Frame({ def, place, editing, snap, onMove }: FrameProps) {
 
 // ── The page ─────────────────────────────────────────────────────────────────
 
+// Handshake with client/main.lua. Until 'ready' lands, Lua queues every
+// message (layout, widgets, edit mode, the hub, every app), so a lost 'ready'
+// left the page blank with only the cursor. It used to be posted once: on a
+// resource restart the cached page could post it before the Lua callback
+// existed, and nothing ever retried. Now it is retried until Lua answers, and
+// sent again whenever Lua pings.
+let helloRunning = false
+async function hello() {
+  if (!inGame || helloRunning) return
+  helloRunning = true
+  try {
+    for (let i = 0; i < 600; i++) {
+      const r = await Promise.race([
+        post<boolean>('ready'),
+        new Promise<null>(res => setTimeout(() => res(null), 1500)),   // a post to a missing callback may never answer
+      ])
+      if (r === true) return
+      await new Promise(res => setTimeout(res, 500))
+    }
+  } finally {
+    helloRunning = false
+  }
+}
+
 export function App() {
   const [defs, setDefs] = useState<WidgetDef[]>([])
   const [layout, setLayout] = useState<Layout>({})
@@ -174,6 +198,8 @@ export function App() {
           }
           break
         case 'cover': coverOn(m.src || 'lua', !!m.on, m.status); break
+        // client/main.lua pings until the handshake below has landed.
+        case 'ping':  hello(); break
         case 'appReload': reloadApp(m.app, !inGame && m.mock === true); break
         case 'focus':     setFocus(m.owner ?? null); break
         case 'hub':       setHub(h => ({ open: !!m.on, profile: m.profile || h.profile })); break
@@ -191,7 +217,7 @@ export function App() {
       }
     }
     window.addEventListener('message', onMsg)
-    post('ready')
+    hello()
 
     return () => window.removeEventListener('message', onMsg)
   }, [])

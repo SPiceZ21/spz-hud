@@ -164,6 +164,17 @@ end)
 
 -- ── NUI handshake ───────────────────────────────────────────────────────────
 
+-- The page retries 'ready' until it is answered, and this pings it until then:
+-- a single lost 'ready' (the page posting before this callback existed, as on a
+-- resource restart) used to leave every message queued forever, and the
+-- player with a cursor and nothing on screen.
+CreateThread(function()
+    while not ready do
+        SendNUIMessage({ type = 'ping' })   -- direct: the queue is what is stuck
+        Wait(1000)
+    end
+end)
+
 RegisterNUICallback('ready', function(_, cb)
     ready = true
     pushRegistry()
