@@ -72,6 +72,7 @@
   {
     "res": "spz-speedcam",
     "z": 25,
+    "owner": "spz-races",
     "moves": [
       {
         "id": "capture",
@@ -354,6 +355,7 @@
   {
     "res": "spz-spectate",
     "z": 30,
+    "owner": "spz-races",
     "moves": [
       {
         "id": "bar",
@@ -570,7 +572,8 @@
   },
   {
     "res": "spz-replay",
-    "z": 80
+    "z": 80,
+    "owner": "spz-races"
   },
   {
     "res": "spz-pausemenu",
