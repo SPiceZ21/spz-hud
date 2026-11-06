@@ -241,8 +241,12 @@ export function App() {
 
   // Exactly one speedometer: the analogue gauge (spz-speedometer's own page) or
   // the digital widget, by the player's setting.
+  // The key strip is for driving / walking: any screen that holds focus (the
+  // race vote, menus, chat, the garage...) draws its own controls, and the strip
+  // sat on top of them (the vote). It steps aside while one is open.
   const visibleDefs = defs.filter(d =>
     (d.id !== 'speedo_digital' || digital) &&
+    (d.id !== 'keybar' || editing || !focus) &&
     (editing || (d.states[state] && !forcedOff[d.id])))
   const hiddenApps = { 'spz-speedometer': digital }
   const movableApps = digital ? apps.filter(a => a.res !== 'spz-speedometer') : apps
