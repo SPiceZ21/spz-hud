@@ -231,3 +231,30 @@
 .hp-figs { display: flex; }
 .hp-lists { flex: 1; min-height: 0; display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; }
 .hp-lists .hx-plate { overflow: auto; }
+
+/* Native tabs: sub-tabs sit in the identity row, white plate when active */
+.hub-chrome[data-native='true'] .hub-subtabs { top: 92px; }
+.hub-chrome[data-native='true'] .hub-subtabs button {
+  height: 30px; padding: 0 12px; border: 0; border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05); color: #d4d4d8;
+  font: italic 800 11px 'Panchang', sans-serif; letter-spacing: 0.04em;
+}
+.hub-chrome[data-native='true'] .hub-subtabs button[data-on='true'] { background: #f4f4f5; color: #0a0b0d; }
+.hub-chrome[data-native='true'] .hx-page { top: 140px; }
+.hx-col { flex-direction: column; }
+.hx-grow { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.hx-pagehead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding-bottom: 16px; margin-bottom: 4px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+.hx-mt { margin-top: 6px; }
+.hx-ml { margin-left: 10px; }
+.hx-scroll { flex: 1; min-height: 0; overflow: auto; }
+.hx-dimnum { color: #71717a !important; }
+.hx-num[data-sign='up'] { color: #4ade80 !important; }
+.hx-num[data-sign='down'] { color: #f87171 !important; }
+.hx-table tr[data-me='true'] td { background: rgba(255, 255, 255, 0.04); }
+.hx-seg { display: flex; gap: 4px; }
+.hx-seg button { width: 36px; height: 30px; border: 0; border-radius: 3px; cursor: pointer; background: rgba(255, 255, 255, 0.05); color: #d4d4d8; font: italic 800 13px 'Panchang', sans-serif; }
+.hx-seg button[data-on='true'] { background: #f4f4f5; color: #0a0b0d; }
+.hx-score { display: flex; align-items: baseline; gap: 8px; }
+.hx-score b { font: italic 800 26px/1 'Panchang', sans-serif; }
+.hx-score span { font: 700 10px 'Panchang', sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: #a1a1aa; margin-right: 10px; }
+.hx-btn { height: 26px; padding: 0 12px; border: 0; border-radius: 3px; cursor: pointer; background: #f4f4f5; color: #0a0b0d; font: italic 800 11px 'Panchang', sans-serif; text-transform: uppercase; }
