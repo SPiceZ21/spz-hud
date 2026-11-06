@@ -260,7 +260,11 @@ export function App() {
     (d.id !== 'speedo_digital' || digital) &&
     (d.id !== 'keybar' || editing || !focus) &&
     (editing || (d.states[state] && !forcedOff[d.id])))
-  const hiddenApps = { 'spz-speedometer': digital }
+  // While the hub is open only the apps it draws stay up: the rest of the HUD
+  // (speedometer, nametags, the race page's cards...) showed through the map.
+  const HUB_KEEP = ['spz-leaderboard', 'spz-crew', 'spz-speedcam']
+  const hiddenApps: Record<string, boolean> = { 'spz-speedometer': digital }
+  if (hub.open) for (const a of apps) if (!HUB_KEEP.includes(a.res)) hiddenApps[a.res] = true
   const movableApps = digital ? apps.filter(a => a.res !== 'spz-speedometer') : apps
 
   return (

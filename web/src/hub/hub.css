@@ -25,61 +25,49 @@
 .hub-chrome > * { pointer-events: auto; }
 @keyframes hub-in { from { opacity: 0; } }
 
-/* Header */
-.hub-top {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 76px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 36px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+/* ── Top bar: logo · Q [tabs] E · level / iRating / credits ──
+   One solid bar (the NFS map screen): the active tab is a solid white plate
+   with dark italic type, the rest italic on the bar. */
+.hub-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 76px;
+  display: flex; align-items: center; gap: 18px; padding: 0 28px;
+  background: rgba(6, 7, 9, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-.hub-logo { width: 132px; height: auto; }
-.hub-me { display: flex; align-items: center; gap: 22px; }
-.hub-avatar { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; }
-.hub-me-text { display: flex; flex-direction: column; gap: 3px; }
-.hub-name { font-size: 15px; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; }
-.hub-sub { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #71717a; }
-.hub-stat {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
-  padding-left: 22px; border-left: 1px solid rgba(255, 255, 255, 0.08);
+.hub-logo { width: 92px; height: auto; flex: none; }
+.hub-tabs { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }
+.hub-tab {
+  height: 34px; padding: 0 11px; border: 0; border-radius: 3px;
+  background: transparent; color: #e4e4e7; cursor: pointer;
+  font: italic 800 12px 'Panchang', sans-serif; letter-spacing: 0.02em; text-transform: uppercase;
+  white-space: nowrap; transition: background 120ms, color 120ms;
 }
-.hub-stat b { font-size: 17px; font-weight: 800; }
-.hub-stat span { font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; }
-
-/* Section tabs, centred under the header, Q / E either side */
-.hub-nav {
-  position: absolute;
-  top: 76px; left: 36px; right: 36px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-.hub-item {
-  padding: 9px 16px;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: #71717a;
-  font: 800 12px 'Panchang', sans-serif;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color 120ms, background 120ms;
-}
-.hub-item:hover { color: #f4f4f5; }
-.hub-item[data-on='true'] { color: var(--color-primary); background: rgba(255, 255, 255, 0.05); }
-.hub-qe { margin: 0 14px; padding: 0; border: 0; background: none; cursor: pointer; }
-.hub-qe kbd {
-  display: grid; place-items: center; width: 26px; height: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.14); border-bottom-width: 2px; border-radius: 4px;
+.hub-tab:hover { background: rgba(255, 255, 255, 0.06); }
+.hub-tab[data-on='true'] { background: #f4f4f5; color: #0a0b0d; }
+.hub-bump { padding: 0; margin: 0 6px; border: 0; background: none; cursor: pointer; }
+.hub-bump kbd, .hub-keys kbd {
+  display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px;
+  border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 6px;
   font: 800 10px 'Panchang', sans-serif; color: #f4f4f5;
 }
+.hub-stats { display: flex; align-items: center; gap: 12px; flex: none; }
+.hub-lvl { display: inline-grid; place-items: center; width: 40px; height: 40px; border: 2px solid var(--color-primary); border-radius: 50%; line-height: 1; }
+.hub-lvl b { font: italic 800 15px 'Panchang', sans-serif; }
+.hub-lvl i { font: 700 7px 'Panchang', sans-serif; font-style: normal; letter-spacing: 0.12em; color: #a1a1aa; }
+.hub-num { display: flex; align-items: baseline; gap: 6px; }
+.hub-num b { font: italic 800 15px 'Panchang', sans-serif; }
+.hub-num i { font: 700 10px 'Panchang', sans-serif; font-style: normal; color: #a1a1aa; letter-spacing: 0.12em; }
+.hub-cr {
+  padding: 7px 12px; border-radius: 3px; background: var(--color-primary); color: #0a0b0d;
+  font: italic 800 13px 'Panchang', sans-serif;
+}
+
+/* Identity line under the bar */
+.hub-id { position: absolute; top: 92px; left: 36px; display: flex; align-items: center; gap: 12px; }
+.hub-avatar { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }
+.hub-name { font: italic 800 15px 'Panchang', sans-serif; text-transform: uppercase; }
+.hub-sub { font: 700 10px 'Panchang', sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: #a1a1aa; }
+.hub-chrome[data-map='true'] .hub-id { display: none; }   /* the map uses that row for its filters */
 
 /* Sub-tabs, left-aligned above the content */
 .hub-subtabs {
@@ -111,28 +99,16 @@
   background: #0b0c0e;
 }
 
-/* Key strip */
+/* Bottom prompts */
 .hub-keys {
-  position: absolute;
-  left: 36px; right: 36px; bottom: 0;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 26px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #a1a1aa;
+  position: absolute; left: 0; right: 0; bottom: 0; height: 52px;
+  display: flex; align-items: center; gap: 22px; padding: 0 36px;
+  background: rgba(6, 7, 9, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font: italic 700 13px 'Panchang', sans-serif; text-transform: uppercase; color: #e4e4e7;
 }
-.hub-keys span { display: flex; align-items: center; gap: 6px; }
-.hub-keys kbd {
-  display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
-  border: 1px solid rgba(255, 255, 255, 0.14); border-bottom-width: 2px; border-radius: 4px;
-  font: 800 9px 'Panchang', sans-serif; letter-spacing: 0.04em; color: #f4f4f5;
-}
+.hub-keys span { display: flex; align-items: center; gap: 8px; }
+.hub-keys span:last-child { margin-left: auto; }
 
 /* ── Achievements ── */
 .ach { padding: 26px 30px 34px; }
@@ -160,3 +136,59 @@
 .hub-content::-webkit-scrollbar { width: 6px; }
 .hub-content::-webkit-scrollbar-track { background: transparent; }
 .hub-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
+
+/* ── Map tab (HubMap.tsx): the world shows through; pins are drawn at the
+   screen positions client/hub_map.lua projects every frame. ── */
+.hm { position: absolute; inset: 76px 0 52px; cursor: grab; touch-action: none; }
+.hm:active { cursor: grabbing; }
+.hm-pin {
+  --pin: #f4f4f5;
+  position: absolute; transform: translate(-50%, -50%);
+  display: flex; align-items: center; gap: 8px;
+  padding: 0; border: 0; background: none; cursor: pointer;
+}
+.hm-pin[data-kind='track'] { --pin: var(--color-primary); }
+.hm-pin[data-kind='player'] { --pin: #60a5fa; }
+.hm-pin[data-kind='me'] { --pin: var(--color-primary); z-index: 2; }
+.hm-ico {
+  display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px;
+  background: rgba(8, 9, 11, 0.88); color: var(--pin);
+  border: 2px solid var(--pin);
+  transition: transform 120ms;
+}
+.hm-pin[data-kind='me'] .hm-ico { border-radius: 50%; background: var(--pin); color: #0a0b0d; }
+.hm-pin:hover .hm-ico, .hm-pin[data-sel='true'] .hm-ico { transform: scale(1.18); }
+.hm-pin[data-sel='true'] .hm-ico { background: var(--pin); color: #0a0b0d; }
+.hm-label {
+  padding: 3px 8px; border-radius: 3px; background: rgba(8, 9, 11, 0.85);
+  font: italic 800 12px 'Panchang', sans-serif; text-transform: uppercase; color: #f4f4f5; white-space: nowrap;
+}
+
+.hm-filters { position: absolute; top: 16px; left: 36px; display: flex; gap: 6px; }
+.hm-filters button {
+  height: 30px; padding: 0 12px; border: 0; border-radius: 3px; cursor: pointer;
+  background: rgba(8, 9, 11, 0.85); color: #d4d4d8;
+  font: italic 800 11px 'Panchang', sans-serif; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.hm-filters button[data-on='true'] { background: #f4f4f5; color: #0a0b0d; }
+
+/* Location card: the NFS card, a solid plate on the left. */
+.hm-card {
+  position: absolute; left: 36px; top: 64px; width: 340px;
+  padding: 18px 20px 20px; border-radius: 4px;
+  background: rgba(8, 9, 11, 0.94); border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.hm-card-kind { display: flex; align-items: center; gap: 8px; color: var(--color-primary); font: 700 10px 'Panchang', sans-serif; letter-spacing: 0.18em; text-transform: uppercase; }
+.hm-card-title { margin: 10px 0 2px; font: italic 800 26px/1.05 'Panchang', sans-serif; text-transform: uppercase; }
+.hm-card-sub { font: 600 12px 'Inter', 'Segoe UI', sans-serif; color: #a1a1aa; }
+.hm-card-info { margin: 16px 0 0; display: grid; gap: 1px; }
+.hm-card-info div { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+.hm-card-info dt { font: 700 10px 'Panchang', sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: #a1a1aa; }
+.hm-card-info dd { margin: 0; font: italic 800 13px 'Panchang', sans-serif; text-align: right; max-width: 210px; }
+.hm-card-btn {
+  margin-top: 16px; width: 100%; height: 40px; border: 0; border-radius: 3px; cursor: pointer;
+  background: #f4f4f5; color: #0a0b0d; display: flex; align-items: center; justify-content: center; gap: 10px;
+  font: italic 800 13px 'Panchang', sans-serif; text-transform: uppercase;
+}
+.hm-card-btn kbd { border: 1px solid #0a0b0d; border-radius: 4px; padding: 1px 5px; font: 800 9px 'Panchang', sans-serif; }
+.hm-card-close { position: absolute; top: 10px; right: 12px; border: 0; background: none; color: #71717a; font-size: 20px; cursor: pointer; }

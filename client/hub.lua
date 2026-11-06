@@ -33,6 +33,7 @@ local function setHub(on)
     else
         -- The page closes whatever section app is open (through that app's own
         -- close callback, which releases its focus), then the hub lets go.
+        if HubMapStop then HubMapStop() end   -- client/hub_map.lua
         HudSend({ type = 'hub', on = false })
         Focus.Release(OWNER)
     end

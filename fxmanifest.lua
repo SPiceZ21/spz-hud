@@ -32,6 +32,7 @@ client_scripts {
     'client/cover.lua',          -- the transition cover (CoverShow / CoverHide)
     'client/keybar.lua',
     'client/hub.lua',
+    'client/hub_map.lua',       -- the hub's Map tab: camera over Los Santos + pins
     -- Merged in from spz-speedometer and spz-pausemenu. Their pages are still
     -- the spz-speedometer / spz-pausemenu apps; SpzHudApp (apps.lua) binds each.
     'client/speedometer.lua',

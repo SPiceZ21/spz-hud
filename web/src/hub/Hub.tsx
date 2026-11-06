@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from 'preact/hooks'
 import { post, inGame } from '../core/nui'
 import { appWindow, ownerOf, reloadApp, setHubMode, toApp } from '../core/apps'
 import { Achievements } from './Achievements'
-import { CoverSurface } from '../core/Cover'
+import { HubMap, MAP_KEYS } from './HubMap'
 import './hub.css'
 
 type AppRes = 'spz-leaderboard' | 'spz-crew' | 'spz-speedcam'
@@ -29,6 +29,7 @@ interface Section {
 }
 
 const SECTIONS: Section[] = [
+  { id: 'map', label: 'Map' },
   { id: 'profile', label: 'Profile', app: 'spz-leaderboard', cmd: 'leaderboard', tab: 'me' },
   { id: 'standings', label: 'Standings', app: 'spz-leaderboard', cmd: 'leaderboard',
     tabs: [['standings', 'Global'], ['classes', 'Classes'], ['records', 'Track records']] },
@@ -160,30 +161,33 @@ export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {
   }, [open])
 
   if (!open) return null
+  const isMap = section.id === 'map'
+  const keys: [string, string][] = isMap ? MAP_KEYS : []
   return (
     <>
-      <div class="hub-backdrop"><CoverSurface /></div>
-      <div class="hub-chrome">
-        <header class="hub-top">
+      {!isMap && <div class="hub-backdrop" />}
+      <div class="hub-chrome" data-map={isMap}>
+        <header class="hub-bar">
           <img class="hub-logo" src="./apps/spz-spawn/logo.png" alt="SPiceZ" />
-          <div class="hub-me">
-            {profile.avatar && <img class="hub-avatar" src={profile.avatar} alt="" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} />}
-            <div class="hub-me-text">
-              <span class="hub-name">{profile.name || 'Driver'}</span>
-              <span class="hub-sub">{[profile.rank, profile.level != null ? `Level ${profile.level}` : null, profile.crew].filter(Boolean).join(' · ')}</span>
-            </div>
-            <div class="hub-stat"><b>{fmt(profile.rating)}</b><span>iRating</span></div>
-            <div class="hub-stat"><b>{fmt(profile.credits)}</b><span>Credits</span></div>
+          <nav class="hub-tabs">
+            <button class="hub-bump" onClick={() => setIdx(i => (i + SECTIONS.length - 1) % SECTIONS.length)}><kbd>Q</kbd></button>
+            {SECTIONS.map((s, i) => (
+              <button key={s.id} class="hub-tab" data-on={i === idx} onClick={() => setIdx(i)}>{s.label}</button>
+            ))}
+            <button class="hub-bump" onClick={() => setIdx(i => (i + 1) % SECTIONS.length)}><kbd>E</kbd></button>
+          </nav>
+          <div class="hub-stats">
+            {profile.level != null && <span class="hub-lvl"><b>{profile.level}</b><i>LVL</i></span>}
+            <span class="hub-num"><b>{fmt(profile.rating)}</b><i>iR</i></span>
+            <span class="hub-cr">{fmt(profile.credits)} CR</span>
           </div>
         </header>
 
-        <nav class="hub-nav">
-          <button class="hub-qe" onClick={() => setIdx(i => (i + SECTIONS.length - 1) % SECTIONS.length)}><kbd>Q</kbd></button>
-          {SECTIONS.map((s, i) => (
-            <button key={s.id} class="hub-item" data-on={i === idx} onClick={() => setIdx(i)}>{s.label}</button>
-          ))}
-          <button class="hub-qe" onClick={() => setIdx(i => (i + 1) % SECTIONS.length)}><kbd>E</kbd></button>
-        </nav>
+        <div class="hub-id">
+          {profile.avatar && <img class="hub-avatar" src={profile.avatar} alt="" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} />}
+          <span class="hub-name">{profile.name || 'Driver'}</span>
+          <span class="hub-sub">{[profile.rank, profile.crew].filter(Boolean).join(' · ')}</span>
+        </div>
 
         {section.tabs && (
           <div class="hub-subtabs">
@@ -193,13 +197,16 @@ export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {
           </div>
         )}
 
-        {!section.app && (
+        {isMap && <HubMap />}
+        {section.id === 'achievements' && (
           <main class="hub-content" data-sub={!!section.tabs}>
             <Achievements profile={profile} />
           </main>
         )}
 
         <footer class="hub-keys">
+          {keys.map(([k, l]) => <span key={k}><kbd>{k}</kbd> {l}</span>)}
+          <span><kbd>Q</kbd><kbd>E</kbd> Tabs</span>
           <span><kbd>TAB</kbd><kbd>ESC</kbd> Close</span>
         </footer>
       </div>
