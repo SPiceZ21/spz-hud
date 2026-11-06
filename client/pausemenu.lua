@@ -1,7 +1,7 @@
 -- client/pausemenu.lua — the pause menu (replaces the GTA ESC menu).
 -- Moved from spz-pausemenu/client/main.lua when it was merged into spz-hud.
 -- Its page is still the "spz-pausemenu" app; these locals send to that page only.
-local SendNUIMessage, SetNuiFocus, SetNuiFocusKeepInput = SpzHudApp('spz-pausemenu')
+local SendNUIMessage, SetNuiFocus, SetNuiFocusKeepInput, RegisterNUICallback = SpzHudApp('spz-pausemenu')
 local Config = Config.PauseMenu
 
 -- client/main.lua

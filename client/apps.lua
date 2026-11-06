@@ -21,10 +21,14 @@ end)
 exports('AppKeepInput', function(app, on) Focus.SetKeepInput(app, on) end)
 
 -- Pages driven by spz-hud's own files (merged in: spz-speedometer,
--- spz-pausemenu). Same contract as app.lua for other resources, but direct:
--- no export round trip, and messages sent before the page is ready are queued
--- by HudSend instead of dropped.
---   local SendNUIMessage, SetNuiFocus, SetNuiFocusKeepInput = SpzHudApp('spz-pausemenu')
+-- spz-pausemenu, spz-nametag, spz-chat, spz-emotes). Same contract as app.lua
+-- for other resources, but direct: no export round trip, and messages sent
+-- before the page is ready are queued by HudSend instead of dropped.
+--   local SendNUIMessage, SetNuiFocus, SetNuiFocusKeepInput, RegisterNUICallback = SpzHudApp('spz-chat')
+--
+-- Several of these pages use the same callback names (close), so their pages
+-- post https://spz-hud/<app>:<name> (sync-apps `ns`), and the returned
+-- RegisterNUICallback registers under that name.
 function SpzHudApp(app)
     local keep = false
     local function send(msg)
@@ -41,7 +45,10 @@ function SpzHudApp(app)
         keep = on == true
         Focus.SetKeepInput(app, keep)
     end
-    return send, focus, keepInput
+    local function callback(name, fn)
+        RegisterNUICallback(app .. ':' .. name, fn)
+    end
+    return send, focus, keepInput, callback
 end
 
 -- Pages driven by another resource (apps.json `owner`: spz-races drives the

@@ -2,6 +2,7 @@
   {
     "res": "spz-nametag",
     "z": 10,
+    "owner": "spz-hud",
     "moves": [
       {
         "id": "self",
@@ -527,6 +528,7 @@
   {
     "res": "spz-chat",
     "z": 70,
+    "owner": "spz-hud",
     "moves": [
       {
         "id": "chat",
@@ -560,7 +562,8 @@
   },
   {
     "res": "spz-emotes",
-    "z": 80
+    "z": 80,
+    "owner": "spz-hud"
   },
   {
     "res": "spz-crew",

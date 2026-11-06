@@ -59,7 +59,7 @@ local function hints()
     local ped = PlayerPedId()
     local inCar = GetVehiclePedIsIn(ped, false) ~= 0
     if started('spz-vehicles') then add(key('car', 'F5'), 'Garage') end
-    if not inCar and started('spz-emotes') then add(key('+emote_menu', 'O'), 'Emotes') end
+    if not inCar and started('spz-hud') then add(key('+emote_menu', 'O'), 'Emotes') end
     if started('spz-races') then add(key('leaderboard', 'F6', 'SELECT_INDEX'), 'Results') end
     if started('spz-races') then add(key('spz_freeroamhud', 'PAGEDOWN'), 'Profile') end   -- the card's show / hide
     if inCar then add(control(75, 'F', 'RUP_INDEX'), 'Exit') end

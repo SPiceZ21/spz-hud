@@ -1,7 +1,7 @@
 -- client/speedometer.lua — the analogue speedometer's data (the digital one reads it too).
 -- Moved from spz-speedometer/client/main.lua when it was merged into spz-hud.
 -- Its page is still the "spz-speedometer" app; these locals send to that page only.
-local SendNUIMessage, SetNuiFocus, SetNuiFocusKeepInput = SpzHudApp('spz-speedometer')
+local SendNUIMessage, SetNuiFocus, SetNuiFocusKeepInput, RegisterNUICallback = SpzHudApp('spz-speedometer')
 
 -- client/main.lua
 
