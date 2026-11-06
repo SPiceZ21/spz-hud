@@ -28,6 +28,17 @@
     var solid = document.createElement('canvas'); solid.width = W; solid.height = H;
     var s = solid.getContext('2d');
     s.drawImage(img, 0, 0);
+    // Theme accent (client/cp_anim.lua passes ?accent=%23rrggbb): recolour the
+    // PENDING column (the gates still to drive through). 'color' keeps the
+    // texture's own light and shade and takes hue + saturation from the accent.
+    // Taken / start / finish keep their meaning colours.
+    var accent = new URLSearchParams(location.search).get('accent');
+    if (accent && /^#[0-9a-fA-F]{6}$/.test(accent)) {
+      s.save();
+      s.beginPath(); s.rect(0, 0, W / 4, H); s.clip();
+      s.globalCompositeOperation = 'color'; s.fillStyle = accent; s.fillRect(0, 0, W / 4, H);
+      s.restore();
+    }
     s.globalCompositeOperation = 'destination-over'; s.fillStyle = '#000'; s.fillRect(0, 0, W, H);
     // the top band (bright) source region, repeated: use the upper 70% so the
     // faded bottom rows are never scrolled into view
