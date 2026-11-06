@@ -547,11 +547,13 @@
   },
   {
     "res": "spz-carspawner",
-    "z": 80
+    "z": 80,
+    "owner": "spz-vehicles"
   },
   {
     "res": "spz-tunners",
-    "z": 80
+    "z": 80,
+    "owner": "spz-vehicles"
   },
   {
     "res": "spz-emotes",
