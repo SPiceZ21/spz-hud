@@ -101,6 +101,7 @@
   {
     "res": "spz-raceUI",
     "z": 30,
+    "owner": "spz-races",
     "moves": [
       {
         "id": "standings",
@@ -517,7 +518,8 @@
   },
   {
     "res": "spz-poll",
-    "z": 60
+    "z": 60,
+    "owner": "spz-races"
   },
   {
     "res": "spz-chat",
@@ -561,7 +563,8 @@
   },
   {
     "res": "spz-leaderboard",
-    "z": 80
+    "z": 80,
+    "owner": "spz-races"
   },
   {
     "res": "spz-replay",

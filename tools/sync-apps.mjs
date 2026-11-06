@@ -37,23 +37,25 @@ const DESIGN_OUT = join(PUBLIC, 'shared', 'design')
 
 // z: stacking order when nothing has focus (the focused app always goes on top).
 // HUD overlays sit low, menus high, the spawn screen above everything.
+// owner: the resource whose Lua drives the page, when it is not the app's own
+// name (the app was merged into it). Its NUI callbacks post there.
 // What players can move in /hudedit, per app, is in tools/hud-layout.mjs.
 export const APPS = [
   { res: 'spz-nametag',      z: 10 },
   { res: 'spz-speedometer',  z: 20 },
   { res: 'spz-speedcam',     z: 25 },
-  { res: 'spz-raceUI',       z: 30 },
+  { res: 'spz-raceUI',       z: 30, owner: 'spz-races' },
   { res: 'spz-spectate',     z: 30 },
   { res: 'spz-rocketleague', z: 35 },
   { res: 'spz-minigames',    z: 40 },
-  { res: 'spz-poll',         z: 60 },
+  { res: 'spz-poll',         z: 60, owner: 'spz-races' },
   { res: 'spz-chat',         z: 70 },
   { res: 'spz-radio',        z: 75 },
   { res: 'spz-carspawner',   z: 80 },
   { res: 'spz-tunners',      z: 80 },
   { res: 'spz-emotes',       z: 80 },
   { res: 'spz-crew',         z: 80 },
-  { res: 'spz-leaderboard',  z: 80 },
+  { res: 'spz-leaderboard',  z: 80, owner: 'spz-races' },
   { res: 'spz-replay',       z: 80 },
   { res: 'spz-pausemenu',    z: 85 },
   { res: 'spz-tutorial',     z: 90 },
@@ -83,13 +85,14 @@ function sourceOf(res) {
   return { dir: ui, built: false }
 }
 
-const NAME_SHIM = res =>
-  `<script>(function(){var n=${JSON.stringify(res)};` +
+// n: the app (dev preview, layers); o: the resource its callbacks post to.
+const NAME_SHIM = (res, owner = res) =>
+  `<script>(function(){var n=${JSON.stringify(res)},o=${JSON.stringify(owner)};` +
   // ?spzmock=1 (browser preview only, from the dev panel): leave the page
   // looking like a plain browser so the app runs its OWN mock mode.
   `var mock=/[?&]spzmock=1/.test(location.search);` +
-  `if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return n},configurable:true})}` +
-  `catch(e){window.GetParentResourceName=function(){return n}}` +
+  `if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return o},configurable:true})}` +
+  `catch(e){window.GetParentResourceName=function(){return o}}` +
   // FiveM gives invokeNative to the top page only. Apps that test it to tell
   // game from browser (spz-spectate) would think they are in a browser here.
   `try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)` +
@@ -101,12 +104,23 @@ const NAME_SHIM = res =>
 // https://cfx-nui-spz-x/ui/dist/a  or  nui://spz-x/ui/a   →   ../spz-x/a
 const CROSS = /(?:https:\/\/cfx-nui-|nui:\/\/)(spz-[\w-]+)\/ui\/(?:dist\/)?/g
 
-function syncOne({ res }) {
+// An app kept in place (no ui/ source) still gets the current name shim.
+const OLD_SHIM = /<script>\(function\(\)\{var n="[^"]+"[^<]*<\/script>/
+
+function refreshShim({ res, owner }) {
+  const p = join(OUT, res, 'index.html')
+  const text = readFileSync(p, 'utf8')
+  if (!OLD_SHIM.test(text)) throw new Error(`${res}: no name shim in index.html`)
+  const next = text.replace(OLD_SHIM, NAME_SHIM(res, owner))
+  if (next !== text) writeFileSync(p, next)
+}
+
+function syncOne({ res, owner }) {
   // The resources' own ui/ folders were removed: spz-hud's copy in
   // web/public/apps is now the only one, edited in place. An app with no
   // source left is kept as it is.
   if (!existsSync(join(ROOT, res, 'ui'))) {
-    if (existsSync(join(OUT, res, 'index.html'))) { console.log(`  ${res.padEnd(18)} kept (edited in spz-hud)`); return }
+    if (existsSync(join(OUT, res, 'index.html'))) { refreshShim({ res, owner }); console.log(`  ${res.padEnd(18)} kept (edited in spz-hud)`); return }
     throw new Error(`${res}: no ui/ source and no copy in web/public/apps`)
   }
   const { dir, built } = sourceOf(res)
@@ -135,7 +149,7 @@ function syncOne({ res }) {
     const text = readFileSync(p, 'utf8')
     let next = text.replace(CROSS, (_, other) => { rewrites++; return `../${other}/` })
     if (p === join(out, 'index.html')) {
-      next = next.replace(/<head[^>]*>/i, m => `${m}\n    ${NAME_SHIM(res)}`)
+      next = next.replace(/<head[^>]*>/i, m => `${m}\n    ${NAME_SHIM(res, owner)}`)
       // The shared look goes LAST in <head>, after the app's own stylesheets,
       // so it wins (design/spz-ui.css, then design/apps/<resource>.css).
       const perApp = existsSync(join(DESIGN_SRC, 'apps', `${res}.css`))
@@ -231,7 +245,7 @@ for (const a of list) syncOne(a)
 dedupeFonts()
 copyDesign()
 
-writeFileSync(join(OUT, 'apps.json'), JSON.stringify(APPS.map(a => ({ res: a.res, z: a.z, ...(LAYOUT[a.res] || {}) })), null, 2))
+writeFileSync(join(OUT, 'apps.json'), JSON.stringify(APPS.map(a => ({ res: a.res, z: a.z, ...(a.owner ? { owner: a.owner } : {}), ...(LAYOUT[a.res] || {}) })), null, 2))
 console.log('wrote apps/apps.json')
 
 // ── Dev presets ──────────────────────────────────────────────────────────────

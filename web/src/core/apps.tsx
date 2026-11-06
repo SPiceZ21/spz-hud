@@ -27,10 +27,17 @@ export interface Movable {
 export interface AppEntry {
   res: string
   z: number
+  /** The resource whose Lua drives the page, when it isn't `res` (merged into it). */
+  owner?: string
   moves?: Movable[]
   /** Sent while placing if some of the app's elements aren't drawn, then undone. */
   demo?: { on: unknown[]; off: unknown[] }
 }
+
+// app -> the resource its NUI callbacks post to (filled from apps.json).
+const owners = new Map<string, string>()
+/** Where an app's NUI callbacks go: its owner, or the app's own name. */
+export const ownerOf = (res: string) => owners.get(res) ?? res
 
 interface Slot {
   frame: HTMLIFrameElement | null
@@ -147,7 +154,10 @@ export function AppHost({ focus, onApps, hidden = {} }: {
   useEffect(() => {
     fetch('./apps/apps.json')
       .then(r => r.json())
-      .then((list: AppEntry[]) => { setApps(list); onApps?.(list) })
+      .then((list: AppEntry[]) => {
+        for (const a of list) if (a.owner) owners.set(a.res, a.owner)
+        setApps(list); onApps?.(list)
+      })
       .catch(() => setApps([]))
     reloadHook = (res, mock) => {
       const s = slot(res)

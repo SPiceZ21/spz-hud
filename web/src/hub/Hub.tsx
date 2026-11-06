@@ -12,7 +12,7 @@
 // inside the open app's window, so the keys work whichever has focus.
 import { useEffect, useRef, useState } from 'preact/hooks'
 import { post, inGame } from '../core/nui'
-import { appWindow, reloadApp, setHubMode, toApp } from '../core/apps'
+import { appWindow, ownerOf, reloadApp, setHubMode, toApp } from '../core/apps'
 import { Achievements } from './Achievements'
 import './hub.css'
 
@@ -61,9 +61,9 @@ const fmt = (n?: number) => (n == null ? '—' : Math.round(n).toLocaleString('e
 /** Close a section's app through its own close callback (releases its focus). */
 function closeApp(res: AppRes) {
   setHubMode(res, false)
-  if (res === 'spz-leaderboard') { toApp(res, { action: 'close' }); if (inGame) post('lbClose', {}, res) }
-  if (res === 'spz-crew') { toApp(res, { action: 'hide' }); if (inGame) post('close', {}, res) }
-  if (res === 'spz-speedcam') { toApp(res, { type: 'closeRecords' }); if (inGame) post('closeRecords', {}, res) }
+  if (res === 'spz-leaderboard') { toApp(res, { action: 'close' }); if (inGame) post('lbClose', {}, ownerOf(res)) }
+  if (res === 'spz-crew') { toApp(res, { action: 'hide' }); if (inGame) post('close', {}, ownerOf(res)) }
+  if (res === 'spz-speedcam') { toApp(res, { type: 'closeRecords' }); if (inGame) post('closeRecords', {}, ownerOf(res)) }
 }
 
 export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {

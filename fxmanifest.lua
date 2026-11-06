@@ -12,6 +12,7 @@ files {
     'ui/**/*',
     'dui/**/*',          -- in-world DUI pages (spz-races checkpoint pill / animation)
     'shim.lua',
+    'app.lua',           -- for resources that drive several pages (spz-races)
 }
 
 shared_scripts {

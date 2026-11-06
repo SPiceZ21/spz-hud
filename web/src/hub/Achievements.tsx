@@ -1,8 +1,9 @@
 // Achievements: milestones worked out from your career stats (the same data
-// the leaderboard's profile tab shows: spz-leaderboard → spz-races
+// the leaderboard's profile tab shows: the spz-leaderboard page → spz-races
 // getPlayerStats / getPlayerTrackSummary). No extra server data needed.
 import { useEffect, useState } from 'preact/hooks'
 import { post, inGame } from '../core/nui'
+import { ownerOf } from '../core/apps'
 import type { HubProfile } from './Hub'
 
 interface Stats {
@@ -52,7 +53,7 @@ export function Achievements({ profile }: { profile: HubProfile }) {
   const [data, setData] = useState<MeData | null>(null)
   useEffect(() => {
     if (!inGame) { setData(SAMPLE); return }
-    post<MeData>('lbFetch', { tab: 'me' }, 'spz-leaderboard').then(d => setData(d || {}))
+    post<MeData>('lbFetch', { tab: 'me' }, ownerOf('spz-leaderboard')).then(d => setData(d || {}))
   }, [])
 
   if (!data) return <div class="ach-empty">Loading…</div>

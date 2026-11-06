@@ -51,7 +51,7 @@ local function hints()
         else
             add(key('+spz_rewind', 'B', 'L1_INDEX'), 'Rewind')
         end
-        if started('spz-leaderboard') then add(key('leaderboard', 'F6', 'SELECT_INDEX'), 'Results') end
+        if started('spz-races') then add(key('leaderboard', 'F6', 'SELECT_INDEX'), 'Results') end
         radial()
         return out
     end
@@ -60,8 +60,8 @@ local function hints()
     local inCar = GetVehiclePedIsIn(ped, false) ~= 0
     if started('spz-carspawner') then add(key('car', 'F5'), 'Garage') end
     if not inCar and started('spz-emotes') then add(key('+emote_menu', 'O'), 'Emotes') end
-    if started('spz-leaderboard') then add(key('leaderboard', 'F6', 'SELECT_INDEX'), 'Results') end
-    if started('spz-raceUI') then add(key('spz_freeroamhud', 'PAGEDOWN'), 'Profile') end   -- the card's show / hide
+    if started('spz-races') then add(key('leaderboard', 'F6', 'SELECT_INDEX'), 'Results') end
+    if started('spz-races') then add(key('spz_freeroamhud', 'PAGEDOWN'), 'Profile') end   -- the card's show / hide
     if inCar then add(control(75, 'F', 'RUP_INDEX'), 'Exit') end
     radial()
     return out
