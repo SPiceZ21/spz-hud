@@ -94,9 +94,10 @@ export function HubMap() {
   const onWheel = (e: WheelEvent) => { e.preventDefault(); if (inGame) post('hubMapZoom', { d: Math.sign(e.deltaY) }) }
   const pick = (id: string) => { setSel(id); if (inGame) post('hubMapFocus', { id }) }
   const waypoint = () => { if (sel && inGame) post('hubMapWaypoint', { id: sel }) }
+  const timeTrial = () => { if (sel && inGame) post('hubMapTimeTrial', { id: sel }) }
 
   useEffect(() => {
-    const k = (e: KeyboardEvent) => { if (e.key === 'Enter' && sel) waypoint() }
+    const k = (e: KeyboardEvent) => { if (e.key === 'Enter' && sel) (meta[sel]?.kind === 'track' ? timeTrial : waypoint)() }
     window.addEventListener('keydown', k)
     return () => window.removeEventListener('keydown', k)
   }, [sel])
@@ -137,12 +138,14 @@ export function HubMap() {
               {selected.info.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
             </dl>
           )}
-          {selected.kind !== 'me' && <button class="hm-card-btn" onClick={waypoint}><kbd>ENTER</kbd> Set waypoint</button>}
-          <button class="hm-card-close" onClick={() => setSel(null)} aria-label="Close">×</button>
+          {selected.kind === 'track'
+            ? <button class="hm-card-btn" onClick={timeTrial}><kbd>ENTER</kbd> Start time trial</button>
+            : selected.kind !== 'me' && <button class="hm-card-btn" onClick={waypoint}><kbd>ENTER</kbd> Set waypoint</button>}
+          <button class="hm-card-close" onClick={() => { setSel(null); if (inGame) post('hubMapFocus', { id: null }) }} aria-label="Close">×</button>
         </aside>
       )}
     </div>
   )
 }
 
-export const MAP_KEYS: [string, string][] = [['DRAG', 'Pan'], ['R-DRAG', 'Angle'], ['WHEEL', 'Zoom'], ['CLICK', 'Select'], ['ENTER', 'Waypoint']]
+export const MAP_KEYS: [string, string][] = [['DRAG', 'Pan'], ['R-DRAG', 'Angle'], ['WHEEL', 'Zoom'], ['CLICK', 'Select'], ['ENTER', 'Waypoint / Time trial']]

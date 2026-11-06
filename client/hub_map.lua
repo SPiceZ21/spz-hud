@@ -15,8 +15,8 @@
 local PITCH_MIN, PITCH_MAX = -80.0, -30.0   -- right-drag tilts between these
 local PIN_PX     = 28                 -- pin size on a 1080p screen
 local KIND_CELL  = { track = 2, speedcam = 3, minigame = 4, garage = 5, player = 6, me = 7 }
-local H_MIN, H_MAX = 260.0, 2600.0    -- camera height
-local HOME       = { x = -380.0, y = -620.0, h = 1700.0 }   -- the city, framed
+local H_MIN, H_MAX = 220.0, 1700.0    -- camera height (higher only adds haze)
+local HOME       = { x = -380.0, y = -620.0, h = 1350.0 }   -- the city, framed
 local SEND_MS    = 100                -- positions to the page (for clicks only), 10 per second
 
 local cam, active = nil, false
@@ -51,6 +51,59 @@ local function kindRgb(p)
     if p.kind == 'track' or p.kind == 'me' then return accentRgb() end
     if p.kind == 'player' then return 96, 165, 250 end
     return 244, 244, 245
+end
+
+-- Drawn after SetDrawOrigin(world point): x, y are offsets from that point.
+-- ── Track layout ─────────────────────────────────────────────────────────────
+-- Selecting a race track draws its route over the city: a ribbon through the
+-- gate centres (real world geometry, so it renders with the scene and never
+-- lags), wider as the camera climbs so it stays readable, plus a marker per
+-- gate and a white one at the start.
+local layout = nil   -- { points = { {x,y,z}... }, loop = bool, id = pin id }
+
+local function loadLayout(pinId)
+    layout = nil
+    local key = tostring(pinId or ''):match('^track:(.+)$')
+    if not key then return end
+    CreateThread(function()
+        local ok, l = pcall(function() return lib.callback.await('spz-races:mapTrackLayout', false, key) end)
+        if ok and l and l.points and #l.points > 1 and selected == pinId then
+            l.id = pinId
+            layout = l
+        end
+    end)
+end
+
+local function ribbon(a, b, half, r, g, bl, al)
+    local dx, dy = b.x - a.x, b.y - a.y
+    local len = math.sqrt(dx * dx + dy * dy)
+    if len < 0.01 then return end
+    local nx, ny = -dy / len * half, dx / len * half
+    local za, zb = a.z + 1.5, b.z + 1.5
+    local a1x, a1y, a2x, a2y = a.x + nx, a.y + ny, a.x - nx, a.y - ny
+    local b1x, b1y, b2x, b2y = b.x + nx, b.y + ny, b.x - nx, b.y - ny
+    -- both windings: a poly is only drawn from its front
+    DrawPoly(a1x, a1y, za, b1x, b1y, zb, b2x, b2y, zb, r, g, bl, al)
+    DrawPoly(b2x, b2y, zb, b1x, b1y, zb, a1x, a1y, za, r, g, bl, al)
+    DrawPoly(a1x, a1y, za, b2x, b2y, zb, a2x, a2y, za, r, g, bl, al)
+    DrawPoly(a2x, a2y, za, b2x, b2y, zb, a1x, a1y, za, r, g, bl, al)
+end
+
+local function drawLayout()
+    if not layout or layout.id ~= selected then return end
+    local pts = layout.points
+    local r, g, b = accentRgb()
+    local half = math.max(3.0, cur.h * 0.006)         -- metres either side, grows with height
+    for i = 1, #pts - 1 do ribbon(pts[i], pts[i + 1], half, r, g, b, 210) end
+    if layout.loop then ribbon(pts[#pts], pts[1], half, r, g, b, 210) end
+    local ms = half * 2.2
+    for i, p in ipairs(pts) do
+        if i == 1 then
+            DrawMarker(1, p.x, p.y, p.z, 0, 0, 0, 0, 0, 0, ms * 1.6, ms * 1.6, half * 4, 255, 255, 255, 220, false, false, 2, false, nil, nil, false)
+        else
+            DrawMarker(1, p.x, p.y, p.z, 0, 0, 0, 0, 0, 0, ms, ms, half * 2, r, g, b, 160, false, false, 2, false, nil, nil, false)
+        end
+    end
 end
 
 local function cell(i, x, y, w, h, r, g, b, a)
@@ -142,7 +195,7 @@ local function stop()
     TriggerServerEvent('spz-hud:mapBucket', false)
     TriggerEvent('spz:sceneWeather', nil)
     TriggerEvent('spz:sceneTime', nil)
-    selected, livePins = nil, {}
+    selected, livePins, layout = nil, {}, nil
 end
 
 local function start()
@@ -188,23 +241,34 @@ local function start()
             local w = h * (ry / rx)                              -- square on any aspect
             local labels = cur.h < 1100
             local out = {}
+            -- The draw is anchored to the pin's world point (SetDrawOrigin), so
+            -- the engine places it with THIS frame's camera: no lag, no jiggle.
+            -- The projection below is only for the page's click targets.
+            local sendNow = GetGameTimer() - lastSend >= SEND_MS
             local function draw(p)
                 if shownKinds and not shownKinds[p.kind] and p.kind ~= 'me' then return end
-                local on, sx, sy = GetScreenCoordFromWorldCoord(p.x, p.y, (p.z or 30.0) + 2.0)
-                if not on then return end
-                drawPin(p, sx, sy, w, h)
-                if labels or p.id == selected or p.kind == 'me' then label(p.label or '', sx + w * 0.75, sy - h * 0.32) end
-                out[#out + 1] = { id = p.id, x = sx, y = sy }
+                local z = (p.z or 30.0) + 2.0
+                SetDrawOrigin(p.x, p.y, z, 0)
+                drawPin(p, 0.0, 0.0, w, h)
+                if labels or p.id == selected or p.kind == 'me' then label(p.label or '', w * 0.75, -h * 0.32) end
+                ClearDrawOrigin()
+                if sendNow then
+                    local on, sx, sy = GetScreenCoordFromWorldCoord(p.x, p.y, z)
+                    if on then out[#out + 1] = { id = p.id, x = sx, y = sy } end
+                end
             end
+            drawLayout()
             for _, p in ipairs(pins) do draw(p) end
             for _, p in ipairs(livePins) do draw(p) end
 
             -- The page only needs positions for clicking: a few times a second.
-            local now = GetGameTimer()
-            if now - lastSend >= SEND_MS then
-                lastSend = now
+            if sendNow then
+                lastSend = GetGameTimer()
                 HudSend({ type = 'hubMap', pins = out, live = livePins, h = cur.h })
             end
+            -- Keep the city sharp from up here: draw detail further out than
+            -- the game normally would at this height (less of the distant haze).
+            OverrideLodscaleThisFrame(1.8)
             Wait(0)
         end
     end)
@@ -257,11 +321,26 @@ end)
 
 RegisterNUICallback('hubMapFocus', function(d, cb)
     selected = d and d.id or nil
+    loadLayout(selected)
     local p = active and d and byId[d.id]
     if p then
         goal.x, goal.y = p.x, p.y
-        goal.h = math.min(goal.h, 700.0)
+        goal.h = p.kind == 'track' and math.max(math.min(goal.h, 1100.0), 800.0) or math.min(goal.h, 700.0)
     end
+    cb(true)
+end)
+
+-- Track card: straight into a time trial on that track (closes the hub). The
+-- car you are in is used; on foot the trial gives you its default.
+RegisterNUICallback('hubMapTimeTrial', function(d, cb)
+    local p = d and byId[d.id]
+    local key = p and p.kind == 'track' and tostring(p.id):gsub('^track:', '')
+    if not key then return cb(false) end
+    local veh = GetVehiclePedIsIn(PlayerPedId(), false)
+    local model = veh ~= 0 and GetEntityArchetypeName(veh) or nil
+    if model == '' then model = nil end
+    ExecuteCommand('spzhub')   -- close the hub (and the map) first
+    SetTimeout(500, function() TriggerServerEvent('SPZ:tt:SelectTrack', key, model) end)
     cb(true)
 end)
 
