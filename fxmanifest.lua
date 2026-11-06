@@ -57,5 +57,4 @@ server_scripts {
 dependencies {
     'ox_lib',
     'spz-core',     -- theme, KeyFor, tablet (speedometer, pause menu)
-    'spz-identity', -- chat profiles
 }

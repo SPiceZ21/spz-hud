@@ -590,6 +590,7 @@
   },
   {
     "res": "spz-spawn",
-    "z": 95
+    "z": 95,
+    "owner": "spz-core"
   }
 ]

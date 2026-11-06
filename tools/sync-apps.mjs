@@ -59,7 +59,7 @@ export const APPS = [
   { res: 'spz-replay',       z: 80, owner: 'spz-races' },
   { res: 'spz-pausemenu',    z: 85, owner: 'spz-hud', ns: true },
   { res: 'spz-tutorial',     z: 90 },
-  { res: 'spz-spawn',        z: 95 },
+  { res: 'spz-spawn',        z: 95, owner: 'spz-core' },
 ]
 
 // Source-only files: never shipped by the resources, so never copied.

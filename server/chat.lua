@@ -22,7 +22,7 @@ local function FindSourceByUsername(name)
 
     for _, pid in ipairs(GetPlayers()) do
         local sid = tonumber(pid)
-        local profile = exports['spz-identity']:GetProfile(sid)
+        local profile = exports['spz-core']:GetProfile(sid)
         local uname = (profile and profile.username) or GetPlayerName(sid) or ''
         local lname = uname:lower()
 
@@ -63,7 +63,7 @@ lib.callback.register('spz-chat:send', function(source, data)
     end
     LastMsg[source] = now
 
-    local profile  = exports['spz-identity']:GetProfile(source)
+    local profile  = exports['spz-core']:GetProfile(source)
     local username = (profile and profile.username) or GetPlayerName(source) or ('Racer' .. source)
     local crewTag  = profile and profile.crew_tag or nil
     local avatar   = profile and profile.avatar_url or nil
@@ -109,7 +109,7 @@ lib.callback.register('spz-chat:send', function(source, data)
         end
 
         local payload = { channel = 'crew', from = username, crewTag = crewTag, avatar = avatar, text = text, gif = gif, ts = os.time() }
-        local members = exports['spz-identity']:GetOnlineCrewMembers(profile.crew_id)
+        local members = exports['spz-core']:GetOnlineCrewMembers(profile.crew_id)
         for _, sid in ipairs(members) do
             TriggerClientEvent('spz-chat:receive', sid, payload)
         end
@@ -130,7 +130,7 @@ lib.callback.register('spz-chat:send', function(source, data)
             return { ok = false, error = 'Cannot DM yourself.' }
         end
 
-        local toProfile = exports['spz-identity']:GetProfile(targetSource)
+        local toProfile = exports['spz-core']:GetProfile(targetSource)
         local toName   = (toProfile and toProfile.username) or GetPlayerName(targetSource)
         local toAvatar = toProfile and toProfile.avatar_url or nil
 
@@ -154,7 +154,7 @@ lib.callback.register('spz-chat:online', function(source)
     for _, pid in ipairs(GetPlayers()) do
         local sid = tonumber(pid)
         if sid ~= source then
-            local profile = exports['spz-identity']:GetProfile(sid)
+            local profile = exports['spz-core']:GetProfile(sid)
             list[#list + 1] = {
                 username = (profile and profile.username) or GetPlayerName(sid) or ('Racer' .. sid),
                 avatar = profile and profile.avatar_url or nil,
@@ -172,7 +172,7 @@ AddEventHandler('SPZ:playerReady', function(source, profile)
 end)
 
 AddEventHandler('SPZ:playerDisconnected', function(source)
-    local profile = exports['spz-identity']:GetProfile(source)
+    local profile = exports['spz-core']:GetProfile(source)
     local name = (profile and profile.username) or GetPlayerName(source) or 'A racer'
     SystemBroadcast(name .. ' disconnected.')
     LastMsg[source] = nil

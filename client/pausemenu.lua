@@ -209,7 +209,7 @@ local function Build()
     quick('q_board',   'Leaderboard', 'leaderboard', Has('spz-leaderboard'))
     quick('q_results', 'Results',     'raceresults', Has('spz-leaderboard'))
     quick('q_crew',    'Crew',        'crew',        Has('spz-crew'))
-    quick('q_char',    'Character',   'appearance',  free and Has('spz-appearance'))
+    quick('q_char',    'Character',   'appearance',  free and Has('spz-core'))
     quick('q_tour',    'Tutorial',    'tutorial',    free and not queued and Has('spz-tutorial'))
 
     items[#items + 1] = {

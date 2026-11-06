@@ -12,7 +12,7 @@ local function SyncPlayerToState(source)
     local playerState = Player(source).state
     if not playerState then return end
 
-    local profile = exports["spz-identity"]:GetProfile(source)
+    local profile = exports["spz-core"]:GetProfile(source)
 
     local name = profile and profile.username
     if not name or name == "" or name == "**INVALID**" then
