@@ -29,6 +29,7 @@ client_scripts {
     'client/focus.lua',
     'client/main.lua',
     'client/apps.lua',
+    'client/cover.lua',          -- the transition cover (CoverShow / CoverHide)
     'client/keybar.lua',
     'client/hub.lua',
     -- Merged in from spz-speedometer and spz-pausemenu. Their pages are still

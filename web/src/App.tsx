@@ -4,6 +4,7 @@ import { post, inGame } from './core/nui'
 import { ANCHOR_SHIFT, type GameState, type Layout, type Placement, type WidgetDef } from './core/types'
 import { WIDGETS } from './widgets'
 import { AppHost, AppMovers, placeApp, toApp, reloadApp, type AppEntry } from './core/apps'
+import { Cover } from './core/Cover'
 import type { FunctionComponent } from 'preact'
 import { Hub, type HubProfile } from './hub/Hub'
 
@@ -100,6 +101,15 @@ export function App() {
   const [state, setState] = useState<GameState>('freeroam')
   const [forcedOff, setForcedOff] = useState<Record<string, true>>({})
   const [hidden, setHidden] = useState(false)
+  // Transition cover: closed while any source wants it (Lua fades / race join,
+  // the spawn page, the race page's grid reset). Last status wins.
+  const [cover, setCover] = useState<{ by: Record<string, true>; status?: string }>({ by: {} })
+  const coverOn = (src: string, on: boolean, status?: string) => setCover(c => {
+    const by = { ...c.by }
+    if (on) by[src] = true; else delete by[src]
+    return { by, status: on && status ? status : c.status }
+  })
+  const coverTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [editing, setEditing] = useState(false)
   const [snap, setSnap] = useState(0.5)
   const [focus, setFocus] = useState<string | null>(null)
@@ -149,7 +159,21 @@ export function App() {
             if (m.msg.type === 'update') publish('speedo_digital', m.msg)
             else if (m.msg.type === 'hide') publish('speedo_digital', false)
           }
+          // The spawn and race pages' covers are drawn here (their own are off).
+          if (m.app === 'spz-spawn' && m.msg) {
+            if (m.msg.type === 'showCover') coverOn('spawn', true, 'Preparing your session')
+            else if (m.msg.type === 'hideCover') coverOn('spawn', false)
+          }
+          if (m.app === 'spz-raceUI' && m.msg?.action === 'raceIntro') {
+            const phase = m.msg.data?.phase ?? m.msg.phase
+            if (coverTimer.current) { clearTimeout(coverTimer.current); coverTimer.current = null }
+            if (phase === 'cover') coverOn('race', true, 'Staging the grid')
+            // The race page starts its briefing card as the sweep opens.
+            else if (phase === 'reveal') coverTimer.current = setTimeout(() => coverOn('race', false), 180)
+            else coverOn('race', false)
+          }
           break
+        case 'cover': coverOn(m.src || 'lua', !!m.on, m.status); break
         case 'appReload': reloadApp(m.app, !inGame && m.mock === true); break
         case 'focus':     setFocus(m.owner ?? null); break
         case 'hub':       setHub(h => ({ open: !!m.on, profile: m.profile || h.profile })); break
@@ -201,6 +225,7 @@ export function App() {
     <AppHost focus={focus} onApps={setApps} hidden={hiddenApps} />
     {Dev && <Dev />}
     <Hub open={hub.open} profile={hub.profile} />
+    <Cover on={Object.keys(cover.by).length > 0} status={cover.status} />
     <div class="hud" data-hidden={(hidden || hub.open) && !editing} data-edit={editing}>
       {editing && <div class="grid" />}
       {editing && <AppMovers apps={movableApps} layout={layout} snap={snap} onMove={move} />}

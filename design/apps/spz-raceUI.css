@@ -311,3 +311,50 @@
 
 /* Freeroam card: no licence badge (the rank art beside it says the class). */
 .fr-class { display: none !important; }
+
+/* Transition cover: drawn by spz-hud (web/src/core/Cover.tsx) for every
+   hand-off, so this page's own copy stays off. */
+.cv-root { display: none !important; }
+
+/* ── Lobby row (JOIN RACE · JOIN MINIGAMES · queue / warmup pills) ──
+   It sat at bottom 3.5vh, on top of spz-hud's key strip (bottom, centre-right).
+   It now sits in the gap between the strip and your own nametag (14vh),
+   centred, and uses the strip's look: one surface, neutral keycaps, the
+   small-caps label, the strip's height. */
+.lobby-row { bottom: calc(3vh + 32px); gap: 8px; }
+.lobby-pill,
+.lobby-pill.join,
+.lobby-pill.warmup,
+.lobby-pill.mg {
+  zoom: 1;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(9, 10, 12, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  box-shadow: none;
+}
+.lobby-pill.join { border-color: rgba(var(--color-primary-rgb), 0.45); }
+.lobby-pill.warmup { border-color: rgba(var(--color-primary-rgb), 0.7); }
+.lp-key,
+.lobby-pill.mg .lp-key {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: #f4f4f5;
+  font: 800 10px var(--ui-display);
+}
+.lobby-pill.join .lp-key { border-color: rgba(var(--color-primary-rgb), 0.6); color: var(--color-primary); }
+.lp-key.sm { min-width: 18px; height: 18px; font-size: 8.5px; }
+.lp-text,
+.lobby-pill.mg .lp-text {
+  font: 700 10px var(--ui-display);
+  letter-spacing: 0.18em;
+  color: #f4f4f5;
+}
+.lp-sub { font-size: 10px; }
+.lp-timer { font-size: 16px; }

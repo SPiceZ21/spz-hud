@@ -1,3 +1,7 @@
 /* spz-spawn on the shared look. The welcome → showcase screens are built in
    the shared style in spz-spawn itself (ui/src/styles/spawn.css); nothing to
    override here beyond the common tokens. */
+
+/* Transition cover: drawn by spz-hud (web/src/core/Cover.tsx) for every
+   hand-off, so this page's own copy stays off. */
+.cv-root { display: none !important; }
