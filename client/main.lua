@@ -262,3 +262,18 @@ RegisterCommand('hudunstick', function()
     SetNuiFocus(false, false)
     print('^5[spz-hud]^7 focus cleared')
 end, false)
+
+-- ── Theme ───────────────────────────────────────────────────────────────────
+-- spz-core's theme (server.cfg spz_theme_*) to the page: the transition cover,
+-- the hub and the editor read it as CSS variables. They used fixed orange.
+local function pushTheme(theme)
+    if type(theme) == 'table' and next(theme) then send({ type = 'theme', theme = theme }) end
+end
+AddEventHandler('SPZ:themeUpdated', pushTheme)
+CreateThread(function()
+    for _ = 1, 30 do
+        local ok, theme = pcall(function() return exports['spz-core']:GetTheme() end)
+        if ok and type(theme) == 'table' and next(theme) then pushTheme(theme) return end
+        Wait(1000)
+    end
+end)

@@ -101,6 +101,17 @@ function Frame({ def, place, editing, snap, onMove }: FrameProps) {
 // resource restart the cached page could post it before the Lua callback
 // existed, and nothing ever retried. Now it is retried until Lua answers, and
 // sent again whenever Lua pings.
+// spz-core's theme -> the CSS variables everything here reads.
+function applyTheme(t: Record<string, string> | undefined) {
+  if (!t) return
+  const root = document.documentElement.style
+  const hex = (v?: string) => (typeof v === 'string' && /^#[0-9a-fA-F]{6}$/.test(v) ? v : null)
+  const rgb = (v: string) => [1, 3, 5].map(i => parseInt(v.slice(i, i + 2), 16)).join(', ')
+  const a = hex(t.accent)
+  if (a) { root.setProperty('--color-primary', a); root.setProperty('--color-primary-rgb', rgb(a)) }
+  const a2 = hex(t.accent2); if (a2) root.setProperty('--color-primary-2', a2)
+}
+
 let helloRunning = false
 async function hello() {
   if (!inGame || helloRunning) return
@@ -201,6 +212,7 @@ export function App() {
         case 'cover': coverOn(m.src || 'lua', !!m.on, m.status); break
         // client/main.lua pings until the handshake below has landed.
         case 'ping':  hello(); break
+        case 'theme': applyTheme(m.theme); break
         case 'appReload': reloadApp(m.app, !inGame && m.mock === true); break
         case 'focus':     setFocus(m.owner ?? null); break
         case 'hub':       setHub(h => ({ open: !!m.on, profile: m.profile || h.profile })); break

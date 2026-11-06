@@ -32,7 +32,7 @@
     radial-gradient(46% 54% at 87% 9%, rgba(var(--cv-rgb), 0.15), transparent 60%),
     radial-gradient(66% 74% at 79% 97%, rgba(var(--cv-rgb), 0.14), transparent 64%),
     radial-gradient(44% 52% at 1% 93%, rgba(var(--cv-rgb), 0.1), transparent 62%),
-    radial-gradient(100% 96% at 46% 42%, #340e0080, transparent 74%),
+    radial-gradient(100% 96% at 46% 42%, rgba(var(--cv-rgb), 0.12), transparent 74%),
     linear-gradient(158deg, #07080a 0%, #0d0c11 48%, #060608 100%);
   background-size: 7px 7px, 16px 16px, 16px 16px, 100vw 100vh, 100vw 100vh, 100vw 100vh, 100vw 100vh, 100vw 100vh, 100vw 100vh;
   background-position: 0 var(--bgy), 0 var(--bgy), 8px calc(var(--bgy) + 8px), 0 var(--bgy), 0 var(--bgy), 0 var(--bgy), 0 var(--bgy), 0 var(--bgy), 0 var(--bgy);
@@ -167,3 +167,8 @@
 }
 .cover-foot-mark { color: #ffffff80; }
 .cover-foot-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(var(--cv-rgb), 0.8); }
+
+/* The closed surface alone (CoverSurface), e.g. behind the hub. */
+.cover-surface { --cv-rgb: var(--color-primary-rgb, 255, 98, 0); position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.cover-surface .cover-slice { transform: none; }
+.cover-surface .cover-slice::after { display: none; }

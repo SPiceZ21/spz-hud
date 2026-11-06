@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from 'preact/hooks'
 import { post, inGame } from '../core/nui'
 import { appWindow, ownerOf, reloadApp, setHubMode, toApp } from '../core/apps'
 import { Achievements } from './Achievements'
+import { CoverSurface } from '../core/Cover'
 import './hub.css'
 
 type AppRes = 'spz-leaderboard' | 'spz-crew' | 'spz-speedcam'
@@ -161,7 +162,7 @@ export function Hub({ open, profile }: { open: boolean; profile: HubProfile }) {
   if (!open) return null
   return (
     <>
-      <div class="hub-backdrop" />
+      <div class="hub-backdrop"><CoverSurface /></div>
       <div class="hub-chrome">
         <header class="hub-top">
           <img class="hub-logo" src="./apps/spz-spawn/logo.png" alt="SPiceZ" />

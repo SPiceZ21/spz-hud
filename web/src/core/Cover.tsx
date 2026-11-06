@@ -72,3 +72,17 @@ export function Cover({ on, status }: { on: boolean; status?: string }) {
     </div>
   )
 }
+
+/** The cover's closed surface on its own (texture, glow, grain, vignette, corner
+ *  frame): the spawn screen's backdrop, reused behind the hub. */
+export function CoverSurface() {
+  return (
+    <div class="cover-surface" aria-hidden="true">
+      <div class="cover-slice" style={{ '--i': 0, '--bgy': '0px', top: 0, height: '100%' } as any} />
+      <div class="cover-aurora" />
+      <div class="cover-grain" />
+      <div class="cover-vign" />
+      <div class="cover-frame"><i class="tl" /><i class="tr" /><i class="bl" /><i class="br" /></div>
+    </div>
+  )
+}
