@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<!-- spz-pausemenu — the pause menu page (client/pausemenu.lua).
+     Main menu → options of the selected section → that option's settings,
+     over the blurred game, in the TAB hub's components (see style.css).
+     Game settings hand off to GTA's own settings screen (scripts cannot
+     change GTA graphics); UI settings are ours and apply at once.
+     The previous bento page is backed up in spz-pausemenu-backup/page. -->
 <html lang="en">
 <head>
     <script>(function(){var n="spz-pausemenu",o="spz-hud";var mock=/[?&]spzmock=1/.test(location.search);if(!mock){try{Object.defineProperty(window,"GetParentResourceName",{value:function(){return o},configurable:true})}catch(e){window.GetParentResourceName=function(){return o}}try{if(!window.invokeNative&&parent!==window&&parent.invokeNative)window.invokeNative=function(){return parent.invokeNative.apply(parent,arguments)}}catch(e){}var f=window.fetch;window.fetch=function(u,i){try{var s=String(u&&u.url||u),p="https://"+o+"/";if(s.indexOf(p)===0&&s.indexOf(n+":",p.length)!==p.length)u=p+n+":"+s.slice(p.length)}catch(e){}return f.call(this,u,i)};}try{if(parent!==window&&parent.__spzDev)parent.__spzDev(n,window)}catch(e){}})();</script>
@@ -6,42 +12,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SPZ Pause Menu</title>
   <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="../../shared/design/spz-ui.css">
-    <link rel="stylesheet" href="../../shared/design/apps/spz-pausemenu.css">
-  </head>
+</head>
 <body>
-  <div id="root" class="hidden">
-    <div class="shade"></div>
+<div id="root">
+  <div class="fade"></div>
+  <div class="frame">
+    <header class="head">
+      <div class="badge">Paused</div>
+      <h1 id="crumb"></h1>
+      <div class="links" id="quick"></div>
+      <div class="clock" id="clock"></div>
+    </header>
 
-    <main class="stage">
-      <header class="top">
-        <div class="menu-kicker"><i></i>Paused</div>
-        <div class="brand">SPICEZ <b>RACING</b></div>
-        <div class="clock" id="clock"></div>
-      </header>
+    <div class="stage">
+      <nav class="col c1 in" id="main"></nav>
+      <nav class="col c2 in d1" id="opts"></nav>
+      <section class="col c3 in d2" id="panel"></section>
+    </div>
 
-      <section class="bento" id="bento"></section>
-      <section class="quick-row" id="quick"></section>
+    <div class="info in d3" id="info"></div>
 
-      <footer class="legend">
-        <span class="key"><kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> Navigate</span>
-        <span class="key"><kbd>Enter</kbd> Select</span>
-        <span class="key"><kbd>Esc</kbd> Resume</span>
-      </footer>
-    </main>
-
-    <div class="modal hidden" id="modal">
-      <div class="modal-box">
-        <div class="modal-bar"></div>
-        <h3 class="modal-title" id="modalTitle"></h3>
-        <p class="modal-body" id="modalBody"></p>
-        <div class="modal-actions">
-          <button class="mbtn" id="modalCancel">Cancel</button>
-          <button class="mbtn mbtn-danger" id="modalConfirm">Confirm</button>
-        </div>
+    <div class="foot in d3">
+      <div class="driver"><div class="dname" id="dname"></div><div class="dsub" id="dsub"></div></div>
+      <div class="keys">
+        <div class="key"><kbd>&uarr;&darr;</kbd> Move</div>
+        <div class="key"><kbd>&larr;&rarr;</kbd> Change</div>
+        <div class="key"><kbd>Enter</kbd> Select</div>
+        <div class="key"><kbd>Esc</kbd> Back</div>
       </div>
     </div>
+
+    <div class="modal" id="modal"><div class="box"><div class="k">Confirm</div><h2 id="mt"></h2><p id="mb"></p>
+      <div class="btns"><div id="mc">Cancel</div><div id="mk">Confirm</div></div></div></div>
   </div>
-  <script src="app.js"></script>
+</div>
+<script src="app.js"></script>
 </body>
 </html>

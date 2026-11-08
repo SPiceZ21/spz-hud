@@ -18,7 +18,14 @@ CreateThread(function()
 end)
 AddEventHandler('SPZ:themeUpdated', function(theme) pushNametagTheme(theme) end)
 
-local ShowNametags = true
+-- Saved per player (the pause menu's UI settings, or the toggle key).
+local ShowNametags = GetResourceKvpInt('spz_nametags_off') ~= 1
+function SpzNametagsShown() return ShowNametags end
+function SpzNametagsSet(on)
+    ShowNametags = on == true
+    SetResourceKvpInt('spz_nametags_off', ShowNametags and 0 or 1)
+    if not ShowNametags then SendNUIMessage({ action = "clear" }) end
+end
 local MyId = GetPlayerServerId(PlayerId())
 
 local PlayerDataCache = {}
@@ -64,10 +71,7 @@ end
 
 -- Toggle command
 RegisterCommand(Config.Keybind.command, function()
-    ShowNametags = not ShowNametags
-    if not ShowNametags then
-        SendNUIMessage({ action = "clear" })
-    end
+    SpzNametagsSet(not ShowNametags)
     lib.notify({ description = string.format("Nametags: %s", ShowNametags and "ENABLED" or "DISABLED"), type = ShowNametags and "info" or "warning" })
 end)
 

@@ -54,14 +54,14 @@ export function Profile({ profile }: { profile: HubProfile }) {
   }, [])
 
   const s = me?.stats || {}
-  const tracks = [...(me?.tracks || [])].sort((a, b) => (b.races || 0) - (a.races || 0)).slice(0, 6)
+  const tracks = [...(me?.tracks || [])].sort((a, b) => (b.races || 0) - (a.races || 0)).slice(0, 8)
   const history = (me?.history || []).slice(0, 8)
 
   // Bento: one grid, tiles of different sizes (identity and iRating large,
   // the counts small, the two lists wide).
   return (
     <div class="hx-page hx-col">
-      <div class="hx-scroll">
+      <div class="hx-scroll hx-fill">
         <div class="bento">
           <div class="hx-tile b-id">
             <div class="b-id-top">

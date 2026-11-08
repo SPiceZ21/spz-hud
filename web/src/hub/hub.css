@@ -319,7 +319,12 @@
 .hp-row .hx-tile { padding: 14px 14px; } .hp-row .hx-tile-v { font-size: 24px; }
 
 /* ══ Profile bento ══ */
-.bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: minmax(124px, auto); gap: 12px; }
+.bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: minmax(124px, 1fr) minmax(124px, 1fr) minmax(300px, 2.2fr); gap: 12px; min-height: 100%; }
+/* Fill the page: the scroll area is the grid's height, the list tiles take the spare row. */
+.hx-scroll.hx-fill { display: flex; flex-direction: column; }
+.hx-scroll > .bento { flex: 1; }
+.bento .b-races, .bento .b-tracks { display: flex; flex-direction: column; }
+.bento .b-list { flex: 1; justify-content: space-evenly; }
 .bento .hx-tile-v { font-size: 30px; }
 .b-id { grid-column: span 2; grid-row: span 2; justify-content: flex-end; gap: 10px; }
 .b-avatar { width: 96px; height: 96px; border-radius: 8px; object-fit: cover; background: #18181b; margin-bottom: auto; }

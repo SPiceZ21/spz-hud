@@ -242,3 +242,7 @@ body { font-family: var(--font); color: var(--color-text); user-select: none; }
   text-transform: uppercase;
   color: #a1a1aa;
 }
+
+/* Pause menu open: everything else on the overlay (HUD, apps, keybar, chat)
+   fades away; only the pause menu's own page stays. */
+#root.scene > *:not(iframe[data-app='spz-pausemenu']) { opacity: 0 !important; pointer-events: none !important; transition: opacity 200ms ease; }

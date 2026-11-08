@@ -223,6 +223,22 @@ end)
 
 -- ── Exports ─────────────────────────────────────────────────────────────────
 
+-- The pause menu hides the rest of the overlay while it is open.
+function SpzHudSceneMode(on) send({ type = 'scene', on = on == true }) end
+
+-- HUD settings for the pause menu's UI settings page (client/pausemenu.lua).
+function SpzHudGetSettings() return loadSettings() end
+function SpzHudSetSetting(key, value)
+    local allowed = SETTINGS[key]
+    if not allowed or not allowed[value] then return false end
+    local s = loadSettings()
+    s[key] = value
+    saveLayout(loadLayout(), cleanSettings(s))
+    pushRegistry()
+    return true
+end
+function SpzHudEditLayout() ExecuteCommand(Config.EditCommand) end
+
 exports('Register', register)
 
 exports('Push', function(id, data)

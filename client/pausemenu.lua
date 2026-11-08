@@ -4,6 +4,22 @@
 local SendNUIMessage, SetNuiFocus, SetNuiFocusKeepInput, RegisterNUICallback = SpzHudApp('spz-pausemenu')
 local Config = Config.PauseMenu
 
+-- ── Screen treatment ─────────────────────────────────────────────────────────
+-- What makes it feel like a console game's pause rather than a web page over
+-- the game: the world behind blurs and darkens (GTA's own pause postfx), the
+-- rest of the overlay fades out, and the menu animates in over that.
+local function Treatment(on)
+    if on then
+        TriggerScreenblurFadeIn(220)
+        AnimpostfxPlay('PauseMenuIn', 0, true)
+    else
+        TriggerScreenblurFadeOut(180)
+        AnimpostfxStop('PauseMenuIn')
+        AnimpostfxPlay('PauseMenuOut', 0, false)
+    end
+    if SpzHudSceneMode then SpzHudSceneMode(on) end
+end
+
 -- client/main.lua
 -- SPiceZ pause menu. Takes over Esc / P from GTA's own pause menu with a
 -- bento grid: resume, the GTA map, the GTA settings, quit — plus rows that
@@ -313,26 +329,52 @@ local function SendMapPos()
     SendNUIMessage(msg)
 end
 
-local function Close(silent)
-    if not isOpen then return end
+-- `after` runs once focus has left the page.
+local function Close(silent, after)
+    if not isOpen then if after then after() end return end
     isOpen     = false
     lastBusyAt = GetGameTimer()
-    SetNuiFocus(false, false)
     SendNUIMessage({ action = 'close' })
     ReleaseHeadshot()
     if not silent then Sound('close') end
+    SetNuiFocus(false, false)
+    Treatment(false)
+    if after then SetTimeout(60, after) end
 end
+
+-- ── UI settings (the pause menu's UI settings page) ──────────────────────────
+local function CurrentUi()
+    local hud = SpzHudGetSettings and SpzHudGetSettings() or {}
+    return {
+        speedo   = hud.speedo or 'analogue',
+        nametags = (not SpzNametagsShown or SpzNametagsShown()) and 'on' or 'off',
+    }
+end
+
+RegisterNUICallback('setting', function(data, cb)
+    local key, value = data and data.key, data and data.value
+    if key == 'speedo' and SpzHudSetSetting then SpzHudSetSetting('speedo', value)
+    elseif key == 'nametags' and SpzNametagsSet then SpzNametagsSet(value == 'on')
+    elseif key == 'layout' and SpzHudEditLayout then
+        Close(true, SpzHudEditLayout)
+    end
+    Sound('nav')
+    cb(CurrentUi())
+end)
 
 local function Open()
     if isOpen then return end
     isOpen = true
-    SetNuiFocus(true, true)
-    SendNUIMessage({
+    local msg = {
         action = 'open',
         items  = Build(),
         player = Driver(),
         status = { live = InRace() },
-    })
+        ui     = CurrentUi(),
+    }
+    SetNuiFocus(true, true)
+    Treatment(true)
+    SendNUIMessage(msg)
     SendHeadshot()
     SendMapPos()
     CreateThread(function()
@@ -432,10 +474,9 @@ RegisterNUICallback('select', function(data, cb)
     if not run then return end
 
     Sound('select')
-    Close(true)
-
-    -- Let focus actually leave this page before the GTA frontend takes over.
-    SetTimeout(60, function()
+    -- Run once focus has left this page (or the world scene has faded out),
+    -- before the GTA frontend or a teleport takes over.
+    Close(true, function()
         local ok, err = pcall(run)
         if not ok then print(('^1[spz-pausemenu] %s failed: %s^7'):format(data.id, tostring(err))) end
     end)
@@ -461,7 +502,7 @@ exports('IsPauseMenuOpen', function() return isOpen end)
 
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
-    if isOpen then SetNuiFocus(false, false) end
+    if isOpen then SetNuiFocus(false, false); Treatment(false) end
     isOpen = false
     ReleaseHeadshot()
 end)

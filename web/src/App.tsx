@@ -219,6 +219,8 @@ export function App() {
         case 'data':    publish(m.id, m.data); break
         case 'state':   setState(m.state); break
         case 'hidden':  setHidden(!!m.hidden); break
+        // The pause menu's world scene: nothing of the overlay may show over it.
+        case 'scene':   document.getElementById('root')?.classList.toggle('scene', !!m.on); break
         case 'edit':    setEdit(!!m.on); break
         case 'visible':
           setForcedOff(f => {
