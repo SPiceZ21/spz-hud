@@ -59,7 +59,53 @@ end
 -- gate centres (real world geometry, so it renders with the scene and never
 -- lags), wider as the camera climbs so it stays readable, plus a marker per
 -- gate and a white one at the start.
-local layout = nil   -- { points = { {x,y,z}... }, loop = bool, id = pin id }
+local layout = nil   -- { points = gates, path = road points or nil, loop = bool, id = pin id }
+
+-- The route along the actual roads between the gates. The game's GPS plots a
+-- multi-point route through every gate (the same routing the pause-map race
+-- routes use), then the route is sampled every few metres. Returns nil when
+-- the GPS cannot route it (off-road gates, or a build where the sampling
+-- native answers differently), and the map falls back to straight lines.
+local PATH_STEP = 12.0
+local function roadPath(pts, loop)
+    ClearGpsMultiRoute()
+    StartGpsMultiRoute(6, false, true)
+    for _, p in ipairs(pts) do AddPointToGpsMultiRoute(p.x, p.y, p.z) end
+    if loop then AddPointToGpsMultiRoute(pts[1].x, pts[1].y, pts[1].z) end
+    SetGpsMultiRouteRender(true)
+    Wait(400)   -- let the route be built
+
+    local best
+    for _, gpsType in ipairs({ 2, 1 }) do
+        local out, last, still = {}, nil, 0
+        for d = 0.0, 60000.0, PATH_STEP do
+            local ok, a, b = pcall(GetPosAlongGpsTypeRoute, true, d, gpsType)
+            local pos = ok and ((type(a) == 'vector3' and a) or (type(b) == 'vector3' and b)) or nil
+            if not pos or (pos.x == 0.0 and pos.y == 0.0) then break end
+            if last and #(pos - last) < 0.5 then
+                still = still + 1
+                if still >= 3 then break end   -- reached the end of the route
+            else
+                still = 0
+                out[#out + 1] = { x = pos.x, y = pos.y, z = pos.z }
+            end
+            last = pos
+        end
+        if #out > #pts and (not best or #out > #best) then best = out end
+    end
+
+    SetGpsMultiRouteRender(false)
+    ClearGpsMultiRoute()
+
+    -- Sanity check: the route has to end near the last gate (or the start, for
+    -- a loop); anything else is a bad sample and straight lines are safer.
+    if best then
+        local endGate = loop and pts[1] or pts[#pts]
+        local e = best[#best]
+        if #(vector2(e.x, e.y) - vector2(endGate.x, endGate.y)) > 150.0 then best = nil end
+    end
+    return best
+end
 
 local function loadLayout(pinId)
     layout = nil
@@ -70,6 +116,8 @@ local function loadLayout(pinId)
         if ok and l and l.points and #l.points > 1 and selected == pinId then
             l.id = pinId
             layout = l
+            local pok, path = pcall(roadPath, l.points, l.loop)
+            if pok and path and layout == l then l.path = path end
         end
     end)
 end
@@ -94,8 +142,13 @@ local function drawLayout()
     local pts = layout.points
     local r, g, b = accentRgb()
     local half = math.max(3.0, cur.h * 0.006)         -- metres either side, grows with height
-    for i = 1, #pts - 1 do ribbon(pts[i], pts[i + 1], half, r, g, b, 210) end
-    if layout.loop then ribbon(pts[#pts], pts[1], half, r, g, b, 210) end
+    local path = layout.path
+    if path then
+        for i = 1, #path - 1 do ribbon(path[i], path[i + 1], half, r, g, b, 210) end
+    else
+        for i = 1, #pts - 1 do ribbon(pts[i], pts[i + 1], half, r, g, b, 210) end
+        if layout.loop then ribbon(pts[#pts], pts[1], half, r, g, b, 210) end
+    end
     local ms = half * 2.2
     for i, p in ipairs(pts) do
         if i == 1 then
@@ -336,11 +389,9 @@ RegisterNUICallback('hubMapTimeTrial', function(d, cb)
     local p = d and byId[d.id]
     local key = p and p.kind == 'track' and tostring(p.id):gsub('^track:', '')
     if not key then return cb(false) end
-    local veh = GetVehiclePedIsIn(PlayerPedId(), false)
-    local model = veh ~= 0 and GetEntityArchetypeName(veh) or nil
-    if model == '' then model = nil end
     ExecuteCommand('spzhub')   -- close the hub (and the map) first
-    SetTimeout(500, function() TriggerServerEvent('SPZ:tt:SelectTrack', key, model) end)
+    -- Car picker for this track; choosing a car starts the trial.
+    SetTimeout(500, function() TriggerServerEvent('SPZ:tt:OpenMenuForTrack', key) end)
     cb(true)
 end)
 

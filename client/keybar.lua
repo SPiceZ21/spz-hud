@@ -14,11 +14,17 @@ local function usingPad() return not IsUsingKeyboard(0) end
 
 -- pad: the command's PAD_DIGITALBUTTON binding (nil = it has none, so the
 -- hint is dropped while the player is on a controller).
+-- Shows the player's REAL binding. A command they have no key for (never
+-- bound, or cleared in Settings > Key Bindings > FiveM) is left out instead of
+-- showing the default, which is a key that does nothing for them.
+local UNBOUND = '\0'
 local function key(cmd, default, pad)
     if usingPad() and not pad then return nil end
     if not core() then return default end
-    local ok, k = pcall(function() return exports['spz-core']:KeyFor(cmd, default, pad) end)
-    return (ok and k) or default
+    local ok, k = pcall(function() return exports['spz-core']:KeyFor(cmd, UNBOUND, pad) end)
+    if not ok then return default end
+    if k == UNBOUND then return nil end
+    return k
 end
 
 local function control(id, default, pad)
